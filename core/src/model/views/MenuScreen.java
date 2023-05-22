@@ -4,9 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MoneyLandGame;
@@ -18,6 +23,7 @@ public class MenuScreen implements Screen {
     Music music;
     Texture rightImage;
     Texture title;
+    ImageButton startButton;
 
     public MenuScreen(final MoneyLandGame game){
         parent = game;
@@ -26,7 +32,25 @@ public class MenuScreen implements Screen {
         rightImage = new Texture(Gdx.files.internal("szefy_1.png"));
         title = new Texture(Gdx.files.internal("title.png"));
 
+        // Start Button config
+        Texture buttonTexture = new Texture("StartButton.png");
+        Texture buttonHoverTexture = new Texture("StartButtonClicked.png");
+
+        ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
+        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
+        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));
+
+        startButton = new ImageButton(buttonStyle);
+        //startButton.setPosition((MoneyLandGame.WIDTH-600)/2, MoneyLandGame.HEIGHT / 2 - startButton.getHeight() / 2);
+        startButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //future go to next page code
+            }
+        });
+        //startButton config end
         stage = new Stage(new ScreenViewport());
+        stage.addActor(startButton);//startButton add
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
     }
 
@@ -51,6 +75,8 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        startButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
+
     }
 
     @Override
