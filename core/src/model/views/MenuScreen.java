@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -63,10 +61,10 @@ public class MenuScreen implements Screen {
         rulesButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //future go to next page code
+                parent.changeScreen(MoneyLandGame.RULES_SCREEN);
             }
-        }
-        );
+        });
+
         // Rules Button config end
 
         stage = new Stage(new ScreenViewport());
@@ -80,6 +78,7 @@ public class MenuScreen implements Screen {
     @Override
     public void show() {
         music.play();
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -101,7 +100,6 @@ public class MenuScreen implements Screen {
         startButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
 
         rulesButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
-
     }
 
     @Override
