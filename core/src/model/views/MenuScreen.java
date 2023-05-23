@@ -24,6 +24,7 @@ public class MenuScreen implements Screen {
     Texture rightImage;
     Texture title;
     ImageButton startButton;
+    ImageButton rulesButton;
 
     public MenuScreen(final MoneyLandGame game){
         parent = game;
@@ -49,8 +50,30 @@ public class MenuScreen implements Screen {
             }
         });
         //startButton config end
+
+        // Rules Button config
+        Texture buttonRules = new Texture("ZasadyButton.png");
+        Texture buttonHoverRules = new Texture("ZasadyButtonClicked.png");
+
+        ImageButton.ImageButtonStyle buttonStyleRules = new ImageButton.ImageButtonStyle();
+        buttonStyleRules.up = new TextureRegionDrawable(new TextureRegion(buttonRules));
+        buttonStyleRules.over = new TextureRegionDrawable(new TextureRegion(buttonHoverRules));
+
+        rulesButton = new ImageButton(buttonStyleRules);
+        rulesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                //future go to next page code
+            }
+        }
+        );
+        // Rules Button config end
+
         stage = new Stage(new ScreenViewport());
+
         stage.addActor(startButton);//startButton add
+        stage.addActor(rulesButton);
+
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
     }
 
@@ -76,6 +99,8 @@ public class MenuScreen implements Screen {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         startButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
+
+        rulesButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
 
     }
 
