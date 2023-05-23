@@ -23,7 +23,11 @@ public class MenuScreen implements Screen {
     Music music;
     Texture rightImage;
     Texture title;
-    Button volume;
+    ImageButton volume;
+
+    ImageButton.ImageButtonStyle volumeStyle;
+    ImageButton.ImageButtonStyle volumeSilenceStyle;
+
 
     public MenuScreen(final MoneyLandGame game){
         parent = game;
@@ -33,31 +37,30 @@ public class MenuScreen implements Screen {
         title = new Texture(Gdx.files.internal("title.png"));
         stage = new Stage(new ScreenViewport());
 
-        Texture volumeImg = new Texture(Gdx.files.internal("audio.png"));
-        final Drawable drawable_audio = new TextureRegionDrawable(new TextureRegion(volumeImg));
+        // config sound button
+        Texture volumeTexture = new Texture(Gdx.files.internal("audio.png"));
+        volumeStyle = new ImageButton.ImageButtonStyle();
+        volumeStyle.up = new TextureRegionDrawable(new TextureRegion(volumeTexture));
 
-        Texture silenceImg = new Texture(Gdx.files.internal("silence.png"));
-        final Drawable drawable_silence = new TextureRegionDrawable(new TextureRegion(silenceImg));
+        Texture silenceTexture = new Texture(Gdx.files.internal("silence.png"));
+        volumeSilenceStyle = new ImageButton.ImageButtonStyle();
+        volumeSilenceStyle.up = new TextureRegionDrawable(new TextureRegion(silenceTexture));
 
-        volume = new ImageButton (drawable_audio);
+        volume = new ImageButton (volumeStyle);
+        volume.setPosition(5,5);
         volume.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (music.isPlaying()) {
                     music.pause();
-                    volume.remove();
-                    volume = new ImageButton(drawable_silence);
-                    volume.addListener(this);
-                    stage.addActor(volume);
+                    volume.setStyle(volumeSilenceStyle);
                 } else {
                     music.play();
-                    volume.remove();
-                    volume = new ImageButton(drawable_audio);
-                    volume.addListener(this);
-                    stage.addActor(volume);
+                    volume.setStyle(volumeStyle);
                 }
             }
         });
+
         stage.addActor(volume);
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
     }
@@ -74,7 +77,6 @@ public class MenuScreen implements Screen {
         parent.batch.begin();
         parent.batch.draw(rightImage, 400, 0, 600, MoneyLandGame.HEIGHT);
         parent.batch.draw(title, 0, 500, 400, 100);
-        volume.draw(parent.batch, 10f);
         parent.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));

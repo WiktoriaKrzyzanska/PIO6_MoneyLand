@@ -5,8 +5,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 public class DesktopLauncher {
 
-	static final int width = 1000;
-	static final int height = 700;
+	static final int width = 1900;
+	static final int height = 1000;
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("MoneyLand");
