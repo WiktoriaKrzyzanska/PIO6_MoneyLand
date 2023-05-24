@@ -14,7 +14,6 @@ public class MoneyLandGame extends Game {
 	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 700;
 
-
 	public static final int MENU_SCREEN = 0;
 	public static final int RULES_SCREEN = 1;
 
@@ -23,7 +22,6 @@ public class MoneyLandGame extends Game {
 		batch = new SpriteBatch();
 		menuScreen = new MenuScreen(this);
 		this.setScreen(menuScreen);
-
 	}
 
 

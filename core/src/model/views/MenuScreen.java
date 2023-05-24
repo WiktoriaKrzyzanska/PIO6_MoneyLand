@@ -15,6 +15,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MoneyLandGame;
@@ -31,7 +36,6 @@ public class MenuScreen implements Screen {
     ImageButton volume;
     ImageButton.ImageButtonStyle volumeStyle;
     ImageButton.ImageButtonStyle volumeSilenceStyle;
-
 
     public MenuScreen(final MoneyLandGame game){
         parent = game;
@@ -58,25 +62,6 @@ public class MenuScreen implements Screen {
         });
         //startButton config end
         stage = new Stage(new ScreenViewport());
-        stage.addActor(startButton);//startButton add
-
-        // Rules Button config
-        Texture buttonRules = new Texture("ZasadyButton.png");
-        Texture buttonHoverRules = new Texture("ZasadyButtonClicked.png");
-
-        ImageButton.ImageButtonStyle buttonStyleRules = new ImageButton.ImageButtonStyle();
-        buttonStyleRules.up = new TextureRegionDrawable(new TextureRegion(buttonRules));
-        buttonStyleRules.over = new TextureRegionDrawable(new TextureRegion(buttonHoverRules));
-
-        rulesButton = new ImageButton(buttonStyleRules);
-        rulesButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame.RULES_SCREEN);
-            }
-        });
-
-        // Rules Button config end
 
         // config sound button
         Texture volumeTexture = new Texture(Gdx.files.internal("audio.png"));
@@ -101,6 +86,27 @@ public class MenuScreen implements Screen {
                 }
             }
         });
+
+        stage.addActor(volume);
+        stage.addActor(startButton);//startButton add
+
+        // Rules Button config
+        Texture buttonRules = new Texture("ZasadyButton.png");
+        Texture buttonHoverRules = new Texture("ZasadyButtonClicked.png");
+
+        ImageButton.ImageButtonStyle buttonStyleRules = new ImageButton.ImageButtonStyle();
+        buttonStyleRules.up = new TextureRegionDrawable(new TextureRegion(buttonRules));
+        buttonStyleRules.over = new TextureRegionDrawable(new TextureRegion(buttonHoverRules));
+
+        rulesButton = new ImageButton(buttonStyleRules);
+        rulesButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                parent.changeScreen(MoneyLandGame.RULES_SCREEN);
+            }
+        });
+
+        // Rules Button config end
 
         stage.addActor(volume);
         stage.addActor(rulesButton);
