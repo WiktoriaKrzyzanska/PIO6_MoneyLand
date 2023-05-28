@@ -67,16 +67,16 @@ public class MenuScreen implements Screen {
         buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));
 
         startButton = new ImageButton(buttonStyle);
-        //startButton.setPosition((MoneyLandGame.WIDTH-600)/2, MoneyLandGame.HEIGHT / 2 - startButton.getHeight() / 2);
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame.LOBBY_INTRODUCTION_SCREEN);
+                //future go to next page code
+                //just for testing
+                parent.changeScreen(MoneyLandGame.GAME_SCREEN);
             }
         });
 
         //startButton config end
-        stage = new Stage(new ScreenViewport());
 
         // config sound button
         Texture volumeTexture = new Texture(Gdx.files.internal("audio.png"));

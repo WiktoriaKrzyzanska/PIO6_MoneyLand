@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import model.views.LoadingScreen;
 import model.views.LobbyIntroduction;
+import model.views.GameScreen;
 import model.views.MenuScreen;
 import model.views.RulesScreen;
 import model.views.Lobby;
@@ -17,6 +18,7 @@ public class MoneyLandGame extends Game {
 	public OrthographicCamera camera;
 	MenuScreen menuScreen;
 	RulesScreen rulesScreen;
+	GameScreen gameScreen;
 	LobbyIntroduction lobbyIntroductionScreen;
 	Lobby lobbyScreen;
 	LoadingScreen loadingScreen;
@@ -33,6 +35,7 @@ public class MoneyLandGame extends Game {
 	public static final int LOADING = 4;
 	public AssetManager manager;
 	private AssetManager progress;
+	public static final int GAME_SCREEN = 5;
 
 	@Override
 	public void create () {
@@ -72,6 +75,10 @@ public class MoneyLandGame extends Game {
 			case RULES_SCREEN:
 				if(rulesScreen == null) rulesScreen = new RulesScreen(this);
 				this.setScreen(rulesScreen);
+				break;
+			case GAME_SCREEN:
+				if(gameScreen == null) gameScreen = new GameScreen(this);
+				this.setScreen(gameScreen);
 				break;
 			case LOBBY_INTRODUCTION_SCREEN:
 				if(lobbyIntroductionScreen == null)lobbyIntroductionScreen = new LobbyIntroduction(this);
