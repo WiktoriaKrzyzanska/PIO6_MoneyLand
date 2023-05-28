@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import model.views.LoadingScreen;
 import model.views.LobbyIntroduction;
 import model.views.GameScreen;
@@ -23,6 +24,7 @@ public class MoneyLandGame extends Game {
 	Lobby lobbyScreen;
 	LoadingScreen loadingScreen;
 	public SpriteBatch batch;
+	public ShapeRenderer shapeRenderer;
 	public ArrayList<String> listPlayers = new ArrayList<String>();
 
 	public static final int WIDTH = 400; //world width
@@ -44,14 +46,16 @@ public class MoneyLandGame extends Game {
 		camera.position.set(WIDTH/2, HEIGHT / 2, 0);
 		camera.update();
 
-		//config SpriteBatch
-		manager = new AssetManager(); // create an instance of the AssetManager
-		// other initialization code
-		this.setScreen(new LoadingScreen(this, manager));
+		//config SpriteBatch and ShapeRenderer
+		// shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
-		menuScreen = new MenuScreen(this);
+
+		// other initialization code
+		manager = new AssetManager(); // create an instance of the AssetManager
+		this.setScreen(new LoadingScreen(this, manager));
 
 		//set default screen
+		menuScreen = new MenuScreen(this);
 		this.setScreen(menuScreen);
 	}
 
@@ -63,7 +67,7 @@ public class MoneyLandGame extends Game {
 
 	public void dispose () {
 		batch.dispose();
-
+		shapeRenderer.dispose();
 	}
 
 	public void changeScreen(int screen){
