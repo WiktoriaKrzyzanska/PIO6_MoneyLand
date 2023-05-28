@@ -22,6 +22,7 @@ public class Cube extends Actor {
     private List<Texture> images;
     private Random random;
     private Image cubeImage;
+    private int numberOnCube;
 
     public Cube(float x, float y, int width, int height, Stage stage) {
         setPosition(x, y);
@@ -45,6 +46,8 @@ public class Cube extends Actor {
                 return super.touchDown(event, x, y, pointer, button);
             }
         });
+
+        numberOnCube = 0;
     }
 
     private void loadImagesFromFolder(String folderPath) {
@@ -67,7 +70,12 @@ public class Cube extends Actor {
 
     private Texture getRandomImage() {
         int randomIndex = random.nextInt(images.size());
+        numberOnCube = randomIndex + 1;  //+1 because index start at 0
         return images.get(randomIndex);
+    }
+
+    public int getNumberOnCube() {
+        return numberOnCube;
     }
 }
 
