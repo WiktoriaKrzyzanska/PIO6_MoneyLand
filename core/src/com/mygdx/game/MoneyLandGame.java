@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import model.views.LoadingScreen;
 import model.views.LobbyIntroduction;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public class MoneyLandGame extends Game {
 
+	public OrthographicCamera camera;
 	MenuScreen menuScreen;
 	RulesScreen rulesScreen;
 	LobbyIntroduction lobbyIntroductionScreen;
@@ -20,8 +22,10 @@ public class MoneyLandGame extends Game {
 	LoadingScreen loadingScreen;
 	public SpriteBatch batch;
 	public ArrayList<String> listPlayers = new ArrayList<String>();
-	public static final int WIDTH = 1000;
-	public static final int HEIGHT = 700;
+
+	public static final int WIDTH = 400; //world width
+	public static final int HEIGHT = 200; //world height
+
 	public static final int MENU_SCREEN = 0;
 	public static final int RULES_SCREEN = 1;
 	public static final int LOBBY_INTRODUCTION_SCREEN = 2;
@@ -32,11 +36,19 @@ public class MoneyLandGame extends Game {
 
 	@Override
 	public void create () {
+		//config camera
+		camera = new OrthographicCamera(WIDTH,HEIGHT);
+		camera.position.set(WIDTH/2, HEIGHT / 2, 0);
+		camera.update();
+
+		//config SpriteBatch
 		manager = new AssetManager(); // create an instance of the AssetManager
 		// other initialization code
 		this.setScreen(new LoadingScreen(this, manager));
 		batch = new SpriteBatch();
 		menuScreen = new MenuScreen(this);
+
+		//set default screen
 		this.setScreen(menuScreen);
 	}
 

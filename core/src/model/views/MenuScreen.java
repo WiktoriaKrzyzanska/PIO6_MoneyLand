@@ -37,10 +37,24 @@ public class MenuScreen implements Screen {
     ImageButton.ImageButtonStyle volumeStyle;
     ImageButton.ImageButtonStyle volumeSilenceStyle;
 
+    float leftSideWidth;
+    float rightSideWidth;
+
     public MenuScreen(final MoneyLandGame game){
         parent = game;
+
+        //create stage
+        stage = new Stage(new ScreenViewport());
+
+        //set sides width (screen is divied to 2 part)
+        leftSideWidth = stage.getViewport().getWorldWidth()/3;
+        rightSideWidth = stage.getViewport().getWorldWidth() - stage.getViewport().getWorldWidth()/3;
+
+        //music config
         music = Gdx.audio.newMusic(Gdx.files.internal("Pim Stones -  Neon Lights.mp3"));
         music.setLooping(true);
+
+        //set graphics
         rightImage = new Texture(Gdx.files.internal("szefy_1.png"));
         title = new Texture(Gdx.files.internal("title.png"));
 
@@ -87,9 +101,6 @@ public class MenuScreen implements Screen {
             }
         });
 
-        stage.addActor(volume);
-        stage.addActor(startButton);//startButton add
-
         // Rules Button config
         Texture buttonRules = new Texture("ZasadyButton.png");
         Texture buttonHoverRules = new Texture("ZasadyButtonClicked.png");
@@ -108,8 +119,10 @@ public class MenuScreen implements Screen {
 
         // Rules Button config end
 
+        //add actors to stage
         stage.addActor(volume);
         stage.addActor(rulesButton);
+        stage.addActor(startButton);
 
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
     }
@@ -124,10 +137,17 @@ public class MenuScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1); //background color
 
+        parent.camera.update();
+        parent.batch.setProjectionMatrix(parent.camera.combined); //  This line of code tells the renderer to use our camera to draw everything.
+
         parent.batch.begin();
-        parent.batch.draw(rightImage, 400, 0, 600, MoneyLandGame.HEIGHT);
-        parent.batch.draw(title, 0, 500, 400, 100);
+        parent.batch.draw(rightImage, MoneyLandGame.WIDTH/3, 0, MoneyLandGame.WIDTH - MoneyLandGame.WIDTH/3, MoneyLandGame.HEIGHT);
+        parent.batch.draw(title, 0, MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT / 4, MoneyLandGame.WIDTH/3, MoneyLandGame.HEIGHT/8);
         parent.batch.end();
+
+        startButton.setPosition(leftSideWidth * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
+        rulesButton.setPosition(leftSideWidth * 0.5f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
+        volume.setPosition(5,5);
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -136,8 +156,10 @@ public class MenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        startButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
-        rulesButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
+
+        //update sides width
+        leftSideWidth = stage.getViewport().getWorldWidth()/3;
+        rightSideWidth = stage.getViewport().getWorldWidth() - stage.getViewport().getWorldWidth()/3;
     }
 
     @Override
@@ -157,6 +179,8 @@ public class MenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        rightImage.dispose();
+        title.dispose();
         stage.dispose();
         music.dispose();
     }
