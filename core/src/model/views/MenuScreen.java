@@ -67,7 +67,7 @@ public class MenuScreen implements Screen {
         testButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame.LOBBY_INTRODUCTION_SCREEN);
+                parent.changeScreen(MoneyLandGame.LOADING);
             }
         });
         //startButton config end

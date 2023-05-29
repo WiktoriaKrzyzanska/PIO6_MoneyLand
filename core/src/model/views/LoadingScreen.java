@@ -2,74 +2,100 @@ package model.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MoneyLandGame;
 
 public class LoadingScreen implements Screen {
-    final MoneyLandGame parent;
-    Stage stage;
+    // Use constants for magic numbers and strings
+
+    private static final float B_W = 300f;
+    private static final float B_H = 20f;
+
+    private static final String LOADING_TEXT = "Loading %d%%";
+
+    private final MoneyLandGame parent;
+    private final AssetManager manager;
     Texture title;
-    Texture start;
-    ImageButton startButton;
+    private final ShapeRenderer shapeRenderer;
 
-    public LoadingScreen(final MoneyLandGame game){
-        parent = game;
-        title = new Texture(Gdx.files.internal("title.png"));
-        start = new Texture(Gdx.files.internal("StartButton.png"));
+    private final SpriteBatch spriteBatch;
+    private final BitmapFont font;
+    private final BitmapFont fontString;
+    final String text = "We're loading your game!";
+    final float offset =  160f;
 
-        // Start Button config
-        Texture buttonStart = new Texture("title.png");
-        Texture buttonHoverStart = new Texture("StartButton.png");
-        ImageButton.ImageButtonStyle buttonStyleStart = new ImageButton.ImageButtonStyle();
-        buttonStyleStart.up = new TextureRegionDrawable(new TextureRegion(buttonStart));
-        buttonStyleStart.over = new TextureRegionDrawable(new TextureRegion(buttonHoverStart));
-        startButton = new ImageButton(buttonStyleStart);
-        startButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame. LOADING); // change this to the screen you want to show after clicking start
-            }
-        });
-// Start Button config end
-        stage = new Stage(new ScreenViewport());
-        stage.addActor(startButton); // add the start button to the stage
-        Gdx.input.setInputProcessor(stage);
+
+    float timer = 0f;
+
+
+    /**
+     This is an initializing method. It initializes parent and manager like in previous classes.
+     Moreover, it creates new object for shape, sprite, font which are used to draw element    */
+    public LoadingScreen(final MoneyLandGame game, AssetManager manager) {
+        this.parent = game;
+        this.manager = manager;
+        shapeRenderer = new ShapeRenderer();
+        spriteBatch = new SpriteBatch();
+        font = new BitmapFont();
+        fontString = new BitmapFont();
+
+
     }
-
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+
     }
+
+/**
+ * Render method creates loading bar by drawing it. I tried to make every element have a gap but i still
+ * have to fix it to look better. I made everything dependent on time 
+ */
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1);
+        ScreenUtils.clear(255 / 255f, 242 / 255f, 130 / 255f, 1);
+        final GlyphLayout layout = new GlyphLayout(fontString, text);
+        float x = Gdx.graphics.getWidth()/2 - layout.width/2;
+        float y = Gdx.graphics.getHeight()/2 + layout.height/2;
+        title = new Texture(Gdx.files.internal("title.png"));
+        float timeElapsed = 25f;
+        timer += delta;
+        float percentage = timer / timeElapsed * 100f;
 
-        parent.batch.begin();
-        parent.batch.draw(title, 300, 550, 400, 100);
-        parent.batch.draw(start, 350, 120, 300, 400);
-        parent.batch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        fontString.getData().setScale(2, 2);
+        shapeRenderer.setColor(Color.GRAY);
+        shapeRenderer.rect(x , y , B_W , B_H );
 
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        stage.draw();
+        shapeRenderer.setColor(Color.GREEN);
+        if (percentage >= 100f) {
+            percentage = 100f;
+        }
+        shapeRenderer.rect(x , y, percentage / 100f  * B_W, B_H );
+        shapeRenderer.end();
+        spriteBatch.begin();
+        font.setColor(Color.WHITE);
+        fontString.setColor(Color.BLACK);
+
+        font.draw(spriteBatch, String.format(LOADING_TEXT, (int) percentage), x , y +B_H / 2 + font.getLineHeight() / 2);
+        spriteBatch.draw(title, Gdx.graphics.getWidth() /2 - title.getWidth()/2 , Gdx.graphics.getHeight()/2 - title.getHeight()/2 + offset );
+        fontString.draw(spriteBatch, layout, x, y);
+        spriteBatch.end();
+
     }
+
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-        startButton.setSize(200, 100); // change this to the size you want for the start button
-        startButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.1f - startButton.getHeight() * 0.5f);
-    }
 
+    }
 
     @Override
     public void pause() {
@@ -88,6 +114,11 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
+
+        shapeRenderer.dispose();
+        spriteBatch.dispose();
+        font.dispose();
+        fontString.dispose();
+        title.dispose();
     }
 }
