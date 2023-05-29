@@ -27,8 +27,8 @@ public class MoneyLandGame extends Game {
 	public ShapeRenderer shapeRenderer;
 	public ArrayList<String> listPlayers = new ArrayList<String>();
 
-	public static final int WIDTH = 400; //world width
-	public static final int HEIGHT = 200; //world height
+	public static final int WIDTH = 3200; //world width
+	public static final int HEIGHT = 1600; //world height
 
 	public static final int MENU_SCREEN = 0;
 	public static final int RULES_SCREEN = 1;

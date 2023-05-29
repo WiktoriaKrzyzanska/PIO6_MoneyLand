@@ -1,9 +1,13 @@
 package model.views;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import java.util.ArrayList;
 
@@ -16,6 +20,8 @@ public class CardsManager {
     private Color backgroundColor;
     private ArrayList<Card> cards;
 
+    private BitmapFont font;
+
     private float cardWidth;
     private float cardHeight;
     private float padding;
@@ -27,10 +33,18 @@ public class CardsManager {
         this.positionX = positionX;
         this.positionY = positionY;
         this.cards = new ArrayList<>();
-        padding = 3;
-        paddingBetweenCards = 1;
+        padding = 30;
+        paddingBetweenCards = 20;
         this.cardWidth = (width - 2 * padding) / 5; // 5 cards in row
         this.cardHeight = (height - 2 * padding) / 5; // 5 cards in column
+
+        //config font
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 35;
+        parameter.color = Color.BLACK;
+        font = generator.generateFont(parameter);
+        generator.dispose();
 
         //config color
         backgroundColor = new Color();
@@ -45,7 +59,8 @@ public class CardsManager {
                     this.positionX + padding,
                     this.positionY + cardHeight + padding,
                     new Texture("cards/kowal.png"),
-                "Kowal"
+                "Kowal",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards,
@@ -53,7 +68,8 @@ public class CardsManager {
                 this.positionX + padding,
                 this.positionY + 2 * cardHeight + padding,
                 new Texture("cards/cyprianka.png"),
-                "Cyprianka"
+                "Cyprianka",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards,
@@ -61,7 +77,8 @@ public class CardsManager {
                 this.positionX + padding,
                 this.positionY + 3 * cardHeight + padding,
                 new Texture("cards/badkowo.png"),
-                "Bądkowo"
+                "Badkowo",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards ,
@@ -69,7 +86,8 @@ public class CardsManager {
                 this.positionX + padding,
                 this.positionY + 4 * cardHeight + padding,
                 new Texture("cards/wloclawek.png"),
-                "Włocławek"
+                "Wloclawek",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards ,
@@ -77,7 +95,8 @@ public class CardsManager {
                 this.positionX + cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 new Texture("cards/leczyca.png"),
-                "Łęczyca"
+                "Leczyca",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards ,
@@ -85,7 +104,8 @@ public class CardsManager {
                 this.positionX + 2 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 new Texture("cards/mielno.png"),
-                "Mielno"
+                "Mielno",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards ,
@@ -93,7 +113,8 @@ public class CardsManager {
                 this.positionX + 3 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 new Texture("cards/bialystok.png"),
-                "Białystok"
+                "Bialystok",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth,
@@ -101,7 +122,8 @@ public class CardsManager {
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 new Texture("cards/czestochowa.png"),
-                "Częstochowa"
+                "Czestochowa",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth,
@@ -109,7 +131,8 @@ public class CardsManager {
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + 3 * cardHeight + padding,
                 new Texture("cards/bydgoszcz.png"),
-                "Bydgoszcz"
+                "Bydgoszcz",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth,
@@ -117,7 +140,8 @@ public class CardsManager {
                 this.positionX  + 4 * cardWidth + padding,
                 this.positionY + 2 * cardHeight + padding,
                 new Texture("cards/krakow.png"),
-                "Kraków"
+                "Krakow",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth,
@@ -125,7 +149,8 @@ public class CardsManager {
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + cardHeight + padding,
                 new Texture("cards/warszawa.png"),
-                "Warszawa"
+                "Warszawa",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth,
@@ -133,7 +158,8 @@ public class CardsManager {
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + padding,
                 new Texture("cards/brzeziny.png"),
-                "Brzeziny"
+                "Brzeziny",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards ,
@@ -141,14 +167,17 @@ public class CardsManager {
                 this.positionX + 3 * cardWidth + padding,
                 this.positionY + padding,
                 new Texture("cards/pabianice.png"),
-                "Pabianice"));
+                "Pabianice",
+                this.font
+        ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards,
                 cardHeight - paddingBetweenCards,
                 this.positionX + 2 * cardWidth + padding,
                 this.positionY + padding,
                 new Texture("cards/lodz.png"),
-                "Łódź"
+                "Lodz",
+                this.font
         ));
         cards.add(new Card(
                 cardWidth - paddingBetweenCards,
@@ -156,11 +185,12 @@ public class CardsManager {
                 this.positionX + cardWidth + padding,
                 this.positionY + padding,
                 new Texture("cards/zgierz.png"),
-                "Zgierz"
+                "Zgierz",
+                this.font
         ));
     }
 
-    public void draw(ShapeRenderer shapeRenderer, SpriteBatch batch){
+    public void draw(ShapeRenderer shapeRenderer, SpriteBatch batch, Stage stage){
         if(batch==null || shapeRenderer==null) return;
 
         //rectangle for all cards
@@ -171,7 +201,8 @@ public class CardsManager {
 
         //draw all cards
         for(int i=0; i<cards.size(); ++i){
-            cards.get(i).draw(shapeRenderer, batch); //can't be between methods begin() and end()
+            cards.get(i).draw(shapeRenderer, batch, stage); //can't be between methods begin() and end()
         }
     }
+
 }

@@ -2,10 +2,9 @@ package model.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
 public class GameScreen implements Screen {
@@ -17,7 +16,7 @@ public class GameScreen implements Screen {
         parent = game;
 
         //create stage
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
 
         //create part with cards
         cardsManager = new CardsManager(MoneyLandGame.WIDTH - MoneyLandGame.WIDTH/3,  MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT/6, MoneyLandGame.WIDTH/6, MoneyLandGame.HEIGHT/6);
@@ -40,7 +39,7 @@ public class GameScreen implements Screen {
         parent.batch.setProjectionMatrix(parent.camera.combined); //  This line of code tells the renderer to use our camera to draw everything.
 
         //draw cards
-        cardsManager.draw(parent.shapeRenderer, parent.batch); //can't be between methods begin() and end()
+        cardsManager.draw(parent.shapeRenderer, parent.batch, stage); //can't be between methods begin() and end()
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -48,7 +47,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
     }
 
     @Override

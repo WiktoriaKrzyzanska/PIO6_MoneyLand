@@ -2,8 +2,12 @@ package model.views;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
 public class Card implements Disposable {
@@ -20,13 +24,13 @@ public class Card implements Disposable {
     float boxTextHeight;
     float boxTextPositionX;
     float boxTextPositionY;
-    String cityName;
+    Label cityName;
     float cityNamePositionX;
     float cityNamePositionY;
     Color rectBackground;
     Color rectTitleBackground;
 
-    public Card(float cardWidth, float cardHeight, float cardPositionX, float cardPositionY, Texture cityPhoto, String cityName) {
+    public Card(float cardWidth, float cardHeight, float cardPositionX, float cardPositionY, Texture cityPhoto, String cityName, BitmapFont font) {
 
         float partHeight = cardHeight / 10;
 
@@ -42,9 +46,6 @@ public class Card implements Disposable {
         this.boxTextPositionX = this.cardPositionX;
         this.boxTextPositionY = this.cardPositionY + 8 * partHeight;
 
-        //config city name
-        this.cityName = cityName;
-
         //config city photo
         this.cityPhoto = cityPhoto;
         this.photoWidth = this.cardWidth;
@@ -58,9 +59,23 @@ public class Card implements Disposable {
         rectBackground.g = 255/255f;
         rectBackground.b = 231/255f;
         rectTitleBackground = new Color(rectBackground);
+
+
+        //config city name
+        cityNamePositionX = this.boxTextPositionX;
+        cityNamePositionY = this.boxTextPositionY;
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font;
+
+        this.cityName = new Label(cityName, labelStyle);
+        this.cityName.setSize(this.boxTextWidth, this.boxTextHeight);
+        this.cityName.setPosition(cityNamePositionX,cityNamePositionY);
+        this.cityName.setAlignment(Align.center);
+
     }
 
-    public void draw(ShapeRenderer shapeRenderer, SpriteBatch batch){
+    public void draw(ShapeRenderer shapeRenderer, SpriteBatch batch, Stage stage){
         if(shapeRenderer == null || batch == null) return;
 
         //draw rectangles
@@ -77,6 +92,10 @@ public class Card implements Disposable {
         batch.begin();
         batch.draw(cityPhoto, photoPositionX, photoPositionY, photoWidth, photoHeight);
         batch.end();
+
+        //draw text
+        stage.addActor(cityName);
+
     }
 
     @Override
