@@ -57,7 +57,7 @@ public class MenuScreen implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //future go to next page code
+                parent.changeScreen(MoneyLandGame.LOBBY_INTRODUCTION_SCREEN);
             }
         });
         //startButton config end
