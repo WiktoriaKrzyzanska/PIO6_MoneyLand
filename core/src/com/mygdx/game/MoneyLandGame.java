@@ -56,7 +56,7 @@ public class MoneyLandGame extends Game {
 				this.setScreen(lobbyIntroductionScreen);
 				break;
 			case LOBBY:
-				if(lobbyScreen == null)lobbyScreen = new Lobby(this);
+				lobbyScreen = new Lobby(this);
 				this.setScreen(lobbyScreen);
 				break;
 			default:

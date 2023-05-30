@@ -31,7 +31,7 @@ public class Lobby implements Screen {
     Texture title;
     ImageButton startButton;
     BitmapFont font;
-    Label numberPlayer, namePlayerOne;
+    Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
 
     public Lobby(final MoneyLandGame game){
         parent = game;
@@ -43,14 +43,15 @@ public class Lobby implements Screen {
         font = new BitmapFont();
         font.getData().setScale(3f);
 
-        numberPlayer = new Label( "Czekamy na graczy "+parent.sizePlayer()+"/5", new Label.LabelStyle(font, Color.BLACK));
-        namePlayerOne = new Label( parent.getPlayer(0), new Label.LabelStyle(font, Color.BLACK));
+        numberPlayer = new Label( "Czekamy na graczy: "+parent.sizePlayer()+"/5", new Label.LabelStyle(font, Color.BLACK));
 
-
-        System.out.println(parent.sizePlayer());
-
-        for(int i = 0; i < parent.sizePlayer(); i++){
-            System.out.println(parent.getPlayer(i));
+        try{
+            namePlayerOne = new Label( "1. "+parent.getPlayer(0), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerTwo = new Label( "2. "+parent.getPlayer(1), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerThree = new Label( "3. "+parent.getPlayer(2), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerFour = new Label( "4. "+parent.getPlayer(3), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerFive = new Label( "5. "+parent.getPlayer(4), new Label.LabelStyle(font, Color.BLACK));
+        }catch (Exception ignored){
         }
 
         ImageButton.ImageButtonStyle buttonStyleStart = new ImageButton.ImageButtonStyle();
@@ -69,10 +70,18 @@ public class Lobby implements Screen {
         stage = new Stage(new ScreenViewport());
 
         stage.addActor(numberPlayer);
-        stage.addActor(namePlayerOne);
+
+        try{
+            stage.addActor(namePlayerOne);
+            stage.addActor(namePlayerTwo);
+            stage.addActor(namePlayerThree);
+            stage.addActor(namePlayerFour);
+            stage.addActor(namePlayerFive);
+        }catch(Exception ignored){
+        }
 
         stage.addActor(startButton);
-        //Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -97,7 +106,15 @@ public class Lobby implements Screen {
         stage.getViewport().update(width, height, true);
 
         numberPlayer.setPosition(stage.getViewport().getWorldWidth() * 0.5f - numberPlayer.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.7f - numberPlayer.getHeight() * 0.5f);
-        namePlayerOne.setPosition(stage.getViewport().getWorldWidth() * 0.5f - namePlayerOne.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.6f - namePlayerOne.getHeight() * 0.5f);
+
+        try{
+            namePlayerOne.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.6f - namePlayerOne.getHeight() * 0.5f);
+            namePlayerTwo.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.5f - namePlayerTwo.getHeight() * 0.5f);
+            namePlayerThree.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.4f - namePlayerThree.getHeight() * 0.5f);
+            namePlayerFour.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.3f - namePlayerFour.getHeight() * 0.5f);
+            namePlayerFive.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.2f - namePlayerFive.getHeight() * 0.5f);
+        }catch(Exception ignored){
+        }
 
         startButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.1f - startButton.getHeight() * 0.5f);
     }
