@@ -1,7 +1,9 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import model.views.LoadingScreen;
 import model.views.LobbyIntroduction;
 import model.views.MenuScreen;
 import model.views.RulesScreen;
@@ -15,6 +17,7 @@ public class MoneyLandGame extends Game {
 	RulesScreen rulesScreen;
 	LobbyIntroduction lobbyIntroductionScreen;
 	Lobby lobbyScreen;
+	LoadingScreen loadingScreen;
 	public SpriteBatch batch;
 	public ArrayList<String> listPlayers = new ArrayList<String>();
 	public static final int WIDTH = 1000;
@@ -23,8 +26,15 @@ public class MoneyLandGame extends Game {
 	public static final int RULES_SCREEN = 1;
 	public static final int LOBBY_INTRODUCTION_SCREEN = 2;
 	public static final int LOBBY = 3;
+	public static final int LOADING = 4;
+	public AssetManager manager;
+	private AssetManager progress;
+
 	@Override
 	public void create () {
+		manager = new AssetManager(); // create an instance of the AssetManager
+		// other initialization code
+		this.setScreen(new LoadingScreen(this, manager));
 		batch = new SpriteBatch();
 		menuScreen = new MenuScreen(this);
 		this.setScreen(menuScreen);
@@ -58,6 +68,10 @@ public class MoneyLandGame extends Game {
 			case LOBBY:
 				lobbyScreen = new Lobby(this);
 				this.setScreen(lobbyScreen);
+			case LOADING:
+
+				if(loadingScreen == null)loadingScreen = new LoadingScreen(this,  manager);
+				this.setScreen(loadingScreen);
 				break;
 			default:
 				break;
