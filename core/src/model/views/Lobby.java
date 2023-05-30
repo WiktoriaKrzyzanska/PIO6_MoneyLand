@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
 public class Lobby implements Screen {
@@ -66,7 +67,7 @@ public class Lobby implements Screen {
             }
         });
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
 
         stage.addActor(numberPlayer);
 
@@ -92,8 +93,11 @@ public class Lobby implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1);
 
+        parent.camera.update();
+        parent.batch.setProjectionMatrix(parent.camera.combined);
+
         parent.batch.begin();
-        parent.batch.draw(title, 300, 550, 400, 100);
+        parent.batch.draw(title, MoneyLandGame.WIDTH/2 - 400, MoneyLandGame.HEIGHT - 400, 800, 200);
         parent.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -136,5 +140,7 @@ public class Lobby implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        title.dispose();
+        font.dispose();
     }
 }
