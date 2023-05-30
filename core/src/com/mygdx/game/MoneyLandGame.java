@@ -68,8 +68,8 @@ public class MoneyLandGame extends Game {
 			case LOBBY:
 				lobbyScreen = new Lobby(this);
 				this.setScreen(lobbyScreen);
+				break;
 			case LOADING:
-
 				if(loadingScreen == null)loadingScreen = new LoadingScreen(this,  manager);
 				this.setScreen(loadingScreen);
 				break;

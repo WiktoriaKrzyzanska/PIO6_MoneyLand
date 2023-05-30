@@ -62,10 +62,9 @@ public class Lobby implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame.MENU_SCREEN);
+                parent.changeScreen(MoneyLandGame.LOADING);
             }
         });
-
 
         stage = new Stage(new ScreenViewport());
 
