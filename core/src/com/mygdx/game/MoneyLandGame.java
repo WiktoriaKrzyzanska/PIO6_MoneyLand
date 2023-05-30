@@ -47,7 +47,7 @@ public class MoneyLandGame extends Game {
 		camera.update();
 
 		//config SpriteBatch and ShapeRenderer
-		// shapeRenderer = new ShapeRenderer();
+		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 
 		// other initialization code

@@ -71,8 +71,7 @@ public class MenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //future go to next page code
-                //just for testing
-                parent.changeScreen(MoneyLandGame.GAME_SCREEN);
+                parent.changeScreen(MoneyLandGame.LOBBY_INTRODUCTION_SCREEN);
             }
         });
 
