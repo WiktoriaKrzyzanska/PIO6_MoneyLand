@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.MoneyLandGame;
 
 public class LoadingScreen implements Screen {
+
     // Use constants for magic numbers and strings
 
     private static final float B_W = 300f;
@@ -46,7 +47,6 @@ public class LoadingScreen implements Screen {
         font = new BitmapFont();
         fontString = new BitmapFont();
 
-
     }
     @Override
     public void show() {
@@ -77,6 +77,8 @@ public class LoadingScreen implements Screen {
         shapeRenderer.setColor(Color.GREEN);
         if (percentage >= 100f) {
             percentage = 100f;
+            //loading is ready -> change screen
+            parent.changeScreen(MoneyLandGame.GAME_SCREEN);
         }
         shapeRenderer.rect(x , y, percentage / 100f  * B_W, B_H );
         shapeRenderer.end();
@@ -88,7 +90,6 @@ public class LoadingScreen implements Screen {
         spriteBatch.draw(title, Gdx.graphics.getWidth() /2 - title.getWidth()/2 , Gdx.graphics.getHeight()/2 - title.getHeight()/2 + offset );
         fontString.draw(spriteBatch, layout, x, y);
         spriteBatch.end();
-
     }
 
 
@@ -114,7 +115,6 @@ public class LoadingScreen implements Screen {
 
     @Override
     public void dispose() {
-
         shapeRenderer.dispose();
         spriteBatch.dispose();
         font.dispose();

@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
 public class RulesScreen implements Screen {
@@ -43,7 +44,7 @@ public class RulesScreen implements Screen {
         });
         // Back Button config end
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         stage.addActor(backButton);
         Gdx.input.setInputProcessor(stage);
     }
@@ -57,10 +58,15 @@ public class RulesScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1);
 
+        parent.camera.update();
+        parent.batch.setProjectionMatrix(parent.camera.combined); //  This line of code tells the renderer to use our camera to draw everything.
+
         parent.batch.begin();
-        parent.batch.draw(title, 300, 550, 400, 100);
-        parent.batch.draw(rules, 350, 120, 300, 400);
+        parent.batch.draw(title, MoneyLandGame.WIDTH/2 - 400, MoneyLandGame.HEIGHT - 200, 800, 200);
+        parent.batch.draw(rules, MoneyLandGame.WIDTH/3, MoneyLandGame.HEIGHT/6, MoneyLandGame.WIDTH/3, MoneyLandGame.HEIGHT * 5/6 - 200);
         parent.batch.end();
+
+        backButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - backButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.1f - backButton.getHeight() * 0.5f);
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -69,8 +75,6 @@ public class RulesScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-
-        backButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - backButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.1f - backButton.getHeight() * 0.5f);
     }
 
     @Override
@@ -90,6 +94,8 @@ public class RulesScreen implements Screen {
 
     @Override
     public void dispose() {
+        title.dispose();
+        rules.dispose();
         stage.dispose();
     }
 }

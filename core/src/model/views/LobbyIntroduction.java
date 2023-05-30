@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
 public class LobbyIntroduction implements Screen {
@@ -34,7 +35,7 @@ public class LobbyIntroduction implements Screen {
         title = new Texture(Gdx.files.internal("title.png"));
         font = new BitmapFont();
         font.setColor(Color.BLACK);
-        font.getData().setScale(1f);
+        font.getData().setScale(3f);
 
         NinePatchDrawable textFieldBackground = new NinePatchDrawable(new NinePatch(new Texture(Gdx.files.internal("back.9.png")), 10, 10, 10, 10));
         textFieldBackground.setMinWidth(200f);
@@ -45,10 +46,12 @@ public class LobbyIntroduction implements Screen {
 
         textField = new TextField("", textFieldStyle);
         textField.setPosition((Gdx.graphics.getWidth() - textField.getWidth()) / 2f, (Gdx.graphics.getHeight() - textField.getHeight()) / 2f);
+        textField.setSize(400,80);
 
         nameLabel = new Label("Podaj nick", new Label.LabelStyle(font, Color.BLACK));
-        nameLabel.setFontScale(1.5f);
+        nameLabel.setFontScale(3f);
         nameLabel.setPosition(textField.getX(), textField.getY() + textField.getHeight() + 10);
+        nameLabel.setSize(400,200);
 
         Texture buttonBack = new Texture("BackButton.png");
         Texture buttonHoverBack = new Texture("BackButtonClicked.png");
@@ -81,7 +84,7 @@ public class LobbyIntroduction implements Screen {
             }
         });
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         stage.addActor(textField);
         stage.addActor(nameLabel);
         stage.addActor(backButton);
@@ -99,8 +102,11 @@ public class LobbyIntroduction implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(255 / 255f, 242 / 255f, 130 / 255f, 1);
 
+        parent.camera.update();
+        parent.batch.setProjectionMatrix(parent.camera.combined);
+
         parent.batch.begin();
-        parent.batch.draw(title, 300, 550, 400, 100);
+        parent.batch.draw(title, MoneyLandGame.WIDTH/2 - 400, MoneyLandGame.HEIGHT - 400, 800, 200);
         parent.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -135,5 +141,7 @@ public class LobbyIntroduction implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        font.dispose();
+        title.dispose();
     }
 }
