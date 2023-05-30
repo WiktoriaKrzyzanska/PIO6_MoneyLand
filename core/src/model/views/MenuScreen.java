@@ -32,7 +32,6 @@ public class MenuScreen implements Screen {
     Texture rightImage;
     Texture title;
     ImageButton startButton;
-    ImageButton testButton;
     ImageButton rulesButton;
     ImageButton volume;
     ImageButton.ImageButtonStyle volumeStyle;
@@ -61,15 +60,7 @@ public class MenuScreen implements Screen {
                 parent.changeScreen(MoneyLandGame.LOBBY_INTRODUCTION_SCREEN);
             }
         });
-        testButton = new ImageButton(buttonStyle);
-        testButton.setPosition(15,15);
-        //startButton.setPosition((MoneyLandGame.WIDTH-600)/2, MoneyLandGame.HEIGHT / 2 - startButton.getHeight() / 2);
-        testButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame.LOADING);
-            }
-        });
+
         //startButton config end
         stage = new Stage(new ScreenViewport());
 
@@ -98,7 +89,6 @@ public class MenuScreen implements Screen {
 
         stage.addActor(volume);
         stage.addActor(startButton);//startButton add
-        stage.addActor(testButton);
 
         // Rules Button config
         Texture buttonRules = new Texture("ZasadyButton.png");
@@ -120,7 +110,6 @@ public class MenuScreen implements Screen {
 
         stage.addActor(volume);
         stage.addActor(rulesButton);
-        stage.addActor(testButton);
 
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
     }
@@ -148,7 +137,6 @@ public class MenuScreen implements Screen {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         startButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
-        testButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.3f - startButton.getHeight() * 0.5f);
         rulesButton.setPosition(stage.getViewport().getWorldWidth() * 0.2f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
     }
 
