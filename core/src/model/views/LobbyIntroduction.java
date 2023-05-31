@@ -79,7 +79,8 @@ public class LobbyIntroduction implements Screen {
         nextButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.addPlayer(textField.getText());
+                //parent.addPlayer(textField.getText());
+                parent.setPlayerNick(textField.getText());
                 parent.changeScreen(MoneyLandGame.LOBBY);
             }
         });
