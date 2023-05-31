@@ -11,6 +11,7 @@ import model.views.GameScreen;
 import model.views.MenuScreen;
 import model.views.RulesScreen;
 import model.views.Lobby;
+import server.GameServer;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class MoneyLandGame extends Game {
 	public SpriteBatch batch;
 	public ShapeRenderer shapeRenderer;
 	public ArrayList<String> listPlayers = new ArrayList<String>();
+	private String playerNick;
 
 	public static final int WIDTH = 3200; //world width
 	public static final int HEIGHT = 1600; //world height
@@ -38,6 +40,11 @@ public class MoneyLandGame extends Game {
 	public AssetManager manager;
 	private AssetManager progress;
 	public static final int GAME_SCREEN = 5;
+
+	public GameServer gameServer;
+	public static final String serverIP = "127.0.0.1";
+	public static final int portTCP = 54555;
+	public static final int portUDP = 54777;
 
 	@Override
 	public void create () {
@@ -66,6 +73,7 @@ public class MoneyLandGame extends Game {
 
 
 	public void dispose () {
+		if(gameServer!=null) gameServer.closeServer();
 		batch.dispose();
 		shapeRenderer.dispose();
 	}
@@ -109,5 +117,24 @@ public class MoneyLandGame extends Game {
 	}
 	public int sizePlayer(){
 		return listPlayers.size();
+	}
+
+	public void setServer(){
+		if(gameServer == null){
+			gameServer = new GameServer();
+			gameServer.start();
+		}
+	}
+
+	public boolean serverIsReady(){
+		return gameServer.serverIsReady();
+	}
+
+	public String getPlayerNick() {
+		return playerNick;
+	}
+
+	public void setPlayerNick(String playerNick) {
+		this.playerNick = playerNick;
 	}
 }

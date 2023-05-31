@@ -24,7 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.MoneyLandGame;
+
+import java.util.ArrayList;
 
 public class Lobby implements Screen {
     final MoneyLandGame parent;
@@ -33,9 +39,64 @@ public class Lobby implements Screen {
     ImageButton startButton;
     BitmapFont font;
     Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
+    Client serverHandler;
 
     public Lobby(final MoneyLandGame game){
         parent = game;
+
+        //START config connect to server or create server and connect
+        serverHandler = new Client();
+
+        //class register - is required from documentation; important: must be same order in server and here
+        Kryo kryo = serverHandler.getKryo();
+        kryo.register(ArrayList.class);
+
+        serverHandler.start();
+        boolean thisIsServer = false;
+
+        //try connect to server - if attempt will fail that means server not exists
+        try{
+            serverHandler.connect(5000, MoneyLandGame.serverIP, MoneyLandGame.portTCP, MoneyLandGame.portUDP);
+        }catch(Exception e){
+            //create server
+            parent.setServer();
+            thisIsServer = true;
+        }
+
+        //when it is first player after create server it must connect to server
+        if(thisIsServer){
+            try{
+                while(!parent.serverIsReady()){}; //wait to server will be ready
+                serverHandler.connect(5000, MoneyLandGame.serverIP, MoneyLandGame.portTCP, MoneyLandGame.portUDP);
+            }catch(Exception e){
+                Gdx.app.log("Exception", "Connect error");
+            }
+        }
+        //listener to get all other players nick from server
+        serverHandler.addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                if (object instanceof ArrayList) {
+                    //add nicks to players list who already joined
+                    ArrayList otherPlayersNick = (ArrayList) object;
+                    for(int i=0; i<otherPlayersNick.size(); ++i){
+                        String otherPlayerNick = (String)otherPlayersNick.get(i);
+                        Gdx.app.log("player", otherPlayerNick);
+                        parent.addPlayer(otherPlayerNick);
+                    }
+                }
+                else if(object instanceof String){
+                    //update when new player join to game
+                    String newPlayerNick = (String)object;
+                    parent.addPlayer(newPlayerNick);
+                    Gdx.app.log("new player", newPlayerNick);
+                }
+            }
+        });
+
+        String playerNickForServer = new String(parent.getPlayerNick());
+        serverHandler.sendTCP(playerNickForServer); //send message to server
+        //END connect config
+
         title = new Texture(Gdx.files.internal("title.png"));
 
         Texture buttonStart = new Texture("StartButton.png");
@@ -46,14 +107,6 @@ public class Lobby implements Screen {
 
         numberPlayer = new Label( "Czekamy na graczy: "+parent.sizePlayer()+"/5", new Label.LabelStyle(font, Color.BLACK));
 
-        try{
-            namePlayerOne = new Label( "1. "+parent.getPlayer(0), new Label.LabelStyle(font, Color.BLACK));
-            namePlayerTwo = new Label( "2. "+parent.getPlayer(1), new Label.LabelStyle(font, Color.BLACK));
-            namePlayerThree = new Label( "3. "+parent.getPlayer(2), new Label.LabelStyle(font, Color.BLACK));
-            namePlayerFour = new Label( "4. "+parent.getPlayer(3), new Label.LabelStyle(font, Color.BLACK));
-            namePlayerFive = new Label( "5. "+parent.getPlayer(4), new Label.LabelStyle(font, Color.BLACK));
-        }catch (Exception ignored){
-        }
 
         ImageButton.ImageButtonStyle buttonStyleStart = new ImageButton.ImageButtonStyle();
         buttonStyleStart.up = new TextureRegionDrawable(new TextureRegion(buttonStart));
@@ -70,6 +123,16 @@ public class Lobby implements Screen {
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
 
         stage.addActor(numberPlayer);
+
+
+        try{
+            namePlayerOne = new Label( "1. "+parent.getPlayer(0), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerTwo = new Label( "2. "+parent.getPlayer(1), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerThree = new Label( "3. "+parent.getPlayer(2), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerFour = new Label( "4. "+parent.getPlayer(3), new Label.LabelStyle(font, Color.BLACK));
+            namePlayerFive = new Label( "5. "+parent.getPlayer(4), new Label.LabelStyle(font, Color.BLACK));
+        }catch (Exception ignored){
+        }
 
         try{
             stage.addActor(namePlayerOne);
@@ -92,6 +155,53 @@ public class Lobby implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1);
+
+        //to do: refactor this part in future
+        stage.getActors().removeValue(numberPlayer,true);
+        numberPlayer = new Label( "Czekamy na graczy: "+parent.sizePlayer()+"/5", new Label.LabelStyle(font, Color.BLACK));
+        numberPlayer.setPosition(stage.getViewport().getWorldWidth() * 0.5f - numberPlayer.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.7f - numberPlayer.getHeight() * 0.5f);
+        stage.addActor(numberPlayer);
+
+        if(namePlayerOne == null){
+            try{
+                namePlayerOne = new Label( "1. "+parent.getPlayer(0), new Label.LabelStyle(font, Color.BLACK));
+                namePlayerOne.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.6f - namePlayerOne.getHeight() * 0.5f);
+                stage.addActor(namePlayerOne);
+            }catch (Exception ignored){};
+        }
+
+        if(namePlayerTwo == null){
+            try{
+                namePlayerTwo = new Label( "2. "+parent.getPlayer(1), new Label.LabelStyle(font, Color.BLACK));
+                namePlayerTwo.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.5f - namePlayerTwo.getHeight() * 0.5f);
+                stage.addActor(namePlayerTwo);
+            }catch(Exception ignored){};
+        }
+
+        if(namePlayerThree == null){
+            try{
+                namePlayerThree = new Label( "3. "+parent.getPlayer(2), new Label.LabelStyle(font, Color.BLACK));
+                namePlayerThree.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.4f - namePlayerThree.getHeight() * 0.5f);
+                stage.addActor(namePlayerThree);
+            }catch(Exception ignored){};
+        }
+
+        if(namePlayerFour == null){
+            try{
+                namePlayerFour = new Label( "4. "+parent.getPlayer(3), new Label.LabelStyle(font, Color.BLACK));
+                namePlayerFour.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.3f - namePlayerFour.getHeight() * 0.5f);
+                stage.addActor(namePlayerFour);
+            }catch(Exception ignored){};
+        }
+
+        if(namePlayerFive == null) {
+            try{
+                namePlayerFive = new Label( "5. "+parent.getPlayer(4), new Label.LabelStyle(font, Color.BLACK));
+                namePlayerFive.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.2f - namePlayerFive.getHeight() * 0.5f);
+                stage.addActor(namePlayerFive);
+            }catch(Exception ignored){};
+        }
+
 
         parent.camera.update();
         parent.batch.setProjectionMatrix(parent.camera.combined);
@@ -139,6 +249,7 @@ public class Lobby implements Screen {
 
     @Override
     public void dispose() {
+        serverHandler.close();
         stage.dispose();
         title.dispose();
         font.dispose();
