@@ -3,9 +3,12 @@ package model.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +20,8 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
+
+import java.util.ArrayList;
 
 public class GameScreen extends Shortcut {
     final MoneyLandGame parent;
@@ -32,6 +37,20 @@ public class GameScreen extends Shortcut {
     private ImageButton menuButton;
     private Texture menuButtonTexture;
     private Texture menuButtonHoverTexture;
+
+    //attributes for show rectangle with other players info (left side screen)
+    private float rectHeightOtherPlayerInfo;
+    private float rectWidthOtherPlayerInfo;
+    private float rectOtherPlayerInfoPositionX;
+    private float rectOtherPlayerInfoPositionY;
+    private int paddingBetweenPlayersInfo;
+
+    private ArrayList<PlayerCard> otherPlayerCards;
+    private PlayerCard playerOwner;
+    private BitmapFont fontForPlayersNick;
+    private BitmapFont fontForMoneyOnPlayersCards;
+
+
     private ShapeRenderer shapeRenderer;
     final String text = "We're loading your game!";
     PopUpInformation popUpPlayer;
@@ -46,6 +65,7 @@ public class GameScreen extends Shortcut {
 
         float leftSideWidth = MoneyLandGame.WIDTH/6;
         float boardWidth = MoneyLandGame.WIDTH - MoneyLandGame.WIDTH/3;
+        float boardHeight = MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT/6;
         float rightSideWidth = MoneyLandGame.WIDTH/6;
 
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
@@ -72,7 +92,7 @@ public class GameScreen extends Shortcut {
         popUpMoney.setVisible(true);
 
         //create part with cards
-        cardsManager = new CardsManager(boardWidth,  MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT/6, leftSideWidth, MoneyLandGame.HEIGHT/6);
+        cardsManager = new CardsManager(boardWidth,  boardHeight, leftSideWidth, MoneyLandGame.HEIGHT/6);
 
         //config rectangle for cube and create cube
         cubeRectWith =  rightSideWidth;
@@ -118,7 +138,61 @@ public class GameScreen extends Shortcut {
 
         stage.addActor(menuButton);
 
+        //config fonts
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            //for players nick
+            parameter.size = 40;
+            parameter.color = Color.BLACK;
+            fontForPlayersNick = generator.generateFont(parameter);
+            //for money on players cards
+            parameter.size = 30;
+            parameter.color = Color.BLACK;
+            fontForMoneyOnPlayersCards = generator.generateFont(parameter);
+        generator.dispose();
 
+        //create players cards
+        otherPlayerCards = new ArrayList<>();
+        int padding = 20;
+        int startMoney = 5000;
+        paddingBetweenPlayersInfo = 50;
+        float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
+
+        for(int i=0; i<parent.sizePlayer(); ++i){
+            if(parent.getPlayerNick().equals(parent.getPlayer(i))){
+                playerOwner = new PlayerCard(
+                        leftSideWidth * 3/2, //width
+                        MoneyLandGame.HEIGHT - boardHeight, //height
+                        0, //positionX
+                        0, //position y
+                        paddingBetweenPlayersInfo, //padding
+                        parent.getPlayer(i),    //nick
+                        startMoney, //money
+                        Color.ORANGE,  //player color
+                        fontForPlayersNick,  //font
+                        fontForMoneyOnPlayersCards, //font
+                        stage
+                );
+            }else{
+                //other players
+                PlayerCard playerCard = new PlayerCard(
+                        leftSideWidth - 2 * padding, //width
+                        rectHeightOtherPlayerInfo, //height
+                        padding, //positionX
+                        MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - rectHeightOtherPlayerInfo - (i * rectHeightOtherPlayerInfo) - ((i + 1) * paddingBetweenPlayersInfo), //position y
+                        paddingBetweenPlayersInfo, //padding
+                        parent.getPlayer(i),    //nick
+                        startMoney, //money
+                        Color.SKY,  //player color
+                        fontForPlayersNick,  //font
+                        fontForMoneyOnPlayersCards, //font
+                        stage
+                );
+                otherPlayerCards.add(playerCard);
+            }
+        }
+
+        Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
 
     }
 
@@ -146,7 +220,18 @@ public class GameScreen extends Shortcut {
         parent.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         parent.shapeRenderer.setColor(252/255f,1f,231/255f,1f);
         parent.shapeRenderer.rect(cubeRectPosX, cubeRectPosY,cubeRectWith,cubeRectHeight);
+
+        //draw player rectangle
+        playerOwner.draw(parent.shapeRenderer); //it must be between begin() and end()
+
+        //draw rectangles with other players info
+        for(int i=0; i<otherPlayerCards.size(); ++i){
+            otherPlayerCards.get(i).draw(parent.shapeRenderer);  //it must be between begin() and end()
+        }
+
         parent.shapeRenderer.end();
+
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage2.act(delta);
         stage.draw();
