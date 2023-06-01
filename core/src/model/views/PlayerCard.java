@@ -79,5 +79,7 @@ public class PlayerCard {
 
     }
 
-
+    public void setMoney(int money) {
+        this.money = money;
+    }
 }
