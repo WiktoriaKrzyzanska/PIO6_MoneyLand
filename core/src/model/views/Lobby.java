@@ -230,6 +230,7 @@ public class Lobby implements Screen {
         }
 
         startButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.1f - startButton.getHeight() * 0.5f);
+        startButton.setSize(width*0.2f,height*0.2f);
     }
 
     @Override
