@@ -75,6 +75,7 @@ public class RulesScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        backButton.setSize(width*0.2f,height*0.2f);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class GameScreen implements Screen {
         int menuButtonPadding = 40;
         menuButton.setWidth(leftSideWidth - 2 * menuButtonPadding);
         menuButton.setHeight(MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT * 19/20);
-        menuButton.setPosition(leftSideWidth / 2 - (menuButton.getWidth()/2), MoneyLandGame.HEIGHT - menuButton.getHeight() - 15);
+        menuButton.setPosition(leftSideWidth / 2 - (menuButton.getWidth()/3), MoneyLandGame.HEIGHT - menuButton.getHeight()*0.6f -100);
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -103,6 +103,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        menuButton.setSize(width*0.2f,height*0.2f);
     }
 
     @Override

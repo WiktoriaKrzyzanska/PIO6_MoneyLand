@@ -120,8 +120,11 @@ public class LobbyIntroduction implements Screen {
 
         textField.setPosition((stage.getWidth() - textField.getWidth()) / 2f, (stage.getHeight() - textField.getHeight()) / 2f);
         nameLabel.setPosition(textField.getX(), textField.getY() + textField.getHeight() + 10);
-        backButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - backButton.getWidth() * 0.5f - 100, stage.getViewport().getWorldHeight() * 0.1f - backButton.getHeight() * 0.5f);
-        nextButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - nextButton.getWidth() * 0.5f + 100, stage.getViewport().getWorldHeight() * 0.1f - nextButton.getHeight() * 0.5f);
+        backButton.setPosition(stage.getViewport().getWorldWidth() * 0.45f - backButton.getWidth() * 0.5f - 100, stage.getViewport().getWorldHeight() * 0.1f - backButton.getHeight() * 0.5f);
+        nextButton.setPosition(stage.getViewport().getWorldWidth() * 0.55f - nextButton.getWidth() * 0.5f + 100, stage.getViewport().getWorldHeight() * 0.1f - nextButton.getHeight() * 0.5f);
+
+        backButton.setSize(width*0.2f,height*0.2f);
+        nextButton.setSize(width*0.2f,height*0.2f);
     }
 
     @Override
