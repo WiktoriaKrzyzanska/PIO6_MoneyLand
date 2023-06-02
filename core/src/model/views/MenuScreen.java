@@ -10,19 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MoneyLandGame;
+
 
 public class MenuScreen implements Screen {
 
@@ -33,6 +24,7 @@ public class MenuScreen implements Screen {
     Texture title;
     ImageButton startButton;
     ImageButton rulesButton;
+    ImageButton buttonExit;
     ImageButton volume;
     ImageButton.ImageButtonStyle volumeStyle;
     ImageButton.ImageButtonStyle volumeSilenceStyle;
@@ -42,11 +34,8 @@ public class MenuScreen implements Screen {
 
     public MenuScreen(final MoneyLandGame game){
         parent = game;
-
-        //create stage
         stage = new Stage(new ScreenViewport());
 
-        //set sides width (screen is divied to 2 part)
         leftSideWidth = stage.getViewport().getWorldWidth()/3;
         rightSideWidth = stage.getViewport().getWorldWidth() - stage.getViewport().getWorldWidth()/3;
 
@@ -118,12 +107,27 @@ public class MenuScreen implements Screen {
 
         // Rules Button config end
 
-        //add actors to stage
+        Texture buttonExitTexture = new Texture("exit.png");
+        Texture buttonHoverExitTexture = new Texture("exit.png");
+
+        ImageButton.ImageButtonStyle buttonStyleExit = new ImageButton.ImageButtonStyle();
+        buttonStyleExit.up = new TextureRegionDrawable(new TextureRegion(buttonExitTexture));
+        buttonStyleExit.over = new TextureRegionDrawable(new TextureRegion(buttonHoverExitTexture));
+
+        buttonExit = new ImageButton(buttonStyleExit);
+        buttonExit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
         stage.addActor(volume);
         stage.addActor(rulesButton);
         stage.addActor(startButton);
+        stage.addActor( buttonExit);
 
-        Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -146,6 +150,8 @@ public class MenuScreen implements Screen {
 
         startButton.setPosition(leftSideWidth * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
         rulesButton.setPosition(leftSideWidth * 0.5f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
+        buttonExit.setPosition(leftSideWidth * 0.5f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.3f - rulesButton.getHeight() * 0.5f);
+
         volume.setPosition(5,5);
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
