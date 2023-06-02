@@ -31,6 +31,8 @@ public class GameScreen implements Screen {
 
     public GameScreen(MoneyLandGame game){
         parent = game;
+        parent.serverHandler.setupConnectWithGameScreen(this);
+
         //measures
         float leftSideWidth = MoneyLandGame.WIDTH/6;
         float boardWidth = MoneyLandGame.WIDTH - MoneyLandGame.WIDTH/3;

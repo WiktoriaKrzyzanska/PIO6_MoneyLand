@@ -46,6 +46,8 @@ public class MoneyLandGame extends Game {
 	public static final int portTCP = 54555;
 	public static final int portUDP = 54777;
 
+	public ServerHandler serverHandler;
+
 	@Override
 	public void create () {
 		//config camera
@@ -64,6 +66,10 @@ public class MoneyLandGame extends Game {
 		//set default screen
 		menuScreen = new MenuScreen(this);
 		this.setScreen(menuScreen);
+
+		//create serverHandler
+		serverHandler = new ServerHandler(this);
+
 	}
 
 
@@ -73,6 +79,7 @@ public class MoneyLandGame extends Game {
 
 
 	public void dispose () {
+		if(serverHandler!= null) serverHandler.closeConnect();
 		if(gameServer!=null) gameServer.closeServer();
 		batch.dispose();
 		shapeRenderer.dispose();
