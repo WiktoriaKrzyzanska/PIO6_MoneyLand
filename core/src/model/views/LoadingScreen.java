@@ -1,6 +1,8 @@
 package model.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -12,7 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.MoneyLandGame;
 
-public class LoadingScreen implements Screen {
+public class LoadingScreen extends Shortcut {
 
     // Use constants for magic numbers and strings
 
@@ -40,6 +42,7 @@ public class LoadingScreen implements Screen {
      This is an initializing method. It initializes parent and manager like in previous classes.
      Moreover, it creates new object for shape, sprite, font which are used to draw element    */
     public LoadingScreen(final MoneyLandGame game, AssetManager manager) {
+        super(game);
         this.parent = game;
         this.manager = manager;
         shapeRenderer = new ShapeRenderer();
@@ -50,6 +53,9 @@ public class LoadingScreen implements Screen {
     }
     @Override
     public void show() {
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor((InputProcessor) this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
     }
 

@@ -1,6 +1,8 @@
 package model.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,7 +16,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
-public class GameScreen implements Screen {
+public class GameScreen extends Shortcut {
     final MoneyLandGame parent;
     Stage stage;
     CardsManager cardsManager;
@@ -30,6 +32,7 @@ public class GameScreen implements Screen {
     private Texture menuButtonHoverTexture;
 
     public GameScreen(MoneyLandGame game){
+        super(game);
         parent = game;
         parent.serverHandler.setupConnectWithGameScreen(this);
 
@@ -78,7 +81,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor((InputProcessor) this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override

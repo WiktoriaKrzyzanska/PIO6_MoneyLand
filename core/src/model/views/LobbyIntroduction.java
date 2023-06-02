@@ -1,6 +1,8 @@
 package model.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,7 +23,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
-public class LobbyIntroduction implements Screen {
+public class LobbyIntroduction extends Shortcut  {
     MoneyLandGame parent;
     Stage stage;
     Texture title;
@@ -31,6 +33,7 @@ public class LobbyIntroduction implements Screen {
     Label nameLabel;
 
     public LobbyIntroduction(final MoneyLandGame game) {
+        super(game);
         parent = game;
         title = new Texture(Gdx.files.internal("title.png"));
         font = new BitmapFont();
@@ -96,7 +99,10 @@ public class LobbyIntroduction implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor((InputProcessor) this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override

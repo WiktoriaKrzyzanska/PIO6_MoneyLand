@@ -1,6 +1,8 @@
 package model.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,7 +19,7 @@ import com.mygdx.game.MoneyLandGame;
 
 import static javax.sound.sampled.FloatControl.Type.VOLUME;
 
-public class RulesScreen implements Screen {
+public class RulesScreen extends Shortcut  {
     final MoneyLandGame parent;
     Stage stage;
     Texture title;
@@ -25,6 +27,7 @@ public class RulesScreen implements Screen {
     ImageButton backButton;
 
     public RulesScreen(final MoneyLandGame game){
+        super(game);
         parent = game;
         title = new Texture(Gdx.files.internal("title.png"));
         rules = new Texture(Gdx.files.internal("Rules.png"));
@@ -53,7 +56,11 @@ public class RulesScreen implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor((InputProcessor) this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
     }
 
     @Override
@@ -62,6 +69,7 @@ public class RulesScreen implements Screen {
 
         parent.camera.update();
         parent.batch.setProjectionMatrix(parent.camera.combined); //  This line of code tells the renderer to use our camera to draw everything.
+
 
         parent.batch.begin();
         parent.batch.draw(title, MoneyLandGame.WIDTH/2 - 400, MoneyLandGame.HEIGHT - 200, 800, 200);

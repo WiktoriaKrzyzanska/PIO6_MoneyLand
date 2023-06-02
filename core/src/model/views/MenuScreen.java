@@ -1,8 +1,11 @@
 package model.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.MoneyLandGame;
 
 
-public class MenuScreen implements Screen {
+public class MenuScreen extends Shortcut {
 
     final MoneyLandGame parent;
     Stage stage;
@@ -32,8 +35,10 @@ public class MenuScreen implements Screen {
     float leftSideWidth;
     float rightSideWidth;
 
-    public MenuScreen(final MoneyLandGame game){
+    public MenuScreen(final MoneyLandGame game) {
+        super(game);
         parent = game;
+
         stage = new Stage(new ScreenViewport());
 
         leftSideWidth = stage.getViewport().getWorldWidth()/3;
@@ -130,14 +135,23 @@ public class MenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+
+
+
+
     @Override
     public void show() {
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor((InputProcessor) this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
         music.play();
-        Gdx.input.setInputProcessor(stage);
+
     }
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1); //background color
 
         parent.camera.update();
@@ -154,7 +168,7 @@ public class MenuScreen implements Screen {
 
         volume.setPosition(5,5);
 
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.act(delta);
         stage.draw();
     }
 
