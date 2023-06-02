@@ -5,8 +5,10 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -45,8 +47,19 @@ public class RulesScreen extends Shortcut  {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 parent.changeScreen(MoneyLandGame.MENU_SCREEN);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
+
         // Back Button config end
 
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));

@@ -1,13 +1,14 @@
 package model.views;
+import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -51,7 +52,6 @@ public class MenuScreen extends Shortcut {
         //set graphics
         rightImage = new Texture(Gdx.files.internal("szefy_1.png"));
         title = new Texture(Gdx.files.internal("title.png"));
-
         // Start Button config
         Texture buttonTexture = new Texture("StartButton.png");
         Texture buttonHoverTexture = new Texture("StartButtonClicked.png");
@@ -66,7 +66,18 @@ public class MenuScreen extends Shortcut {
             public void clicked(InputEvent event, float x, float y) {
                 //future go to next page code
                 parent.changeScreen(MoneyLandGame.LOBBY_INTRODUCTION_SCREEN);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+
         });
 
         //startButton config end
@@ -87,10 +98,22 @@ public class MenuScreen extends Shortcut {
                 if (music.isPlaying()) {
                     music.pause();
                     volume.setStyle(volumeSilenceStyle);
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 } else {
                     music.play();
                     volume.setStyle(volumeStyle);
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 }
+
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
 
@@ -107,6 +130,16 @@ public class MenuScreen extends Shortcut {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 parent.changeScreen(MoneyLandGame.RULES_SCREEN);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor from) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor to) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
 
@@ -121,9 +154,21 @@ public class MenuScreen extends Shortcut {
 
         buttonExit = new ImageButton(buttonStyleExit);
         buttonExit.addListener(new ClickListener() {
+            /**
+             Here is an example how to change arrow to pointer
+             */
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
 
@@ -202,5 +247,6 @@ public class MenuScreen extends Shortcut {
         title.dispose();
         stage.dispose();
         music.dispose();
+
     }
 }

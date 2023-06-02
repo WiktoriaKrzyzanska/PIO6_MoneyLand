@@ -5,10 +5,12 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -65,12 +67,23 @@ public class LobbyIntroduction extends Shortcut  {
 
         backButton = new ImageButton(buttonStyleBack);
         backButton.addListener(new ClickListener() {
+
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                parent.setPlayerNick(textField.getText());
                 parent.changeScreen(MoneyLandGame.MENU_SCREEN);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
-
         Texture buttonNext = new Texture("NextButton.png");
         Texture buttonHoverNext = new Texture("NextButtonClicked.png");
 
@@ -80,13 +93,24 @@ public class LobbyIntroduction extends Shortcut  {
 
         nextButton = new ImageButton(buttonStyleNext);
         nextButton.addListener(new ClickListener() {
+
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //parent.addPlayer(textField.getText());
                 parent.setPlayerNick(textField.getText());
                 parent.changeScreen(MoneyLandGame.LOBBY);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
+
 
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         stage.addActor(textField);
