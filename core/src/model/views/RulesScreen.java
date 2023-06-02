@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
+import static javax.sound.sampled.FloatControl.Type.VOLUME;
+
 public class RulesScreen implements Screen {
     final MoneyLandGame parent;
     Stage stage;
