@@ -29,6 +29,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.MoneyLandGame;
+import com.mygdx.game.ServerHandler;
 
 import java.util.ArrayList;
 
@@ -39,63 +40,16 @@ public class Lobby implements Screen {
     ImageButton startButton;
     BitmapFont font;
     Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
-    Client serverHandler;
 
     public Lobby(final MoneyLandGame game){
         parent = game;
 
-        //START config connect to server or create server and connect
-        serverHandler = new Client();
-
-        //class register - is required from documentation; important: must be same order in server and here
-        Kryo kryo = serverHandler.getKryo();
-        kryo.register(ArrayList.class);
-
-        serverHandler.start();
-        boolean thisIsServer = false;
-
-        //try connect to server - if attempt will fail that means server not exists
-        try{
-            serverHandler.connect(5000, MoneyLandGame.serverIP, MoneyLandGame.portTCP, MoneyLandGame.portUDP);
-        }catch(Exception e){
-            //create server
-            parent.setServer();
-            thisIsServer = true;
-        }
-
-        //when it is first player after create server it must connect to server
-        if(thisIsServer){
-            try{
-                while(!parent.serverIsReady()){}; //wait to server will be ready
-                serverHandler.connect(5000, MoneyLandGame.serverIP, MoneyLandGame.portTCP, MoneyLandGame.portUDP);
-            }catch(Exception e){
-                Gdx.app.log("Exception", "Connect error");
-            }
-        }
-        //listener to get all other players nick from server
-        serverHandler.addListener(new Listener() {
-            public void received (Connection connection, Object object) {
-                if (object instanceof ArrayList) {
-                    //add nicks to players list who already joined
-                    ArrayList otherPlayersNick = (ArrayList) object;
-                    for(int i=0; i<otherPlayersNick.size(); ++i){
-                        String otherPlayerNick = (String)otherPlayersNick.get(i);
-                        Gdx.app.log("player", otherPlayerNick);
-                        parent.addPlayer(otherPlayerNick);
-                    }
-                }
-                else if(object instanceof String){
-                    //update when new player join to game
-                    String newPlayerNick = (String)object;
-                    parent.addPlayer(newPlayerNick);
-                    Gdx.app.log("new player", newPlayerNick);
-                }
-            }
-        });
-
+        // config connect to server or create server and connect
+        parent.serverHandler.setConnect();
+        parent.serverHandler.setupConnectWithLobbyScreen(this);
         String playerNickForServer = new String(parent.getPlayerNick());
-        serverHandler.sendTCP(playerNickForServer); //send message to server
-        //END connect config
+        parent.serverHandler.sendMessage(playerNickForServer); //send message to server
+
 
         title = new Texture(Gdx.files.internal("title.png"));
 
@@ -250,7 +204,6 @@ public class Lobby implements Screen {
 
     @Override
     public void dispose() {
-        serverHandler.close();
         stage.dispose();
         title.dispose();
         font.dispose();
