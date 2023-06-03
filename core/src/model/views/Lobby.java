@@ -1,12 +1,16 @@
 package model.views;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -33,7 +37,7 @@ import com.mygdx.game.ServerHandler;
 
 import java.util.ArrayList;
 
-public class Lobby implements Screen {
+public class Lobby extends Shortcut {
     final MoneyLandGame parent;
     Stage stage;
     Texture title;
@@ -42,6 +46,7 @@ public class Lobby implements Screen {
     Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
 
     public Lobby(final MoneyLandGame game){
+        super(game);
         parent = game;
 
         // config connect to server or create server and connect
@@ -68,12 +73,22 @@ public class Lobby implements Screen {
 
         startButton = new ImageButton(buttonStyleStart);
         startButton.addListener(new ClickListener() {
+
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 parent.changeScreen(MoneyLandGame.LOADING);
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+            }
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Hand);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
-
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
 
         stage.addActor(numberPlayer);
@@ -103,7 +118,10 @@ public class Lobby implements Screen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor((InputProcessor) this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
