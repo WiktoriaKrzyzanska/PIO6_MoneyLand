@@ -7,9 +7,9 @@ public class Player {
     private String name;
     private int cardNumber;
     private int money;
-    private List<City> ownedCities; //soon to be changed to List<City>
+    private List<Integer> ownedCities; //soon to be changed to List<City>
 
-    public Player(int id, String name, int cardNumber, int money, List<City> ownedCities){
+    public Player(int id, String name, int cardNumber, int money, List<Integer> ownedCities){
         this.id=id;
         this.name=name;
         this.cardNumber=cardNumber;
@@ -53,11 +53,11 @@ public class Player {
         this.money-=toSub;
     }
 
-    public List<City> getPlayerOwnedCities() {
+    public List<Integer> getPlayerOwnedCities() {
         return ownedCities;
     }
 
-    public void setPlayerOwnedCities(List<City> ownedCities) {
+    public void setPlayerOwnedCities(List<Integer> ownedCities) {
         this.ownedCities = ownedCities;
     }
 

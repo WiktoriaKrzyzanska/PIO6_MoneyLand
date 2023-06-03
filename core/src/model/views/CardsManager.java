@@ -27,22 +27,6 @@ public class CardsManager {
     private float padding;
     private float paddingBetweenCards;
 
-    City Cyprianka=new City(10,"Cyprianka", new Texture("cards/cyprianka.png"),300,300,0);
-    City Badkowo=new City(300,"Badkowo", new Texture("cards/badkowo.png"),300,300,1);
-    City Brzeziny=new City(300,"Brzeziny", new Texture("cards/brzeziny.png"),300,300,2);
-    City Bydgoszcz=new City(300,"Bydgoszcz", new Texture("cards/bydgoszcz.png"),300,300,3);
-    City Bialystok=new City(400,"Bialystok", new Texture("cards/bialystok.png"),300,300,4);
-    City Czestochowa=new City(300,"Czestochowa", new Texture("cards/czestochowa.png"),300,300,5);
-    City Kowal=new City(300,"Kowal", new Texture("cards/kowal.png"),300,300,6);
-    City Krakow=new City(300,"Krakow", new Texture("cards/krakow.png"),300,300,7);
-    City Leczyca=new City(300,"Leczyca", new Texture("cards/leczyca.png"),300,300,8);
-    City Lodz=new City(300,"Lodz", new Texture("cards/lodz.png"),300,300,9);
-    City Mielno=new City(300,"Mielno", new Texture("cards/mielno.png"),300,300,10);
-    City Pabianice=new City(300,"Pabianice", new Texture("cards/pabianice.png"),300,300,11);
-    City Warszawa=new City(300,"Warszawa", new Texture("cards/warszawa.png"),300,300,12);
-    City Wloclawek=new City(300,"Wloclawek", new Texture("cards/wloclawek.png"),300,300,12);
-    City Zgierz=new City(300,"Zgierz", new Texture("cards/zgierz.png"),300,300,13);
-
     public CardsManager(float width, float height, float positionX, float positionY) {
         this.width = width;
         this.height = height;
@@ -74,7 +58,8 @@ public class CardsManager {
                     cardHeight - paddingBetweenCards ,
                     this.positionX + padding,
                     this.positionY + cardHeight + padding,
-                    Kowal,
+                    new Texture("cards/kowal.png"),
+                "Kowal",
                 this.font
         ));
         cards.add(new Card(
@@ -82,7 +67,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards,
                 this.positionX + padding,
                 this.positionY + 2 * cardHeight + padding,
-               Cyprianka,
+                new Texture("cards/cyprianka.png"),
+                "Cyprianka",
                 this.font
         ));
         cards.add(new Card(
@@ -90,7 +76,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards,
                 this.positionX + padding,
                 this.positionY + 3 * cardHeight + padding,
-                Badkowo,
+                new Texture("cards/badkowo.png"),
+                "Badkowo",
                 this.font
         ));
         cards.add(new Card(
@@ -98,7 +85,8 @@ public class CardsManager {
                 cardHeight,
                 this.positionX + padding,
                 this.positionY + 4 * cardHeight + padding,
-                Wloclawek,
+                new Texture("cards/wloclawek.png"),
+                "Wloclawek",
                 this.font
         ));
         cards.add(new Card(
@@ -106,7 +94,8 @@ public class CardsManager {
                 cardHeight,
                 this.positionX + cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
-                Leczyca,
+                new Texture("cards/leczyca.png"),
+                "Leczyca",
                 this.font
         ));
         cards.add(new Card(
@@ -114,7 +103,8 @@ public class CardsManager {
                 cardHeight,
                 this.positionX + 2 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
-                Mielno,
+                new Texture("cards/mielno.png"),
+                "Mielno",
                 this.font
         ));
         cards.add(new Card(
@@ -122,7 +112,8 @@ public class CardsManager {
                 cardHeight,
                 this.positionX + 3 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
-                Bialystok,
+                new Texture("cards/bialystok.png"),
+                "Bialystok",
                 this.font
         ));
         cards.add(new Card(
@@ -130,7 +121,8 @@ public class CardsManager {
                 cardHeight,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
-                Czestochowa,
+                new Texture("cards/czestochowa.png"),
+                "Czestochowa",
                 this.font
         ));
         cards.add(new Card(
@@ -138,7 +130,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards ,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + 3 * cardHeight + padding,
-                Bydgoszcz,
+                new Texture("cards/bydgoszcz.png"),
+                "Bydgoszcz",
                 this.font
         ));
         cards.add(new Card(
@@ -146,7 +139,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards ,
                 this.positionX  + 4 * cardWidth + padding,
                 this.positionY + 2 * cardHeight + padding,
-                Krakow,
+                new Texture("cards/krakow.png"),
+                "Krakow",
                 this.font
         ));
         cards.add(new Card(
@@ -154,7 +148,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards ,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + cardHeight + padding,
-                Warszawa,
+                new Texture("cards/warszawa.png"),
+                "Warszawa",
                 this.font
         ));
         cards.add(new Card(
@@ -162,7 +157,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards ,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + padding,
-                Brzeziny,
+                new Texture("cards/brzeziny.png"),
+                "Brzeziny",
                 this.font
         ));
         cards.add(new Card(
@@ -170,7 +166,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards,
                 this.positionX + 3 * cardWidth + padding,
                 this.positionY + padding,
-                Pabianice,
+                new Texture("cards/pabianice.png"),
+                "Pabianice",
                 this.font
         ));
         cards.add(new Card(
@@ -178,7 +175,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards,
                 this.positionX + 2 * cardWidth + padding,
                 this.positionY + padding,
-                Lodz,
+                new Texture("cards/lodz.png"),
+                "Lodz",
                 this.font
         ));
         cards.add(new Card(
@@ -186,7 +184,8 @@ public class CardsManager {
                 cardHeight - paddingBetweenCards,
                 this.positionX + cardWidth + padding,
                 this.positionY + padding,
-                Zgierz,
+                new Texture("cards/zgierz.png"),
+                "Zgierz",
                 this.font
         ));
     }
