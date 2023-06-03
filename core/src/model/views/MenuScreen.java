@@ -209,8 +209,7 @@ public class MenuScreen extends Shortcut {
 
         startButton.setPosition(leftSideWidth * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.5f - startButton.getHeight() * 0.5f);
         rulesButton.setPosition(leftSideWidth * 0.5f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.4f - rulesButton.getHeight() * 0.5f);
-        buttonExit.setPosition(leftSideWidth * 0.5f - rulesButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.3f - rulesButton.getHeight() * 0.5f);
-
+        buttonExit.setPosition(leftSideWidth * 0.5f - buttonExit.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.3f - buttonExit.getHeight() * 0.5f);
         volume.setPosition(5,5);
 
         stage.act(delta);
