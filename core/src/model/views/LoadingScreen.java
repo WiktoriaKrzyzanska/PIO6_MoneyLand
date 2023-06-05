@@ -71,7 +71,7 @@ public class LoadingScreen extends Shortcut {
         float x = Gdx.graphics.getWidth()/2 - layout.width/2;
         float y = Gdx.graphics.getHeight()/2 + layout.height/2;
         title = new Texture(Gdx.files.internal("title.png"));
-        float timeElapsed = 25f;
+        float timeElapsed = 8f;
         timer += delta;
         float percentage = timer / timeElapsed * 100f;
 
