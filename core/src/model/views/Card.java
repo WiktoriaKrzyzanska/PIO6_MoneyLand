@@ -30,7 +30,9 @@ public class Card implements Disposable {
     Color rectBackground;
     Color rectTitleBackground;
 
-    public Card(float cardWidth, float cardHeight, float cardPositionX, float cardPositionY, Texture cityPhoto, String cityName, BitmapFont font) {
+
+
+    public Card(float cardWidth, float cardHeight, float cardPositionX, float cardPositionY, City City, BitmapFont font) {
 
         float partHeight = cardHeight / 10;
 
@@ -47,7 +49,7 @@ public class Card implements Disposable {
         this.boxTextPositionY = this.cardPositionY + 8 * partHeight;
 
         //config city photo
-        this.cityPhoto = cityPhoto;
+        this.cityPhoto = City.photo;
         this.photoWidth = this.cardWidth;
         this.photoHeight = 6 * partHeight; // 6/10 card
         this.photoPositionX = this.cardPositionX;
@@ -68,7 +70,7 @@ public class Card implements Disposable {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
 
-        this.cityName = new Label(cityName, labelStyle);
+        this.cityName = new Label(City.CityName, labelStyle);
         this.cityName.setSize(this.boxTextWidth, this.boxTextHeight);
         this.cityName.setPosition(cityNamePositionX,cityNamePositionY);
         this.cityName.setAlignment(Align.center);
