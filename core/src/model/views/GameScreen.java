@@ -35,7 +35,10 @@ public class GameScreen extends Shortcut {
     private Texture menuButtonHoverTexture;
     private ShapeRenderer shapeRenderer;
     final String text = "We're loading your game!";
-    PopUpPlayer popUpInformation;
+    PopUpInformation popUpPlayer;
+    PopUpInformation popUpRules;
+    PopUpInformation popUpMoney;
+    PopUpInformation popUpFirstPlayer;
     ImageButton startButton;
     public GameScreen(MoneyLandGame game){
         super(game);
@@ -46,22 +49,28 @@ public class GameScreen extends Shortcut {
         float boardWidth = MoneyLandGame.WIDTH - MoneyLandGame.WIDTH/3;
         float rightSideWidth = MoneyLandGame.WIDTH/6;
 
-        //create stage
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         stage2 = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         shapeRenderer = new ShapeRenderer ();
-        BitmapFont font = new BitmapFont();
 
-//
-// Create a label
+
         String Welcome = "Czesc " + parent.getPlayerNick() + "!  Oto Twoj pionek";
+        String Rules = "Zasady";
+        String Cebulion = "Na poczatek gry dosatjesz 500 cebulionow." +
+                "Wydawaj je madrze";
+        String InformationWhoStarts = "Gre zaczyna Player "; //when we have a method we have to change it
 
 
 
-        PopUpPlayer popUpInformation = new PopUpPlayer(Welcome, shapeRenderer);
+        popUpFirstPlayer = new PopUpInformation(InformationWhoStarts);
+        popUpMoney = new PopUpInformation(Cebulion);
+        popUpRules = new PopUpInformation( Rules);
+        popUpPlayer = new PopUpInformation( Welcome);
 
-
-        popUpInformation.setVisible(true);
+        popUpFirstPlayer.setVisible(true);
+        popUpPlayer.setVisible(true);
+        popUpRules.setVisible(true);
+        popUpMoney.setVisible(true);
 
         //create part with cards
         cardsManager = new CardsManager(boardWidth,  MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT/6, leftSideWidth, MoneyLandGame.HEIGHT/6);
@@ -94,14 +103,23 @@ public class GameScreen extends Shortcut {
         });
 
 
-        popUpInformation.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpInformation.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpFirstPlayer.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpFirstPlayer.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpMoney.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpMoney.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpRules.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpRules.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpPlayer.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpPlayer.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
 
-// Add the pop up information to the stage as an actor
-        stage2.addActor (popUpInformation);
+        stage2.addActor(popUpFirstPlayer);
+        stage2.addActor(popUpMoney);
+        stage2.addActor(popUpRules);
+        stage2.addActor (popUpPlayer);
+
         stage.addActor(menuButton);
 
-        //This tells the screen to send any input from the user to the stage so it can respond
+
 
     }
 
@@ -135,7 +153,6 @@ public class GameScreen extends Shortcut {
         stage.draw();
         stage2.draw ();
 
-        // Update the position and size of the pop-up actor to match the screen size
     }
 
 

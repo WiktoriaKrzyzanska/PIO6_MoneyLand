@@ -37,9 +37,9 @@ public class MoneyLandGame extends Game {
 	public static final int LOBBY_INTRODUCTION_SCREEN = 2;
 	public static final int LOBBY = 3;
 	public static final int LOADING = 4;
+	public static final int GAME_SCREEN = 5;
 	public AssetManager manager;
 	private AssetManager progress;
-	public static final int GAME_SCREEN = 5;
 
 	public GameServer gameServer;
 	public static final String serverIP = "127.0.0.1";
