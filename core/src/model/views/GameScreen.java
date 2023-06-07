@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -23,6 +24,9 @@ public class GameScreen extends Shortcut {
     Stage stage;
     Stage stage2;
     CardsManager cardsManager;
+
+    private TextButton showPopUpButton;
+    private PopUpAction popUp;
 
     private float cubeRectPosX;
     private float cubeRectPosY;
@@ -118,9 +122,6 @@ public class GameScreen extends Shortcut {
         stage2.addActor (popUpPlayer);
 
         stage.addActor(menuButton);
-
-
-
     }
 
     @Override
