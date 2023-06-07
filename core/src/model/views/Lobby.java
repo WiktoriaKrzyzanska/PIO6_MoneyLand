@@ -27,7 +27,7 @@ public class Lobby extends Shortcut {
     Texture title;
     ImageButton startButton;
     BitmapFont font;
-    Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
+    Label numberPlayer;
     private ArrayList<Label> playersNick;
     private int currentNumberOfPlayers;
 
@@ -144,17 +144,6 @@ public class Lobby extends Shortcut {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-
-        numberPlayer.setPosition(stage.getViewport().getWorldWidth() * 0.5f - numberPlayer.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.7f - numberPlayer.getHeight() * 0.5f);
-
-        try{
-            namePlayerOne.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.6f - namePlayerOne.getHeight() * 0.5f);
-            namePlayerTwo.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.5f - namePlayerTwo.getHeight() * 0.5f);
-            namePlayerThree.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.4f - namePlayerThree.getHeight() * 0.5f);
-            namePlayerFour.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.3f - namePlayerFour.getHeight() * 0.5f);
-            namePlayerFive.setPosition(stage.getViewport().getWorldWidth() * 0.35f, stage.getViewport().getWorldHeight() * 0.2f - namePlayerFive.getHeight() * 0.5f);
-        }catch(Exception ignored){
-        }
 
         startButton.setPosition(stage.getViewport().getWorldWidth() * 0.5f - startButton.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.1f - startButton.getHeight() * 0.5f);
         startButton.setSize(width*0.2f,height*0.2f);
