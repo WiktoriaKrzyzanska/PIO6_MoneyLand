@@ -6,7 +6,7 @@ import model.views.Player;
 public class ClientHandler {
     private Player player;
     private Connection connection;
-    Boolean playerIsReady;
+    private Boolean playerIsReady;
 
     protected ClientHandler(Player player, Connection connection) {
         this.player = player;

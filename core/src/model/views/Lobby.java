@@ -20,20 +20,29 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Lobby extends Shortcut {
     final MoneyLandGame parent;
     Stage stage;
     Texture title;
     ImageButton startButton;
+    private ImageButton.ImageButtonStyle startButtonStyleAvailable;
+    private ImageButton.ImageButtonStyle startButtonStyleNoAvailable;
+    private Texture buttonStart;
+    private Texture buttonHoverStart;
+    private Texture buttonStartNotAvailable;
     BitmapFont font;
     Label numberPlayer;
     private ArrayList<Label> playersNick;
     private int currentNumberOfPlayers;
+    private AtomicBoolean changeScreenToLoading = new AtomicBoolean(false);
+    private final int MIN_PLAYERS = 2;
 
     public Lobby(final MoneyLandGame game){
         super(game);
         parent = game;
+        stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
 
         // config connect to server or create server and connect
         parent.serverHandler.setConnect();
@@ -43,25 +52,34 @@ public class Lobby extends Shortcut {
 
         title = new Texture(Gdx.files.internal("title.png"));
 
-        Texture buttonStart = new Texture("StartButton.png");
-        Texture buttonHoverStart = new Texture("StartButtonClicked.png");
+        buttonStart = new Texture("StartButton.png");
+        buttonHoverStart = new Texture("StartButtonClicked.png");
+        buttonStartNotAvailable = new Texture("StartButton.png");
 
         font = new BitmapFont();
         font.getData().setScale(3f);
 
         numberPlayer = new Label( "Czekamy na graczy: "+(parent.sizePlayer()+1)+"/5", new Label.LabelStyle(font, Color.BLACK));
+        numberPlayer.setPosition(stage.getViewport().getWorldWidth() * 0.5f - numberPlayer.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.7f - numberPlayer.getHeight() * 0.5f);
+        stage.addActor(numberPlayer);
 
+        //create start button style when it will be available
+        startButtonStyleAvailable = new ImageButton.ImageButtonStyle();
+        startButtonStyleAvailable.up = new TextureRegionDrawable(new TextureRegion(buttonStart));
+        startButtonStyleAvailable.over = new TextureRegionDrawable(new TextureRegion(buttonHoverStart));
 
-        ImageButton.ImageButtonStyle buttonStyleStart = new ImageButton.ImageButtonStyle();
-        buttonStyleStart.up = new TextureRegionDrawable(new TextureRegion(buttonStart));
-        buttonStyleStart.over = new TextureRegionDrawable(new TextureRegion(buttonHoverStart));
+        //create start button style when it's not available
+        startButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
+        startButtonStyleNoAvailable.up = new TextureRegionDrawable(new TextureRegion(buttonStartNotAvailable));
 
-        startButton = new ImageButton(buttonStyleStart);
+        startButton = new ImageButton(startButtonStyleNoAvailable);
         startButton.addListener(new ClickListener() {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.changeScreen(MoneyLandGame.LOADING);
+                if(parent.sizePlayer() + 1 >= MIN_PLAYERS){
+                    parent.serverHandler.sendMessage("Ready for game"); //send message to server that player is ready
+                }
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
             @Override
@@ -74,9 +92,6 @@ public class Lobby extends Shortcut {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
-        stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
-
-        stage.addActor(numberPlayer);
 
 
         //create list of players nick
@@ -111,6 +126,17 @@ public class Lobby extends Shortcut {
 
     @Override
     public void render(float delta) {
+
+        //check if there are min players to start game - change button
+        if(parent.sizePlayer()+1 >= MIN_PLAYERS){
+            startButton.setStyle(startButtonStyleAvailable);
+        }
+
+        //start game - message from server
+        if(changeScreenToLoading.get()){
+            parent.changeScreen(MoneyLandGame.LOADING);
+        }
+
         ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1);
 
         //check if new player join to game
@@ -166,8 +192,15 @@ public class Lobby extends Shortcut {
 
     @Override
     public void dispose() {
+        buttonStart.dispose();
+        buttonHoverStart.dispose();
+        buttonStartNotAvailable.dispose();
         stage.dispose();
         title.dispose();
         font.dispose();
+    }
+
+    public void setChangeScreenToLoading() {
+        this.changeScreenToLoading.set(true);
     }
 }

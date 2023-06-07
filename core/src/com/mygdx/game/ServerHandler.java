@@ -56,6 +56,12 @@ public class ServerHandler {
 
     }
 
+    public void setupConnectWithLobbyScreen(Lobby lobby){
+        this.lobby = lobby;
+    }
+    public void setupConnectWithGameScreen(GameScreen gameScreen){
+        this.gameScreen = gameScreen;
+    }
     public void listenerFromServer(){
         client.addListener(new Listener() {
             public void received (Connection connection, Object object) {
@@ -73,18 +79,19 @@ public class ServerHandler {
                     Player newPlayer = (Player)object;
                     game.addPlayer(newPlayer);
                 }
+                //listener for messages from server
+                else if (object instanceof String) {
+                    String message = (String)object;
+                    //message - start game - change screen to loading
+                    if(message.equals("Start game")){
+                        if(lobby!=null) lobby.setChangeScreenToLoading();
+                    }
+                }
             }
         });
     }
     public void sendMessage(Object object){
         client.sendTCP(object);
-    }
-
-    public void setupConnectWithLobbyScreen(Lobby lobby){
-        this.lobby = lobby;
-    }
-    public void setupConnectWithGameScreen(GameScreen gameScreen){
-        this.gameScreen = gameScreen;
     }
 
     public void closeConnect(){
