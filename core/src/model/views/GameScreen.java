@@ -29,7 +29,6 @@ public class GameScreen extends Shortcut {
     private float cubeRectWith;
     private float cubeRectHeight;
     private Cube cube;
-
     private ImageButton menuButton;
     private Texture menuButtonTexture;
     private Texture menuButtonHoverTexture;
@@ -80,7 +79,7 @@ public class GameScreen extends Shortcut {
         cubeRectHeight = MoneyLandGame.HEIGHT/4;
         cubeRectPosX = MoneyLandGame.WIDTH - cubeRectWith;
         cubeRectPosY = MoneyLandGame.HEIGHT/6;
-        cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage);
+        cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage,4);
 
         //config menu button
         menuButtonTexture = new Texture(Gdx.files.internal("MenuButton.png"));
