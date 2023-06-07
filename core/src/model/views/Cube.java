@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.mygdx.game.MoneyLandGame;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -22,9 +23,18 @@ public class Cube extends Actor {
     private List<Texture> images;
     private Random random;
     private Image cubeImage;
+    private Pawn pawn;
+    Stage stageCube;
     private int numberOnCube;
+    private int positionCube;
+    private int numbePlayer;
 
-    public Cube(float x, float y, int width, int height, Stage stage) {
+    public Cube(float x, float y, int width, int height, Stage stage, int idPlayer) {
+
+        this.stageCube = stage;
+        positionCube = 0;
+        numbePlayer = idPlayer;
+
         setPosition(x, y);
         setSize(width, height);
         random = new Random();
@@ -33,7 +43,8 @@ public class Cube extends Actor {
         cubeImage = new Image(getRandomImage());
         cubeImage.setSize(width, height);
         cubeImage.setPosition(x, y);
-        stage.addActor(cubeImage);
+        stageCube.addActor(cubeImage);
+        pawn = new Pawn (stageCube, numbePlayer, positionCube);
 
         cubeImage.addListener(new InputListener() {
             @Override
@@ -41,6 +52,12 @@ public class Cube extends Actor {
                 if (button == 0) { // Left mouse button
                     Texture newImage = getRandomImage();
                     cubeImage.setDrawable(new Image(newImage).getDrawable());
+                    pawn.removePawn();
+                    positionCube = positionCube + numberOnCube;
+                    if(positionCube > 15){
+                        positionCube = positionCube - 16;
+                    }
+                    pawn = new Pawn (stageCube, numbePlayer, positionCube);
                     return true;
                 }
                 return super.touchDown(event, x, y, pointer, button);
@@ -77,6 +94,7 @@ public class Cube extends Actor {
     public int getNumberOnCube() {
         return numberOnCube;
     }
+
 }
 
 
