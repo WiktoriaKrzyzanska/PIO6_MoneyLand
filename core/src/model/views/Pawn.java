@@ -34,7 +34,7 @@ public class Pawn extends Actor {
         yHeight = ((MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT/6) - 2 * padding) / 5; // 5 cards in column
 
         width = (xWidth - paddingBetweenCards)/5;
-        height = MoneyLandGame.HEIGHT/18;
+        height = MoneyLandGame.HEIGHT/15;
 
         switch(numberPlayer) {
             case 1:
