@@ -3,7 +3,6 @@ package model.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -73,7 +72,7 @@ public class GameScreen extends Shortcut {
         shapeRenderer = new ShapeRenderer ();
 
 
-        String Welcome = "Czesc " + parent.getPlayerNick() + "!  Oto Twoj pionek";
+        String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "!  Oto Twoj pionek";
         String Rules = "Zasady";
         String Cebulion = "Na poczatek gry dosatjesz 500 cebulionow." +
                 "Wydawaj je madrze";
@@ -158,22 +157,21 @@ public class GameScreen extends Shortcut {
         paddingBetweenPlayersInfo = 50;
         float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
 
+        playerOwner = new PlayerCard(
+                leftSideWidth * 3/2, //width
+                MoneyLandGame.HEIGHT - boardHeight, //height
+                0, //positionX
+                0, //position y
+                paddingBetweenPlayersInfo, //padding
+                parent.getPlayer().getPlayerName(),    //nick
+                startMoney, //money
+                Color.ORANGE,  //player color
+                fontForPlayersNick,  //font
+                fontForMoneyOnPlayersCards, //font
+                stage
+        );
+
         for(int i=0; i<parent.sizePlayer(); ++i){
-            if(parent.getPlayerNick().equals(parent.getPlayer(i))){
-                playerOwner = new PlayerCard(
-                        leftSideWidth * 3/2, //width
-                        MoneyLandGame.HEIGHT - boardHeight, //height
-                        0, //positionX
-                        0, //position y
-                        paddingBetweenPlayersInfo, //padding
-                        parent.getPlayer(i),    //nick
-                        startMoney, //money
-                        Color.ORANGE,  //player color
-                        fontForPlayersNick,  //font
-                        fontForMoneyOnPlayersCards, //font
-                        stage
-                );
-            }else{
                 //other players
                 PlayerCard playerCard = new PlayerCard(
                         leftSideWidth - 2 * padding, //width
@@ -181,7 +179,7 @@ public class GameScreen extends Shortcut {
                         padding, //positionX
                         MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - rectHeightOtherPlayerInfo - (i * rectHeightOtherPlayerInfo) - ((i + 1) * paddingBetweenPlayersInfo), //position y
                         paddingBetweenPlayersInfo, //padding
-                        parent.getPlayer(i),    //nick
+                        parent.getOtherPlayer(i).getPlayerName(),    //nick
                         startMoney, //money
                         Color.SKY,  //player color
                         fontForPlayersNick,  //font
@@ -189,7 +187,6 @@ public class GameScreen extends Shortcut {
                         stage
                 );
                 otherPlayerCards.add(playerCard);
-            }
         }
 
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond

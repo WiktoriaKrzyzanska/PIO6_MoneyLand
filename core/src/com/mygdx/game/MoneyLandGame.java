@@ -5,12 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import model.views.LoadingScreen;
-import model.views.LobbyIntroduction;
-import model.views.GameScreen;
-import model.views.MenuScreen;
-import model.views.RulesScreen;
-import model.views.Lobby;
+import model.views.*;
 import server.GameServer;
 
 import java.util.ArrayList;
@@ -26,8 +21,8 @@ public class MoneyLandGame extends Game {
 	LoadingScreen loadingScreen;
 	public SpriteBatch batch;
 	public ShapeRenderer shapeRenderer;
-	public ArrayList<String> listPlayers = new ArrayList<String>();
-	private String playerNick;
+	public ArrayList<Player> listOtherPlayers = new ArrayList<>();
+	private Player player;
 
 	public static final int WIDTH = 3200; //world width
 	public static final int HEIGHT = 1600; //world height
@@ -116,14 +111,14 @@ public class MoneyLandGame extends Game {
 		}
 	}
 
-	public void addPlayer(String name){
-		listPlayers.add(name);
+	public void addPlayer(Player player){
+		listOtherPlayers.add(player);
 	}
-	public String getPlayer(int index){
-		return listPlayers.get(index);
+	public Player getOtherPlayer(int index){
+		return listOtherPlayers.get(index);
 	}
 	public int sizePlayer(){
-		return listPlayers.size();
+		return listOtherPlayers.size();
 	}
 
 	public void setServer(){
@@ -137,11 +132,11 @@ public class MoneyLandGame extends Game {
 		return gameServer.serverIsReady();
 	}
 
-	public String getPlayerNick() {
-		return playerNick;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public void setPlayerNick(String playerNick) {
-		this.playerNick = playerNick;
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }

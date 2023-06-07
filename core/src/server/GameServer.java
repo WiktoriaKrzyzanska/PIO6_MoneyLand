@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MoneyLandGame;
+import model.views.Player;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,8 +15,7 @@ public class GameServer{
 
     private Server server;
     private AtomicBoolean serverReady = new AtomicBoolean(false);
-    private ArrayList<String> playersList;
-    private Connection[] otherPlayers;
+    private ArrayList<ClientHandler> playersList;
 
     public void start(){
         server = new Server();
@@ -23,6 +23,7 @@ public class GameServer{
         //class register - is required from documentation; important: must be same order in client and here
         Kryo kryo = server.getKryo();
         kryo.register(ArrayList.class);
+        kryo.register(Player.class);
 
         server.start();
         try{
@@ -38,18 +39,24 @@ public class GameServer{
         //listener for clients messages
         server.addListener(new Listener() {
             public void received (Connection connection, Object object) {
-                if (object instanceof String) {
-                    String playerNick = (String)object;
-                    System.out.println("Player " + playerNick + " is connected");
-                    playersList.add(playerNick);
-                    connection.sendTCP(playersList); //send to player list of all other players
+                if (object instanceof Player) {
+                    //get list of all other players
+                    ArrayList<Player> otherPlayersList = new ArrayList<>();
+                    for(int i=0; i<playersList.size(); ++i){
+                        otherPlayersList.add(playersList.get(i).getPlayerFromServer());
+                    }
+
+                    connection.sendTCP(otherPlayersList); //send to player list of all other players
+
+                    Player player = (Player)object;
+                    ClientHandler playerHandler = new ClientHandler(player,connection);
+                    playersList.add(playerHandler);
 
                     //update for others players - new player
-                    otherPlayers = server.getConnections();
-                    for(int i=0; i< otherPlayers.length; ++i){
-                        Connection connection1 = otherPlayers[i];
+                    for(int i=0; i<playersList.size(); ++i){
+                        Connection connection1 = playersList.get(i).getConnection();
                         if(connection1 != connection){
-                            connection1.sendTCP(playerNick);
+                            connection1.sendTCP(player);
                         }
                     }
                 }
