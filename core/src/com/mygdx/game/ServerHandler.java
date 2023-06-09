@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import model.views.GameScreen;
 import model.views.Lobby;
+import model.views.Player;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class ServerHandler {
         //class register - is required from documentation; important: must be same order in server and here
         Kryo kryo = client.getKryo();
         kryo.register(ArrayList.class);
+        kryo.register(Player.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -54,35 +56,42 @@ public class ServerHandler {
 
     }
 
+    public void setupConnectWithLobbyScreen(Lobby lobby){
+        this.lobby = lobby;
+    }
+    public void setupConnectWithGameScreen(GameScreen gameScreen){
+        this.gameScreen = gameScreen;
+    }
     public void listenerFromServer(){
         client.addListener(new Listener() {
             public void received (Connection connection, Object object) {
                 //listener to get all other players nick from server
                 if (object instanceof ArrayList) {
                     //add nicks to players list who already joined
-                    ArrayList otherPlayersNick = (ArrayList) object;
-                    for(int i=0; i<otherPlayersNick.size(); ++i){
-                        String otherPlayerNick = (String)otherPlayersNick.get(i);
-                        game.addPlayer(otherPlayerNick);
+                    ArrayList otherPlayers = (ArrayList) object;
+                    for(int i=0; i<otherPlayers.size(); ++i){
+                        Player otherPlayer = (Player)otherPlayers.get(i);
+                        game.addPlayer(otherPlayer);
                     }
                 }
                 //listener for update when new player join to game
-                else if(object instanceof String){
-                    String newPlayerNick = (String)object;
-                    game.addPlayer(newPlayerNick);
+                else if(object instanceof Player){
+                    Player newPlayer = (Player)object;
+                    game.addPlayer(newPlayer);
+                }
+                //listener for messages from server
+                else if (object instanceof String) {
+                    String message = (String)object;
+                    //message - start game - change screen to loading
+                    if(message.equals("Start game")){
+                        if(lobby!=null) lobby.setChangeScreenToLoading();
+                    }
                 }
             }
         });
     }
     public void sendMessage(Object object){
         client.sendTCP(object);
-    }
-
-    public void setupConnectWithLobbyScreen(Lobby lobby){
-        this.lobby = lobby;
-    }
-    public void setupConnectWithGameScreen(GameScreen gameScreen){
-        this.gameScreen = gameScreen;
     }
 
     public void closeConnect(){
