@@ -43,6 +43,9 @@ public class MoneyLandGame extends Game {
 
 	public ServerHandler serverHandler;
 
+	private boolean iAmMove = false;
+	private int idPlayerMove;
+
 	@Override
 	public void create () {
 		//config camera
@@ -138,5 +141,21 @@ public class MoneyLandGame extends Game {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	public boolean isiAmMoveGameScreen() {
+		return iAmMove;
+	}
+
+	public void setiAmMoveGameScreen(boolean iAmMove) {
+		this.iAmMove = iAmMove;
+	}
+
+	public int getIdPlayerMoveGameScreen() {
+		return idPlayerMove;
+	}
+
+	public void setIdPlayerMoveGameScreen(int idPlayerMove) {
+		this.idPlayerMove = idPlayerMove;
 	}
 }

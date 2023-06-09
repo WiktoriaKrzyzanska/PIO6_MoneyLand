@@ -5,10 +5,12 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MoneyLandGame;
+import model.messages.StartGameMessage;
 import model.views.Player;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameServer{
@@ -19,6 +21,7 @@ public class GameServer{
     private AtomicBoolean startGame = new AtomicBoolean(false);
     private final int MAX_PLAYERS = 5;
     private final int MIN_PLAYERS = 2;
+    private int idPlayerMove;
 
     public void start(){
         server = new Server();
@@ -27,6 +30,7 @@ public class GameServer{
         Kryo kryo = server.getKryo();
         kryo.register(ArrayList.class);
         kryo.register(Player.class);
+        kryo.register(StartGameMessage.class);
 
         server.start();
         try{
@@ -52,6 +56,7 @@ public class GameServer{
                     connection.sendTCP(otherPlayersList); //send to player list of all other players
 
                     Player player = (Player)object;
+                    player.setPlayerId(playersList.size()); //set player id
                     ClientHandler playerHandler = new ClientHandler(player,connection);
                     playersList.add(playerHandler);
 
@@ -86,9 +91,23 @@ public class GameServer{
                         }
                         //all players are ready - send message to all players to lets play
                         if(flag && playersList.size() >= MIN_PLAYERS){
+                            //draw id player who will start game
+                            Random random = new Random();
+                            idPlayerMove = random.nextInt(playersList.size());
+                            //send to all players
                             for(int i=0; i<playersList.size(); ++i){
+                                StartGameMessage startGameMessage = new StartGameMessage();
                                 ClientHandler temp = playersList.get(i);
-                                temp.getConnection().sendTCP("Start game");
+
+                                if(temp.getPlayerFromServer().getPlayerId() == idPlayerMove){
+                                    startGameMessage.setIdPlayerWhoStart(0); //it's not important
+                                    startGameMessage.setAmIStart(true);
+                                }else{
+                                    startGameMessage.setIdPlayerWhoStart(idPlayerMove);
+                                    startGameMessage.setAmIStart(false);
+                                }
+
+                                temp.getConnection().sendTCP(startGameMessage);
                             }
                             startGame.set(true); //start game - no new players
                         }
@@ -107,6 +126,14 @@ public class GameServer{
         if(server != null){
             server.stop();
             server.close();
+        }
+    }
+
+    protected void nextPlayer(){
+        if(idPlayerMove+1<playersList.size()){
+            idPlayerMove++;
+        }else{
+            idPlayerMove=0;
         }
     }
 }

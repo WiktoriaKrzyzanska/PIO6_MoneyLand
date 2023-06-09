@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import model.messages.StartGameMessage;
 import model.views.GameScreen;
 import model.views.Lobby;
 import model.views.Player;
@@ -28,6 +29,7 @@ public class ServerHandler {
         Kryo kryo = client.getKryo();
         kryo.register(ArrayList.class);
         kryo.register(Player.class);
+        kryo.register(StartGameMessage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -80,12 +82,13 @@ public class ServerHandler {
                     game.addPlayer(newPlayer);
                 }
                 //listener for messages from server
-                else if (object instanceof String) {
-                    String message = (String)object;
-                    //message - start game - change screen to loading
-                    if(message.equals("Start game")){
-                        if(lobby!=null) lobby.setChangeScreenToLoading();
-                    }
+                else if (object instanceof StartGameMessage) {
+                    StartGameMessage message = (StartGameMessage)object;
+
+                    game.setIdPlayerMoveGameScreen(message.getIdPlayerWhoStart());
+                    game.setiAmMoveGameScreen(message.isAmIStart());
+
+                    if(lobby!=null) lobby.setChangeScreenToLoading();
                 }
             }
         });

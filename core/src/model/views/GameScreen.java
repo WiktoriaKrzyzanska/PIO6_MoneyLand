@@ -52,8 +52,6 @@ public class GameScreen extends Shortcut {
     private PlayerCard playerOwner;
     private BitmapFont fontForPlayersNick;
     private BitmapFont fontForMoneyOnPlayersCards;
-
-
     private ShapeRenderer shapeRenderer;
     final String text = "We're loading your game!";
     PopUpInformation popUpPlayer;
@@ -61,6 +59,7 @@ public class GameScreen extends Shortcut {
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
     ImageButton startButton;
+
     public GameScreen(MoneyLandGame game){
         super(game);
         parent = game;
@@ -75,13 +74,22 @@ public class GameScreen extends Shortcut {
         stage2 = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         shapeRenderer = new ShapeRenderer ();
 
-
+        //set popups when game start
         String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "!  Oto Twoj pionek";
         String Rules = "Zasady";
-        String Cebulion = "Na poczatek gry dosatjesz 500 cebulionow." +
+        String Cebulion = "Na poczatek gry dostajesz 500 cebulionow." +
                 "Wydawaj je madrze";
-        String InformationWhoStarts = "Gre zaczyna Player "; //when we have a method we have to change it
-
+        String InformationWhoStarts = new String();
+        if(parent.isiAmMoveGameScreen()){
+            InformationWhoStarts = "Zaczynasz gre :)";
+        }else{
+            for(int i=0; i<parent.sizePlayer(); ++i){
+                Player temp = parent.getOtherPlayer(i);
+                if(temp.getPlayerId() == parent.getIdPlayerMoveGameScreen()){
+                    InformationWhoStarts = "Gre zaczyna "+temp.getPlayerName();
+                }
+            }
+        }
 
 
         popUpFirstPlayer = new PopUpInformation(InformationWhoStarts);
