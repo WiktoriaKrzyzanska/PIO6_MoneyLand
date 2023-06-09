@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
+import model.messages.EndMoveMessage;
+import model.messages.PlayerMoveMessage;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
 
@@ -59,6 +61,10 @@ public class GameScreen extends Shortcut {
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
     ImageButton startButton;
+
+    private Pawn myPawn;
+    private ArrayList<Pawn> otherPlayersPawns;
+
 
     public GameScreen(MoneyLandGame game){
         super(game);
@@ -110,7 +116,7 @@ public class GameScreen extends Shortcut {
         cubeRectHeight = MoneyLandGame.HEIGHT/4;
         cubeRectPosX = MoneyLandGame.WIDTH - cubeRectWith;
         cubeRectPosY = MoneyLandGame.HEIGHT/6;
-        cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage,4);
+        cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage,4, this);
 
         //config menu button
         menuButtonTexture = new Texture(Gdx.files.internal("MenuButton.png"));
@@ -203,6 +209,23 @@ public class GameScreen extends Shortcut {
 
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
 
+        //create pawns; pawn number == id player from server
+        otherPlayersPawns = new ArrayList<>();
+        for(int i=0; i<parent.sizePlayer(); ++i){
+            Player temp = parent.getOtherPlayer(i);
+            int playerId = temp.getPlayerId();
+            Pawn pawn = new Pawn(stage,playerId,0);
+            otherPlayersPawns.add(pawn);
+        }
+        myPawn = new Pawn(stage, parent.getPlayer().getPlayerId(), 0);
+
+        //setup endMoveButton
+        playerOwner.setEndMoveButton(this);
+
+        //enable cube when i start game
+        if(parent.isiAmMoveGameScreen()){
+            myTurn();
+        }
 
     }
 
@@ -278,6 +301,42 @@ public class GameScreen extends Shortcut {
         stage2.dispose();
         menuButtonTexture.dispose();
         menuButtonHoverTexture.dispose();
+
+    }
+
+    public void myTurn(){
+        //enable cube
+        cube.setAvailable();
+        playerOwner.showEndMoveButton();
+    }
+    public void moveMyPlayer(){
+        int numberOnCube = cube.getNumberOnCube(); //get number on cube
+        parent.getPlayer().updatePlayerPosition(numberOnCube); //update position
+        myPawn.changePosition(parent.getPlayer().getPlayerPosition()); //update pawn position
+        PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage(numberOnCube, parent.getPlayer().getPlayerId()); //create message about my move
+        parent.serverHandler.sendMessage(playerMoveMessage); //send message to server
+    }
+
+    public void endMyMove(){
+        cube.resetAvailable(); //disable cube
+        parent.setiAmMoveGameScreen(false); //end my move
+        playerOwner.hideEndMoveButton();
+        parent.serverHandler.sendMessage(new EndMoveMessage());
+    }
+
+    public void moveOtherPlayer(Player player, int delta){
+        //change cube
+        cube.changeCube(delta);
+
+        //change position
+        player.updatePlayerPosition(delta);
+        for(int i=0; i<otherPlayersPawns.size(); ++i){
+            Pawn pawn = otherPlayersPawns.get(i);
+            if(pawn.getNumberPlayer() == player.getPlayerId()){
+                pawn.changePosition(player.getPlayerPosition());
+                break;
+            }
+        }
 
     }
 }

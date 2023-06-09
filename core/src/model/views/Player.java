@@ -76,5 +76,12 @@ public class Player {
         this.ownedCities = ownedCities;
     }
 
+    public void updatePlayerPosition(int delta){
+        this.cardNumber += delta;
+        if(this.cardNumber >= 16){
+            this.cardNumber = this.cardNumber - 16;
+        }
+    }
+
 
 }

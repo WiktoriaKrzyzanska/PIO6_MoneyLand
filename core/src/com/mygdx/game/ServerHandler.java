@@ -5,7 +5,10 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import model.messages.EndMoveMessage;
+import model.messages.PlayerMoveMessage;
 import model.messages.StartGameMessage;
+import model.messages.YourMoveMessage;
 import model.views.GameScreen;
 import model.views.Lobby;
 import model.views.Player;
@@ -30,6 +33,9 @@ public class ServerHandler {
         kryo.register(ArrayList.class);
         kryo.register(Player.class);
         kryo.register(StartGameMessage.class);
+        kryo.register(PlayerMoveMessage.class);
+        kryo.register(EndMoveMessage.class);
+        kryo.register(YourMoveMessage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -87,8 +93,22 @@ public class ServerHandler {
 
                     game.setIdPlayerMoveGameScreen(message.getIdPlayerWhoStart());
                     game.setiAmMoveGameScreen(message.isAmIStart());
+                    game.getPlayer().setPlayerId(message.getIdMyPlayer());
 
                     if(lobby!=null) lobby.setChangeScreenToLoading();
+                }
+
+                //listener for move other player
+                else if(object instanceof PlayerMoveMessage){
+                    PlayerMoveMessage message = (PlayerMoveMessage) object;
+                    Player player = game.getOtherPlayerById(message.getIdPlayer());
+                    gameScreen.moveOtherPlayer(player, message.getDelta());
+                }
+
+                //listener for my turn
+                else if(object instanceof YourMoveMessage){
+                    game.setiAmMoveGameScreen(true);
+                    gameScreen.myTurn();
                 }
             }
         });

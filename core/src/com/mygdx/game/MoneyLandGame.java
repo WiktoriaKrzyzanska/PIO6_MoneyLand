@@ -120,6 +120,16 @@ public class MoneyLandGame extends Game {
 	public Player getOtherPlayer(int index){
 		return listOtherPlayers.get(index);
 	}
+
+	public Player getOtherPlayerById(int playerId){
+		for(int i=0; i<listOtherPlayers.size(); ++i){
+			Player temp = listOtherPlayers.get(i);
+			if(temp.getPlayerId() == playerId){
+				return temp;
+			}
+		}
+		return null;
+	}
 	public int sizePlayer(){
 		return listOtherPlayers.size();
 	}

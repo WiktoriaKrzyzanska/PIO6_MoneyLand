@@ -5,7 +5,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MoneyLandGame;
+import model.messages.EndMoveMessage;
+import model.messages.PlayerMoveMessage;
 import model.messages.StartGameMessage;
+import model.messages.YourMoveMessage;
 import model.views.Player;
 
 import java.io.IOException;
@@ -31,6 +34,9 @@ public class GameServer{
         kryo.register(ArrayList.class);
         kryo.register(Player.class);
         kryo.register(StartGameMessage.class);
+        kryo.register(PlayerMoveMessage.class);
+        kryo.register(EndMoveMessage.class);
+        kryo.register(YourMoveMessage.class);
 
         server.start();
         try{
@@ -71,48 +77,14 @@ public class GameServer{
                 else if(object instanceof String){
                     String message = (String)object;
                     if(message.equals("Ready for game")){
-                        //change player ready flag to true
-                        for(int i=0; i<playersList.size(); ++i){
-                            ClientHandler temp = playersList.get(i);
-                            if(temp.getConnection().equals(connection)){
-                                temp.setPlayerIsReady(true);
-                                break;
-                            }
-                        }
-
-                        //check do all players have ready flag set true
-                        boolean flag = true;
-                        for(int i=0; i<playersList.size(); ++i){
-                            ClientHandler temp = playersList.get(i);
-                            if(!temp.getPlayerIsReady()){
-                                flag=false;
-                                break;
-                            }
-                        }
-                        //all players are ready - send message to all players to lets play
-                        if(flag && playersList.size() >= MIN_PLAYERS){
-                            //draw id player who will start game
-                            Random random = new Random();
-                            idPlayerMove = random.nextInt(playersList.size());
-                            //send to all players
-                            for(int i=0; i<playersList.size(); ++i){
-                                StartGameMessage startGameMessage = new StartGameMessage();
-                                ClientHandler temp = playersList.get(i);
-
-                                if(temp.getPlayerFromServer().getPlayerId() == idPlayerMove){
-                                    startGameMessage.setIdPlayerWhoStart(0); //it's not important
-                                    startGameMessage.setAmIStart(true);
-                                }else{
-                                    startGameMessage.setIdPlayerWhoStart(idPlayerMove);
-                                    startGameMessage.setAmIStart(false);
-                                }
-
-                                temp.getConnection().sendTCP(startGameMessage);
-                            }
-                            startGame.set(true); //start game - no new players
-                        }
-
+                        readyForGame(connection);
                     }
+                }
+                else if(object instanceof PlayerMoveMessage){
+                    updatePlayerMove((PlayerMoveMessage)object);
+                }
+                else if(object instanceof EndMoveMessage){
+                    nextPlayer();
                 }
             }
         });
@@ -134,6 +106,81 @@ public class GameServer{
             idPlayerMove++;
         }else{
             idPlayerMove=0;
+        }
+
+        //send info for next player
+        for(int i=0; i<playersList.size(); i++){
+            ClientHandler temp = playersList.get(i);
+            if(temp.getPlayerFromServer().getPlayerId() == idPlayerMove){
+                temp.getConnection().sendTCP(new YourMoveMessage());
+            }
+        }
+    }
+
+    protected void readyForGame(Connection connection){
+            //change player ready flag to true
+            for(int i=0; i<playersList.size(); ++i){
+                ClientHandler temp = playersList.get(i);
+                if(temp.getConnection().equals(connection)){
+                    temp.setPlayerIsReady(true);
+                    break;
+                }
+            }
+
+            //check do all players have ready flag set true
+            boolean flag = true;
+            for(int i=0; i<playersList.size(); ++i){
+                ClientHandler temp = playersList.get(i);
+                if(!temp.getPlayerIsReady()){
+                    flag=false;
+                    break;
+                }
+            }
+            //all players are ready - send message to all players to lets play
+            if(flag && playersList.size() >= MIN_PLAYERS){
+                //draw id player who will start game
+                Random random = new Random();
+                idPlayerMove = random.nextInt(playersList.size());
+                //send to all players
+                for(int i=0; i<playersList.size(); ++i){
+                    StartGameMessage startGameMessage = new StartGameMessage();
+                    ClientHandler temp = playersList.get(i);
+
+                    if(temp.getPlayerFromServer().getPlayerId() == idPlayerMove){
+                        startGameMessage.setIdPlayerWhoStart(0); //it's not important
+                        startGameMessage.setAmIStart(true);
+                        startGameMessage.setIdMyPlayer(temp.getPlayerFromServer().getPlayerId());
+                    }else{
+                        startGameMessage.setIdPlayerWhoStart(idPlayerMove);
+                        startGameMessage.setAmIStart(false);
+                        startGameMessage.setIdMyPlayer(temp.getPlayerFromServer().getPlayerId());
+                    }
+
+                    temp.getConnection().sendTCP(startGameMessage);
+                }
+                startGame.set(true); //start game - no new players
+            }
+    }
+
+    protected void updatePlayerMove(PlayerMoveMessage playerMoveMessage){
+        //update info about player
+        int id = playerMoveMessage.getIdPlayer();
+        for(int i=0; i<playersList.size(); ++i){
+            ClientHandler temp = playersList.get(i);
+            if(id == temp.getPlayerFromServer().getPlayerId()){
+                int delta = playerMoveMessage.getDelta();
+                temp.getPlayerFromServer().updatePlayerPosition(delta);
+                break;
+            }
+        }
+
+        //send update to other players
+        for(int i=0; i<playersList.size(); ++i){
+            ClientHandler temp = playersList.get(i);
+            if(id == temp.getPlayerFromServer().getPlayerId()){
+                continue;
+            }
+            temp.getConnection().sendTCP(playerMoveMessage);
         }
     }
 }
