@@ -3,10 +3,17 @@ package model.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,6 +33,8 @@ public class Lobby extends Shortcut {
     final MoneyLandGame parent;
     Stage stage;
     Texture title;
+    Texture texture;
+    Texture backgroundTexture;
     ImageButton startButton;
     private ImageButton.ImageButtonStyle startButtonStyleAvailable;
     private ImageButton.ImageButtonStyle startButtonStyleNoAvailable;
@@ -33,11 +42,15 @@ public class Lobby extends Shortcut {
     private Texture buttonHoverStart;
     private Texture buttonStartNotAvailable;
     BitmapFont font;
+    Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
+    Camera camera;
+    Sprite backgroundSprite;
     Label numberPlayer;
     private ArrayList<Label> playersNick;
     private int currentNumberOfPlayers;
     private AtomicBoolean changeScreenToLoading = new AtomicBoolean(false);
     private final int MIN_PLAYERS = 2;
+
 
     public Lobby(final MoneyLandGame game){
         super(game);
@@ -47,10 +60,28 @@ public class Lobby extends Shortcut {
         // config connect to server or create server and connect
         parent.serverHandler.setConnect();
         parent.serverHandler.setupConnectWithLobbyScreen(this);
+
+        String playerNickForServer = new String(parent.getPlayerNick());
+        parent.serverHandler.sendMessage(playerNickForServer); //send message to server
+        camera = new OrthographicCamera();
+        camera.viewportHeight = MoneyLandGame.HEIGHT;
+        camera.viewportWidth = MoneyLandGame.WIDTH;
+        camera.position.set(camera.viewportWidth * .5f, camera.viewportHeight * .5f, 0f);
+        camera.update();
+        backgroundTexture = new Texture("LobbyIntroduction.png");
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT);
         parent.serverHandler.sendMessage(parent.getPlayer()); //send message to server
 
 
+
         title = new Texture(Gdx.files.internal("title.png"));
+        int width =MoneyLandGame.WIDTH ;
+        int height = (int) (MoneyLandGame.HEIGHT * 0.75f);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(244/255f, 255/255f, 175/255f,1);
+        pixmap.fill();
+        texture = new Texture(pixmap);
 
         buttonStart = new Texture("StartButton.png");
         buttonHoverStart = new Texture("StartButtonClicked.png");
@@ -127,6 +158,19 @@ public class Lobby extends Shortcut {
     @Override
     public void render(float delta) {
 
+        ScreenUtils.clear(255/255f, 242/255f, 130/255f, 1);
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        float textureWidth = screenWidth ;
+        float textureHeight = screenHeight  ;
+        float textureX = ( textureWidth -1250) ;
+        float textureY = (textureHeight - 1055) ;
+        //to do: refactor this part in future
+        stage.getActors().removeValue(numberPlayer,true);
+        numberPlayer = new Label( "Czekamy na graczy: "+parent.sizePlayer()+"/5", new Label.LabelStyle(font, Color.BLACK));
+        numberPlayer.setPosition(stage.getViewport().getWorldWidth() * 0.5f - numberPlayer.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.7f - numberPlayer.getHeight() * 0.5f);
+        stage.addActor(numberPlayer)
+
         //check if there are min players to start game - change button
         if(parent.sizePlayer()+1 >= MIN_PLAYERS){
             startButton.setStyle(startButtonStyleAvailable);
@@ -160,6 +204,8 @@ public class Lobby extends Shortcut {
         parent.batch.setProjectionMatrix(parent.camera.combined);
 
         parent.batch.begin();
+        backgroundSprite.draw(parent.batch);
+        parent.batch.draw(texture, textureX, textureY, textureWidth, MoneyLandGame.HEIGHT);
         parent.batch.draw(title, MoneyLandGame.WIDTH/2 - 400, MoneyLandGame.HEIGHT - 400, 800, 200);
         parent.batch.end();
 

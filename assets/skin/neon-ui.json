@@ -419,5 +419,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		titleFont: font
 		titleFont: font
 	}
-}
+}, com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+		default: { font: default-font, fontColor: white },
+		focused: { font: default-font, fontColor: yellow }
+	}
+
 }
