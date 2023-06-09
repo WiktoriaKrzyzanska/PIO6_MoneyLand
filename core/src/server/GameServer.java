@@ -1,14 +1,12 @@
 package server;
 
+import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MoneyLandGame;
-import model.messages.EndMoveMessage;
-import model.messages.PlayerMoveMessage;
-import model.messages.StartGameMessage;
-import model.messages.YourMoveMessage;
+import model.messages.*;
 import model.views.Player;
 
 import java.io.IOException;
@@ -26,6 +24,8 @@ public class GameServer{
     private final int MIN_PLAYERS = 2;
     private int idPlayerMove;
 
+    private ArrayList<Color> colors;
+
     public void start(){
         server = new Server();
 
@@ -37,8 +37,14 @@ public class GameServer{
         kryo.register(PlayerMoveMessage.class);
         kryo.register(EndMoveMessage.class);
         kryo.register(YourMoveMessage.class);
+        kryo.register(BuyCardMessage.class);
+        kryo.register(Color.class);
 
         server.start();
+
+        //config colors for players
+        setColors();
+
         try{
             server.bind(MoneyLandGame.portTCP, MoneyLandGame.portUDP);
             serverReady.set(true);
@@ -63,6 +69,11 @@ public class GameServer{
 
                     Player player = (Player)object;
                     player.setPlayerId(playersList.size()); //set player id
+
+                    Random random = new Random();
+                    int colorNumber = random.nextInt(colors.size());
+                    player.setColor(colors.get(colorNumber)); //set player color
+
                     ClientHandler playerHandler = new ClientHandler(player,connection);
                     playersList.add(playerHandler);
 
@@ -85,6 +96,13 @@ public class GameServer{
                 }
                 else if(object instanceof EndMoveMessage){
                     nextPlayer();
+                }
+                else if(object instanceof BuyCardMessage){
+                    BuyCardMessage message = (BuyCardMessage) object;
+                    for(int i=0; i<playersList.size(); ++i){
+                        ClientHandler clientHandler = playersList.get(i);
+                        clientHandler.getConnection().sendTCP(message);
+                    }
                 }
             }
         });
@@ -182,5 +200,13 @@ public class GameServer{
             }
             temp.getConnection().sendTCP(playerMoveMessage);
         }
+    }
+
+    public void setColors(){
+        colors = new ArrayList<>();
+        colors.add(new Color(Color.BLUE));
+        colors.add(new Color(Color.OLIVE));
+        colors.add(new Color(Color.CORAL));
+        colors.add(new Color(Color.GOLD));
     }
 }

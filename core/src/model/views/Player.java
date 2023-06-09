@@ -1,5 +1,7 @@
 package model.views;
 
+import com.badlogic.gdx.graphics.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class Player {
     private int cardNumber;
     private int money;
     private List<City> ownedCities; //soon to be changed to List<City>
+    Color color;
 
     public Player(){
         id = 0;
@@ -22,6 +25,7 @@ public class Player {
         cardNumber = 0;
         money = 5000;
         ownedCities = new ArrayList<>();
+        color = Color.FOREST; //default
     }
 
     public Player(int id, String name, int cardNumber, int money, List<City> ownedCities){
@@ -30,6 +34,7 @@ public class Player {
         this.cardNumber=cardNumber;
         this.money=money;
         this.ownedCities=ownedCities;
+        color = Color.FOREST; //default
     }
 
     public int getPlayerId(){
@@ -84,4 +89,11 @@ public class Player {
     }
 
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
 }

@@ -1,14 +1,13 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import model.messages.EndMoveMessage;
-import model.messages.PlayerMoveMessage;
-import model.messages.StartGameMessage;
-import model.messages.YourMoveMessage;
+import model.messages.*;
+import model.views.Card;
 import model.views.GameScreen;
 import model.views.Lobby;
 import model.views.Player;
@@ -36,6 +35,8 @@ public class ServerHandler {
         kryo.register(PlayerMoveMessage.class);
         kryo.register(EndMoveMessage.class);
         kryo.register(YourMoveMessage.class);
+        kryo.register(BuyCardMessage.class);
+        kryo.register(Color.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -109,6 +110,34 @@ public class ServerHandler {
                 else if(object instanceof YourMoveMessage){
                     game.setiAmMoveGameScreen(true);
                     gameScreen.myTurn();
+                }
+                //listener for buy card
+                else if(object instanceof BuyCardMessage){
+                    BuyCardMessage message = (BuyCardMessage) object;
+                    Color color = null;
+                    Player owner = null;
+                    //update money status if i bought card
+                    if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
+                        owner = game.getPlayer();
+                        owner.subtractPlayerMoney((int)message.getAmount()); //update money status
+                        color = owner.getColor();
+                    }
+                    //update money status if other player bought card
+                    else{
+                        for(int i=0; i<game.sizePlayer(); ++i){
+                            owner = game.getOtherPlayer(i);
+                            if(owner.getPlayerId() == message.getIdPlayer()){
+                                owner.subtractPlayerMoney((int)message.getAmount());
+                                color = owner.getColor();
+                                break;
+                            }
+                        }
+                    }
+
+                    //update owner and card color
+                    Card card = gameScreen.getCardsManager().getCard(message.getCardNumber());
+                    card.setOwner(owner);
+                    card.setRectTitleBackground(color);
                 }
             }
         });

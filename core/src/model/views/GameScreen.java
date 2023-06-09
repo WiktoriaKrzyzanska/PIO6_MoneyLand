@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
+import model.messages.BuyCardMessage;
 import model.messages.EndMoveMessage;
 import model.messages.PlayerMoveMessage;
 
@@ -64,6 +65,8 @@ public class GameScreen extends Shortcut {
 
     private Pawn myPawn;
     private ArrayList<Pawn> otherPlayersPawns;
+    private BuyCard buyCard;
+    private boolean visibleBuyCard;
 
 
     public GameScreen(MoneyLandGame game){
@@ -176,6 +179,7 @@ public class GameScreen extends Shortcut {
         float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
 
         playerOwner = new PlayerCard(
+                parent.getPlayer(),
                 leftSideWidth * 3/2, //width
                 MoneyLandGame.HEIGHT - boardHeight, //height
                 0, //positionX
@@ -183,7 +187,7 @@ public class GameScreen extends Shortcut {
                 paddingBetweenPlayersInfo, //padding
                 parent.getPlayer().getPlayerName(),    //nick
                 startMoney, //money
-                Color.ORANGE,  //player color
+                parent.getPlayer().getColor(), //player color
                 fontForPlayersNick,  //font
                 fontForMoneyOnPlayersCards, //font
                 stage
@@ -191,7 +195,9 @@ public class GameScreen extends Shortcut {
 
         for(int i=0; i<parent.sizePlayer(); ++i){
                 //other players
+                Player temp = parent.getOtherPlayer(i);
                 PlayerCard playerCard = new PlayerCard(
+                        temp,
                         leftSideWidth - 2 * padding, //width
                         rectHeightOtherPlayerInfo, //height
                         padding, //positionX
@@ -199,7 +205,7 @@ public class GameScreen extends Shortcut {
                         paddingBetweenPlayersInfo, //padding
                         parent.getOtherPlayer(i).getPlayerName(),    //nick
                         startMoney, //money
-                        Color.SKY,  //player color
+                        temp.getColor(),  //player color
                         fontForPlayersNick,  //font
                         fontForMoneyOnPlayersCards, //font
                         stage
@@ -221,6 +227,10 @@ public class GameScreen extends Shortcut {
 
         //setup endMoveButton
         playerOwner.setEndMoveButton(this);
+
+        //create buy button to use
+        buyCard = new BuyCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
+        visibleBuyCard = false;
 
         //enable cube when i start game
         if(parent.isiAmMoveGameScreen()){
@@ -259,7 +269,13 @@ public class GameScreen extends Shortcut {
 
         //draw rectangles with other players info
         for(int i=0; i<otherPlayerCards.size(); ++i){
-            otherPlayerCards.get(i).draw(parent.shapeRenderer);  //it must be between begin() and end()
+            PlayerCard temp = otherPlayerCards.get(i);
+            temp.draw(parent.shapeRenderer);  //it must be between begin() and end()
+        }
+
+        //draw rectangle for buy card
+        if(visibleBuyCard){
+            buyCard.draw(parent.shapeRenderer);
         }
 
         parent.shapeRenderer.end();
@@ -315,13 +331,34 @@ public class GameScreen extends Shortcut {
         myPawn.changePosition(parent.getPlayer().getPlayerPosition()); //update pawn position
         PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage(numberOnCube, parent.getPlayer().getPlayerId()); //create message about my move
         parent.serverHandler.sendMessage(playerMoveMessage); //send message to server
+
+        //get info about card
+        if(parent.getPlayer().getPlayerPosition() == 0){
+            //'start' card - implemented in future
+
+        }else{
+            Card card = cardsManager.getCard(parent.getPlayer().getPlayerPosition());
+            if(card == null) return;
+            Player cardOwner = card.getOwner();
+            //when card has got owner -> you have to pay
+            if(cardOwner != null){
+                //to do: implemented fee/rent in future
+            }else{
+                //when card hasn't got owner -> you can buy this card
+                buyCard.change(card);
+                setVisibleBuyCard();
+            }
+        }
+
     }
 
     public void endMyMove(){
+        buyCard.reset(); //hide button, city name, description
+        resetVisibleBuyCard(); //disable buy card
         cube.resetAvailable(); //disable cube
         parent.setiAmMoveGameScreen(false); //end my move
         playerOwner.hideEndMoveButton();
-        parent.serverHandler.sendMessage(new EndMoveMessage());
+        parent.serverHandler.sendMessage(new EndMoveMessage()); //send info to server
     }
 
     public void moveOtherPlayer(Player player, int delta){
@@ -338,5 +375,30 @@ public class GameScreen extends Shortcut {
             }
         }
 
+    }
+
+    public void buyCard(Card card){
+        if(card==null) return;
+        City city = card.getCity();
+        BuyCardMessage buyCardMessage = new BuyCardMessage(card.getIdCard(),city.getPrice(), parent.getPlayer().getPlayerId());
+        parent.serverHandler.sendMessage(buyCardMessage);
+        buyCard.reset();
+        resetVisibleBuyCard();
+    }
+
+    public boolean isVisibleBuyCard() {
+        return visibleBuyCard;
+    }
+
+    public void setVisibleBuyCard() {
+        this.visibleBuyCard = true;
+    }
+
+    public void resetVisibleBuyCard() {
+        this.visibleBuyCard = false;
+    }
+
+    public CardsManager getCardsManager() {
+        return cardsManager;
     }
 }

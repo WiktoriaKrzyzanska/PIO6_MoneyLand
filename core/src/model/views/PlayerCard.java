@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MoneyLandGame;
 
 public class PlayerCard implements Disposable {
+    Player player;
     private float rectHeight;
     private float rectWidth;
     private float rectPositionX;
@@ -39,7 +40,8 @@ public class PlayerCard implements Disposable {
     private Texture endMoveButtonAvailableHover;
     private GameScreen board;
 
-    public PlayerCard(float rectWidth, float rectHeight, float rectPositionX, float rectPositionY, int paddingBetween, String nick, int money, Color color, BitmapFont fontForNick, BitmapFont fontForMoney, Stage stage) {
+    public PlayerCard(Player player,float rectWidth, float rectHeight, float rectPositionX, float rectPositionY, int paddingBetween, String nick, int money, Color color, BitmapFont fontForNick, BitmapFont fontForMoney, Stage stage) {
+        this.player = player;
         this.rectHeight = rectHeight;
         this.rectWidth = rectWidth;
         this.rectPositionX = rectPositionX;
@@ -133,7 +135,7 @@ public class PlayerCard implements Disposable {
         );
 
         //update money status
-        moneyLabel.setText(money + " cebulionow");
+        moneyLabel.setText(player.getPlayerMoney() + " cebulionow");
 
     }
 
