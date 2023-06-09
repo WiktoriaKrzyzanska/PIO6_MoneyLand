@@ -1,5 +1,6 @@
 package model.views;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
@@ -8,6 +9,20 @@ public class Player {
     private int cardNumber;
     private int money;
     private List<City> ownedCities; //soon to be changed to List<City>
+
+    public Player(){
+        id = 0;
+        cardNumber = 0;
+        money = 5000;
+        ownedCities = new ArrayList<>();
+    }
+    public Player(String name){
+        this.name = name;
+        id = 0;
+        cardNumber = 0;
+        money = 5000;
+        ownedCities = new ArrayList<>();
+    }
 
     public Player(int id, String name, int cardNumber, int money, List<City> ownedCities){
         this.id=id;
