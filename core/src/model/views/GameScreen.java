@@ -18,10 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
-import model.messages.BuyCardMessage;
-import model.messages.EndMoveMessage;
-import model.messages.PlayerMoveMessage;
-import model.messages.TransferMessage;
+import model.messages.*;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
 
@@ -70,6 +67,7 @@ public class GameScreen extends Shortcut {
     private boolean visibleBuyCard;
     private PopUpInformation popUpInformationFee;
     private boolean isVisiblePopUpFee = false;
+    private final int PRIZE_START_FIELD = 500;
 
 
     public GameScreen(MoneyLandGame game){
@@ -331,20 +329,25 @@ public class GameScreen extends Shortcut {
 
     public void myTurn(){
         //enable cube
-        cube.setAvailable();
+        cube.setAvailable(); //cube has got listener which calls moveMyPlayer when player clicks on cube
         playerOwner.showEndMoveButton();
     }
     public void moveMyPlayer(){
         int numberOnCube = cube.getNumberOnCube(); //get number on cube
+        int oldPosition = parent.getPlayer().getPlayerPosition();
         parent.getPlayer().updatePlayerPosition(numberOnCube); //update position
         myPawn.changePosition(parent.getPlayer().getPlayerPosition()); //update pawn position
         PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage(numberOnCube, parent.getPlayer().getPlayerId()); //create message about my move
         parent.serverHandler.sendMessage(playerMoveMessage); //send message to server
 
-        //get info about card
-        if(parent.getPlayer().getPlayerPosition() == 0){
-            //'start' card - implemented in future
-
+        //get info about card and check if player crossed start
+        if(parent.getPlayer().getPlayerPosition() == 0 || oldPosition+numberOnCube>=16){
+            //player crossed 'start' field
+            CrossedStartMessage crossedStartMessage = new CrossedStartMessage(parent.getPlayer().getPlayerId(), PRIZE_START_FIELD);
+            parent.serverHandler.sendMessage(crossedStartMessage);
+            //popUp
+            popUpInformationFee.setText("Soltys placi Ci "+String.valueOf(PRIZE_START_FIELD)+" cebulionow");
+            popUpInformationFee.showPopUp();
         }else{
             Card card = cardsManager.getCard(parent.getPlayer().getPlayerPosition());
             if(card == null) return;

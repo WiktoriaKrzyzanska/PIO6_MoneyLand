@@ -38,6 +38,7 @@ public class ServerHandler {
         kryo.register(BuyCardMessage.class);
         kryo.register(Color.class);
         kryo.register(TransferMessage.class);
+        kryo.register(CrossedStartMessage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -164,6 +165,26 @@ public class ServerHandler {
                         }
                     }
                 }
+                //listener when player crossed start field
+                else if(object instanceof CrossedStartMessage){
+                    CrossedStartMessage message = (CrossedStartMessage) object;
+                    //if i crossed start field
+                    if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
+                        game.getPlayer().addPlayerMoney(message.getAmount());
+                    }else{
+                        //if other player crossed start field
+                        for(int i=0; i<game.sizePlayer(); ++i){
+                            Player temp = game.getOtherPlayer(i);
+                            if(temp.getPlayerId() == message.getIdPlayer()){
+                                temp.addPlayerMoney(message.getAmount());
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+
             }
         });
     }

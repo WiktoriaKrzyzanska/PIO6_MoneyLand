@@ -40,6 +40,7 @@ public class GameServer{
         kryo.register(BuyCardMessage.class);
         kryo.register(Color.class);
         kryo.register(TransferMessage.class);
+        kryo.register(CrossedStartMessage.class);
 
         server.start();
 
@@ -130,6 +131,18 @@ public class GameServer{
                         }else if(id == message.getIdPlayerTo()){
                             temp.addPlayerMoney(money);
                         }
+                    }
+                }
+                else if(object instanceof CrossedStartMessage){
+                    CrossedStartMessage message = (CrossedStartMessage) object;
+                    //update status and send info to all players
+                    for(int i=0; i<playersList.size(); ++i){
+                        ClientHandler handler = playersList.get(i);
+                        Player player = handler.getPlayerFromServer();
+                        if(player.getPlayerId() == message.getIdPlayer()){
+                            player.addPlayerMoney(message.getAmount());
+                        }
+                        handler.getConnection().sendTCP(message);
                     }
                 }
             }
