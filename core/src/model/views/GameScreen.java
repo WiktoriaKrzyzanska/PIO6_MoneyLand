@@ -66,6 +66,7 @@ public class GameScreen extends Shortcut {
     private BuyCard buyCard;
     private boolean visibleBuyCard;
     private PopUpInformation popUpInformationFee;
+    private PopUpInformation popUpInformationCrossedStart;
     private boolean isVisiblePopUpFee = false;
     private final int PRIZE_START_FIELD = 500;
 
@@ -239,6 +240,12 @@ public class GameScreen extends Shortcut {
         popUpInformationFee.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         stage2.addActor(popUpInformationFee);
 
+        //create pop up for prize when player cross start field
+        popUpInformationCrossedStart =  new PopUpInformation("Soltys placi Ci "+String.valueOf(PRIZE_START_FIELD)+" cebulionow", false);
+        popUpInformationCrossedStart.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpInformationCrossedStart.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        stage2.addActor(popUpInformationCrossedStart);
+
         //enable cube when i start game
         if(parent.isiAmMoveGameScreen()){
             myTurn();
@@ -341,14 +348,19 @@ public class GameScreen extends Shortcut {
         parent.serverHandler.sendMessage(playerMoveMessage); //send message to server
 
         //get info about card and check if player crossed start
+        boolean startField = false;
         if(parent.getPlayer().getPlayerPosition() == 0 || oldPosition+numberOnCube>=16){
             //player crossed 'start' field
             CrossedStartMessage crossedStartMessage = new CrossedStartMessage(parent.getPlayer().getPlayerId(), PRIZE_START_FIELD);
             parent.serverHandler.sendMessage(crossedStartMessage);
             //popUp
-            popUpInformationFee.setText("Soltys placi Ci "+String.valueOf(PRIZE_START_FIELD)+" cebulionow");
-            popUpInformationFee.showPopUp();
-        }else{
+            popUpInformationCrossedStart.showPopUp();
+
+            if(parent.getPlayer().getPlayerPosition() == 0) startField=true;
+        }
+
+        //because player can crossed start field and stand on another card
+        if(!startField){
             Card card = cardsManager.getCard(parent.getPlayer().getPlayerPosition());
             if(card == null) return;
             Player cardOwner = card.getOwner();
@@ -369,7 +381,6 @@ public class GameScreen extends Shortcut {
                 setVisibleBuyCard();
             }
         }
-
     }
 
     public void endMyMove(){
