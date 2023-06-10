@@ -32,12 +32,12 @@ public class PopUpInformation extends Table {
      * Remember to create a second stage and add it to it.
      */
 
-    public PopUpInformation(String text) {
+    public PopUpInformation(String text, boolean defaultVisible) {
         this.text = text;
         font = new BitmapFont();
         spriteBatch = new SpriteBatch();
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT), spriteBatch);
-        setVisible(true);
+        setVisible(defaultVisible);
         Texture buttonTexture = new Texture("NextButton.png");
         Texture buttonHoverTexture = new Texture("NextButtonClicked.png");
         int width = (int) getWidth();
@@ -88,6 +88,17 @@ public class PopUpInformation extends Table {
         }
     }
 
+    public void setText(String text){
+        this.text = text;
+    }
+
+    public void showPopUp(){
+        setVisible(true);
+    }
+
+    public void hidePopUp(){
+        setVisible(false);
+    }
 
     public void dispose() {
         spriteBatch.dispose();

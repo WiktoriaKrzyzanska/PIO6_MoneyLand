@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
+import model.messages.*;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
 
@@ -52,8 +53,6 @@ public class GameScreen extends Shortcut {
     private PlayerCard playerOwner;
     private BitmapFont fontForPlayersNick;
     private BitmapFont fontForMoneyOnPlayersCards;
-
-
     private ShapeRenderer shapeRenderer;
     final String text = "We're loading your game!";
     PopUpInformation popUpPlayer;
@@ -61,6 +60,17 @@ public class GameScreen extends Shortcut {
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
     ImageButton startButton;
+
+    private Pawn myPawn;
+    private ArrayList<Pawn> otherPlayersPawns;
+    private BuyCard buyCard;
+    private boolean visibleBuyCard;
+    private PopUpInformation popUpInformationFee;
+    private PopUpInformation popUpInformationCrossedStart;
+    private boolean isVisiblePopUpFee = false;
+    private final int PRIZE_START_FIELD = 500;
+
+
     public GameScreen(MoneyLandGame game){
         super(game);
         parent = game;
@@ -75,19 +85,28 @@ public class GameScreen extends Shortcut {
         stage2 = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         shapeRenderer = new ShapeRenderer ();
 
-
+        //set popups when game start
         String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "!  Oto Twoj pionek";
         String Rules = "Zasady";
-        String Cebulion = "Na poczatek gry dosatjesz 500 cebulionow." +
+        String Cebulion = "Na poczatek gry dostajesz 500 cebulionow." +
                 "Wydawaj je madrze";
-        String InformationWhoStarts = "Gre zaczyna Player "; //when we have a method we have to change it
+        String InformationWhoStarts = new String();
+        if(parent.isiAmMoveGameScreen()){
+            InformationWhoStarts = "Zaczynasz gre :)";
+        }else{
+            for(int i=0; i<parent.sizePlayer(); ++i){
+                Player temp = parent.getOtherPlayer(i);
+                if(temp.getPlayerId() == parent.getIdPlayerMoveGameScreen()){
+                    InformationWhoStarts = "Gre zaczyna "+temp.getPlayerName();
+                }
+            }
+        }
 
 
-
-        popUpFirstPlayer = new PopUpInformation(InformationWhoStarts);
-        popUpMoney = new PopUpInformation(Cebulion);
-        popUpRules = new PopUpInformation( Rules);
-        popUpPlayer = new PopUpInformation( Welcome);
+        popUpFirstPlayer = new PopUpInformation(InformationWhoStarts, true);
+        popUpMoney = new PopUpInformation(Cebulion, true);
+        popUpRules = new PopUpInformation( Rules, true);
+        popUpPlayer = new PopUpInformation( Welcome, true);
 
         popUpFirstPlayer.setVisible(true);
         popUpPlayer.setVisible(true);
@@ -102,7 +121,7 @@ public class GameScreen extends Shortcut {
         cubeRectHeight = MoneyLandGame.HEIGHT/4;
         cubeRectPosX = MoneyLandGame.WIDTH - cubeRectWith;
         cubeRectPosY = MoneyLandGame.HEIGHT/6;
-        cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage,4);
+        cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage,4, this);
 
         //config menu button
         menuButtonTexture = new Texture(Gdx.files.internal("MenuButton.png"));
@@ -162,6 +181,7 @@ public class GameScreen extends Shortcut {
         float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
 
         playerOwner = new PlayerCard(
+                parent.getPlayer(),
                 leftSideWidth * 3/2, //width
                 MoneyLandGame.HEIGHT - boardHeight, //height
                 0, //positionX
@@ -169,7 +189,7 @@ public class GameScreen extends Shortcut {
                 paddingBetweenPlayersInfo, //padding
                 parent.getPlayer().getPlayerName(),    //nick
                 startMoney, //money
-                Color.ORANGE,  //player color
+                parent.getPlayer().getColor(), //player color
                 fontForPlayersNick,  //font
                 fontForMoneyOnPlayersCards, //font
                 stage
@@ -177,7 +197,9 @@ public class GameScreen extends Shortcut {
 
         for(int i=0; i<parent.sizePlayer(); ++i){
                 //other players
+                Player temp = parent.getOtherPlayer(i);
                 PlayerCard playerCard = new PlayerCard(
+                        temp,
                         leftSideWidth - 2 * padding, //width
                         rectHeightOtherPlayerInfo, //height
                         padding, //positionX
@@ -185,7 +207,7 @@ public class GameScreen extends Shortcut {
                         paddingBetweenPlayersInfo, //padding
                         parent.getOtherPlayer(i).getPlayerName(),    //nick
                         startMoney, //money
-                        Color.SKY,  //player color
+                        temp.getColor(),  //player color
                         fontForPlayersNick,  //font
                         fontForMoneyOnPlayersCards, //font
                         stage
@@ -195,6 +217,39 @@ public class GameScreen extends Shortcut {
 
         Gdx.input.setInputProcessor(stage); //This tells the screen to send any input from the user to the stage so it can respond
 
+        //create pawns; pawn number == id player from server
+        otherPlayersPawns = new ArrayList<>();
+        for(int i=0; i<parent.sizePlayer(); ++i){
+            Player temp = parent.getOtherPlayer(i);
+            int playerId = temp.getPlayerId();
+            Pawn pawn = new Pawn(stage,playerId,0);
+            otherPlayersPawns.add(pawn);
+        }
+        myPawn = new Pawn(stage, parent.getPlayer().getPlayerId(), 0);
+
+        //setup endMoveButton
+        playerOwner.setEndMoveButton(this);
+
+        //create buy button to use
+        buyCard = new BuyCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
+        visibleBuyCard = false;
+
+        //create pop up for fee
+        popUpInformationFee = new PopUpInformation("", false);
+        popUpInformationFee.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpInformationFee.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        stage2.addActor(popUpInformationFee);
+
+        //create pop up for prize when player cross start field
+        popUpInformationCrossedStart =  new PopUpInformation("Soltys placi Ci "+String.valueOf(PRIZE_START_FIELD)+" cebulionow", false);
+        popUpInformationCrossedStart.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpInformationCrossedStart.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        stage2.addActor(popUpInformationCrossedStart);
+
+        //enable cube when i start game
+        if(parent.isiAmMoveGameScreen()){
+            myTurn();
+        }
 
     }
 
@@ -228,7 +283,13 @@ public class GameScreen extends Shortcut {
 
         //draw rectangles with other players info
         for(int i=0; i<otherPlayerCards.size(); ++i){
-            otherPlayerCards.get(i).draw(parent.shapeRenderer);  //it must be between begin() and end()
+            PlayerCard temp = otherPlayerCards.get(i);
+            temp.draw(parent.shapeRenderer);  //it must be between begin() and end()
+        }
+
+        //draw rectangle for buy card
+        if(visibleBuyCard){
+            buyCard.draw(parent.shapeRenderer);
         }
 
         parent.shapeRenderer.end();
@@ -271,5 +332,104 @@ public class GameScreen extends Shortcut {
         menuButtonTexture.dispose();
         menuButtonHoverTexture.dispose();
 
+    }
+
+    public void myTurn(){
+        //enable cube
+        cube.setAvailable(); //cube has got listener which calls moveMyPlayer when player clicks on cube
+        playerOwner.showEndMoveButton();
+    }
+    public void moveMyPlayer(){
+        int numberOnCube = cube.getNumberOnCube(); //get number on cube
+        int oldPosition = parent.getPlayer().getPlayerPosition();
+        parent.getPlayer().updatePlayerPosition(numberOnCube); //update position
+        myPawn.changePosition(parent.getPlayer().getPlayerPosition()); //update pawn position
+        PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage(numberOnCube, parent.getPlayer().getPlayerId()); //create message about my move
+        parent.serverHandler.sendMessage(playerMoveMessage); //send message to server
+
+        //get info about card and check if player crossed start
+        boolean startField = false;
+        if(parent.getPlayer().getPlayerPosition() == 0 || oldPosition+numberOnCube>=16){
+            //player crossed 'start' field
+            CrossedStartMessage crossedStartMessage = new CrossedStartMessage(parent.getPlayer().getPlayerId(), PRIZE_START_FIELD);
+            parent.serverHandler.sendMessage(crossedStartMessage);
+            //popUp
+            popUpInformationCrossedStart.showPopUp();
+
+            if(parent.getPlayer().getPlayerPosition() == 0) startField=true;
+        }
+
+        //because player can crossed start field and stand on another card
+        if(!startField){
+            Card card = cardsManager.getCard(parent.getPlayer().getPlayerPosition());
+            if(card == null) return;
+            Player cardOwner = card.getOwner();
+            //when card has got owner -> you have to pay
+            if(cardOwner != null){
+                int myId = parent.getPlayer().getPlayerId();
+                int ownerId = cardOwner.getPlayerId();
+                float fee = card.getCity().getRentAmount();
+                TransferMessage transferMessage = new TransferMessage(myId, ownerId, fee);
+                //popUp
+                popUpInformationFee.setText("Stoisz na polu "+card.cityName.getText()+".\n Oddajesz "+String.valueOf(card.getCity().rentAmount)+" cebulionow");
+                popUpInformationFee.showPopUp();
+                //send info to server
+                parent.serverHandler.sendMessage(transferMessage);
+            }else{
+                //when card hasn't got owner -> you can buy this card
+                buyCard.change(card);
+                setVisibleBuyCard();
+            }
+        }
+    }
+
+    public void endMyMove(){
+        buyCard.reset(); //hide button, city name, description
+        resetVisibleBuyCard(); //disable buy card
+        cube.resetAvailable(); //disable cube
+        parent.setiAmMoveGameScreen(false); //end my move
+        playerOwner.hideEndMoveButton();
+        parent.serverHandler.sendMessage(new EndMoveMessage()); //send info to server
+    }
+
+    public void moveOtherPlayer(Player player, int delta){
+        //change cube
+        cube.changeCube(delta);
+
+        //change position
+        player.updatePlayerPosition(delta);
+        for(int i=0; i<otherPlayersPawns.size(); ++i){
+            Pawn pawn = otherPlayersPawns.get(i);
+            if(pawn.getNumberPlayer() == player.getPlayerId()){
+                pawn.changePosition(player.getPlayerPosition());
+                break;
+            }
+        }
+
+    }
+
+    public void buyCard(Card card){
+        if(card==null) return;
+        City city = card.getCity();
+        BuyCardMessage buyCardMessage = new BuyCardMessage(card.getIdCard(),city.getPrice(), parent.getPlayer().getPlayerId());
+        parent.serverHandler.sendMessage(buyCardMessage);
+        buyCard.reset();
+        resetVisibleBuyCard();
+    }
+
+    public boolean isVisibleBuyCard() {
+        return visibleBuyCard;
+    }
+
+    public void setVisibleBuyCard() {
+        this.visibleBuyCard = true;
+    }
+
+    public void resetVisibleBuyCard() {
+        this.visibleBuyCard = false;
+    }
+
+    public CardsManager getCardsManager() {
+        return cardsManager;
     }
 }

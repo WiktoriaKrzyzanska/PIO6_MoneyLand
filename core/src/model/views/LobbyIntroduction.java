@@ -118,7 +118,7 @@ public class LobbyIntroduction extends Shortcut  {
             @Override
             public void keyTyped (TextField text, char input) {
                 if (input == '\n') {
-                    parent.setPlayerNick(textField.getText());
+                    parent.setPlayer(new Player(textField.getText()));
                     parent.changeScreen(MoneyLandGame.LOBBY);
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 }

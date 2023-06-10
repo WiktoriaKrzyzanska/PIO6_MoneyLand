@@ -42,7 +42,6 @@ public class Lobby extends Shortcut {
     private Texture buttonHoverStart;
     private Texture buttonStartNotAvailable;
     BitmapFont font;
-    Label numberPlayer, namePlayerOne, namePlayerTwo, namePlayerThree, namePlayerFour, namePlayerFive;
     Camera camera;
     Sprite backgroundSprite;
     Label numberPlayer;
@@ -60,9 +59,9 @@ public class Lobby extends Shortcut {
         // config connect to server or create server and connect
         parent.serverHandler.setConnect();
         parent.serverHandler.setupConnectWithLobbyScreen(this);
+        parent.serverHandler.sendMessage(parent.getPlayer()); //send message to server
 
-        String playerNickForServer = new String(parent.getPlayerNick());
-        parent.serverHandler.sendMessage(playerNickForServer); //send message to server
+
         camera = new OrthographicCamera();
         camera.viewportHeight = MoneyLandGame.HEIGHT;
         camera.viewportWidth = MoneyLandGame.WIDTH;
@@ -71,8 +70,6 @@ public class Lobby extends Shortcut {
         backgroundTexture = new Texture("LobbyIntroduction.png");
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT);
-        parent.serverHandler.sendMessage(parent.getPlayer()); //send message to server
-
 
 
         title = new Texture(Gdx.files.internal("title.png"));
@@ -165,11 +162,7 @@ public class Lobby extends Shortcut {
         float textureHeight = screenHeight  ;
         float textureX = ( textureWidth -1250) ;
         float textureY = (textureHeight - 1055) ;
-        //to do: refactor this part in future
-        stage.getActors().removeValue(numberPlayer,true);
-        numberPlayer = new Label( "Czekamy na graczy: "+parent.sizePlayer()+"/5", new Label.LabelStyle(font, Color.BLACK));
-        numberPlayer.setPosition(stage.getViewport().getWorldWidth() * 0.5f - numberPlayer.getWidth() * 0.5f, stage.getViewport().getWorldHeight() * 0.7f - numberPlayer.getHeight() * 0.5f);
-        stage.addActor(numberPlayer)
+
 
         //check if there are min players to start game - change button
         if(parent.sizePlayer()+1 >= MIN_PLAYERS){

@@ -1,13 +1,24 @@
 package model.views;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Disposable;
+import com.mygdx.game.MoneyLandGame;
 
-public class PlayerCard {
+public class PlayerCard implements Disposable {
+    Player player;
     private float rectHeight;
     private float rectWidth;
     private float rectPositionX;
@@ -21,7 +32,16 @@ public class PlayerCard {
     private float colorRectDimension;
     private Stage stage;
 
-    public PlayerCard(float rectWidth, float rectHeight, float rectPositionX, float rectPositionY, int paddingBetween, String nick, int money, Color color, BitmapFont fontForNick, BitmapFont fontForMoney, Stage stage) {
+    private ImageButton endMoveButton;
+    private ImageButton.ImageButtonStyle endMoveButtonStyleAvailable;
+    private ImageButton.ImageButtonStyle endMoveButtonStyleNoAvailable;
+    private Texture  endMoveButtonAvailable;
+    private Texture endMoveButtonNoAvailable;
+    private Texture endMoveButtonAvailableHover;
+    private GameScreen board;
+
+    public PlayerCard(Player player,float rectWidth, float rectHeight, float rectPositionX, float rectPositionY, int paddingBetween, String nick, int money, Color color, BitmapFont fontForNick, BitmapFont fontForMoney, Stage stage) {
+        this.player = player;
         this.rectHeight = rectHeight;
         this.rectWidth = rectWidth;
         this.rectPositionX = rectPositionX;
@@ -54,7 +74,48 @@ public class PlayerCard {
 
     }
 
+    public void setEndMoveButton(final GameScreen board){
+
+        this.board = board;
+
+        endMoveButtonAvailable = new Texture("NextButton.png"); //to change
+        endMoveButtonAvailableHover = new Texture("NextButtonClicked.png"); //to change
+        endMoveButtonNoAvailable = new Texture("NextButton.png"); //to change
+
+        //create start button style when it will be available
+        endMoveButtonStyleAvailable = new ImageButton.ImageButtonStyle();
+        endMoveButtonStyleAvailable.up = new TextureRegionDrawable(new TextureRegion(endMoveButtonAvailable));
+        endMoveButtonStyleAvailable.over = new TextureRegionDrawable(new TextureRegion(endMoveButtonAvailableHover));
+
+        //create start button style when it's not available
+        endMoveButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
+        endMoveButtonStyleNoAvailable.up = new TextureRegionDrawable(new TextureRegion(endMoveButtonNoAvailable));
+
+        endMoveButton = new ImageButton(endMoveButtonStyleNoAvailable);
+
+        endMoveButton.setSize(200,100);
+        endMoveButton.setPosition(rectPositionX + rectWidth - endMoveButton.getWidth(), rectPositionY);
+        endMoveButton.setVisible(false);
+
+        endMoveButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                board.endMyMove();
+            }
+        });
+        stage.addActor(endMoveButton);
+    }
+
+    public void showEndMoveButton(){
+        if(endMoveButton!=null) endMoveButton.setVisible(true);
+    }
+
+    public void hideEndMoveButton(){
+        if(endMoveButton!=null) endMoveButton.setVisible(false);
+    }
+
     public void draw(ShapeRenderer shapeRenderer){
+
         //main rectangle
         shapeRenderer.setColor(backgroundColor);
         shapeRenderer.rect(
@@ -74,12 +135,18 @@ public class PlayerCard {
         );
 
         //update money status
-        moneyLabel.setText(money + " cebulionow");
-
+        moneyLabel.setText(player.getPlayerMoney() + " cebulionow");
 
     }
 
     public void setMoney(int money) {
         this.money = money;
+    }
+
+    @Override
+    public void dispose() {
+        if(endMoveButtonAvailable != null) endMoveButtonAvailable.dispose();
+        if(endMoveButtonNoAvailable != null) endMoveButtonNoAvailable.dispose();
+        if(endMoveButtonAvailableHover != null) endMoveButtonAvailableHover.dispose();
     }
 }

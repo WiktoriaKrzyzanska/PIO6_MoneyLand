@@ -1,10 +1,13 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import model.messages.*;
+import model.views.Card;
 import model.views.GameScreen;
 import model.views.Lobby;
 import model.views.Player;
@@ -28,6 +31,14 @@ public class ServerHandler {
         Kryo kryo = client.getKryo();
         kryo.register(ArrayList.class);
         kryo.register(Player.class);
+        kryo.register(StartGameMessage.class);
+        kryo.register(PlayerMoveMessage.class);
+        kryo.register(EndMoveMessage.class);
+        kryo.register(YourMoveMessage.class);
+        kryo.register(BuyCardMessage.class);
+        kryo.register(Color.class);
+        kryo.register(TransferMessage.class);
+        kryo.register(CrossedStartMessage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -80,13 +91,100 @@ public class ServerHandler {
                     game.addPlayer(newPlayer);
                 }
                 //listener for messages from server
-                else if (object instanceof String) {
-                    String message = (String)object;
-                    //message - start game - change screen to loading
-                    if(message.equals("Start game")){
-                        if(lobby!=null) lobby.setChangeScreenToLoading();
+                else if (object instanceof StartGameMessage) {
+                    StartGameMessage message = (StartGameMessage)object;
+
+                    game.setIdPlayerMoveGameScreen(message.getIdPlayerWhoStart());
+                    game.setiAmMoveGameScreen(message.isAmIStart());
+                    game.getPlayer().setPlayerId(message.getIdMyPlayer());
+
+                    if(lobby!=null) lobby.setChangeScreenToLoading();
+                }
+
+                //listener for move other player
+                else if(object instanceof PlayerMoveMessage){
+                    PlayerMoveMessage message = (PlayerMoveMessage) object;
+                    Player player = game.getOtherPlayerById(message.getIdPlayer());
+                    gameScreen.moveOtherPlayer(player, message.getDelta());
+                }
+
+                //listener for my turn
+                else if(object instanceof YourMoveMessage){
+                    game.setiAmMoveGameScreen(true);
+                    gameScreen.myTurn();
+                }
+                //listener for buy card
+                else if(object instanceof BuyCardMessage){
+                    BuyCardMessage message = (BuyCardMessage) object;
+                    Color color = null;
+                    Player owner = null;
+                    //update money status if i bought card
+                    if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
+                        owner = game.getPlayer();
+                        owner.subtractPlayerMoney((int)message.getAmount()); //update money status
+                        color = owner.getColor();
+                    }
+                    //update money status if other player bought card
+                    else{
+                        for(int i=0; i<game.sizePlayer(); ++i){
+                            owner = game.getOtherPlayer(i);
+                            if(owner.getPlayerId() == message.getIdPlayer()){
+                                owner.subtractPlayerMoney((int)message.getAmount());
+                                color = owner.getColor();
+                                break;
+                            }
+                        }
+                    }
+
+                    //update owner and card color
+                    Card card = gameScreen.getCardsManager().getCard(message.getCardNumber());
+                    card.setOwner(owner);
+                    card.setRectTitleBackground(color);
+                }
+                //listener for money transfer
+                else if(object instanceof TransferMessage){
+                    TransferMessage message = (TransferMessage) object;
+                    int money = (int)message.getAmount();
+
+                    //update for my player
+                    Player me = game.getPlayer();
+                    if(me.getPlayerId() == message.getIdPlayerFrom()){
+                        me.subtractPlayerMoney(money);
+                    }else if(me.getPlayerId() == message.getIdPlayerTo()){
+                        me.addPlayerMoney(money);
+                    }
+
+                    //update for others player
+                    for(int i=0; i<game.sizePlayer(); ++i){
+                        Player temp = game.getOtherPlayer(i);
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayerFrom()){
+                            temp.subtractPlayerMoney(money);
+                        }else if(id == message.getIdPlayerTo()){
+                            temp.addPlayerMoney(money);
+                        }
                     }
                 }
+                //listener when player crossed start field
+                else if(object instanceof CrossedStartMessage){
+                    CrossedStartMessage message = (CrossedStartMessage) object;
+                    //if i crossed start field
+                    if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
+                        game.getPlayer().addPlayerMoney(message.getAmount());
+                    }else{
+                        //if other player crossed start field
+                        for(int i=0; i<game.sizePlayer(); ++i){
+                            Player temp = game.getOtherPlayer(i);
+                            if(temp.getPlayerId() == message.getIdPlayer()){
+                                temp.addPlayerMoney(message.getAmount());
+                                break;
+                            }
+                        }
+                    }
+                }
+
+
+
             }
         });
     }
