@@ -37,6 +37,7 @@ public class ServerHandler {
         kryo.register(YourMoveMessage.class);
         kryo.register(BuyCardMessage.class);
         kryo.register(Color.class);
+        kryo.register(TransferMessage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -138,6 +139,30 @@ public class ServerHandler {
                     Card card = gameScreen.getCardsManager().getCard(message.getCardNumber());
                     card.setOwner(owner);
                     card.setRectTitleBackground(color);
+                }
+                //listener for money transfer
+                else if(object instanceof TransferMessage){
+                    TransferMessage message = (TransferMessage) object;
+                    int money = (int)message.getAmount();
+
+                    //update for my player
+                    Player me = game.getPlayer();
+                    if(me.getPlayerId() == message.getIdPlayerFrom()){
+                        me.subtractPlayerMoney(money);
+                    }else if(me.getPlayerId() == message.getIdPlayerTo()){
+                        me.addPlayerMoney(money);
+                    }
+
+                    //update for others player
+                    for(int i=0; i<game.sizePlayer(); ++i){
+                        Player temp = game.getOtherPlayer(i);
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayerFrom()){
+                            temp.subtractPlayerMoney(money);
+                        }else if(id == message.getIdPlayerTo()){
+                            temp.addPlayerMoney(money);
+                        }
+                    }
                 }
             }
         });

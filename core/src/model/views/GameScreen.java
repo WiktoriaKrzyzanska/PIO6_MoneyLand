@@ -21,6 +21,7 @@ import com.mygdx.game.MoneyLandGame;
 import model.messages.BuyCardMessage;
 import model.messages.EndMoveMessage;
 import model.messages.PlayerMoveMessage;
+import model.messages.TransferMessage;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
 
@@ -67,6 +68,8 @@ public class GameScreen extends Shortcut {
     private ArrayList<Pawn> otherPlayersPawns;
     private BuyCard buyCard;
     private boolean visibleBuyCard;
+    private PopUpInformation popUpInformationFee;
+    private boolean isVisiblePopUpFee = false;
 
 
     public GameScreen(MoneyLandGame game){
@@ -101,10 +104,10 @@ public class GameScreen extends Shortcut {
         }
 
 
-        popUpFirstPlayer = new PopUpInformation(InformationWhoStarts);
-        popUpMoney = new PopUpInformation(Cebulion);
-        popUpRules = new PopUpInformation( Rules);
-        popUpPlayer = new PopUpInformation( Welcome);
+        popUpFirstPlayer = new PopUpInformation(InformationWhoStarts, true);
+        popUpMoney = new PopUpInformation(Cebulion, true);
+        popUpRules = new PopUpInformation( Rules, true);
+        popUpPlayer = new PopUpInformation( Welcome, true);
 
         popUpFirstPlayer.setVisible(true);
         popUpPlayer.setVisible(true);
@@ -232,6 +235,12 @@ public class GameScreen extends Shortcut {
         buyCard = new BuyCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
         visibleBuyCard = false;
 
+        //create pop up for fee
+        popUpInformationFee = new PopUpInformation("", false);
+        popUpInformationFee.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpInformationFee.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        stage2.addActor(popUpInformationFee);
+
         //enable cube when i start game
         if(parent.isiAmMoveGameScreen()){
             myTurn();
@@ -342,7 +351,15 @@ public class GameScreen extends Shortcut {
             Player cardOwner = card.getOwner();
             //when card has got owner -> you have to pay
             if(cardOwner != null){
-                //to do: implemented fee/rent in future
+                int myId = parent.getPlayer().getPlayerId();
+                int ownerId = cardOwner.getPlayerId();
+                float fee = card.getCity().getRentAmount();
+                TransferMessage transferMessage = new TransferMessage(myId, ownerId, fee);
+                //popUp
+                popUpInformationFee.setText("Stoisz na polu "+card.cityName.getText()+".\n Oddajesz "+String.valueOf(card.getCity().rentAmount)+" cebulionow");
+                popUpInformationFee.showPopUp();
+                //send info to server
+                parent.serverHandler.sendMessage(transferMessage);
             }else{
                 //when card hasn't got owner -> you can buy this card
                 buyCard.change(card);

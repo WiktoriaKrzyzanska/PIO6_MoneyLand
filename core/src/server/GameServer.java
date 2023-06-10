@@ -39,6 +39,7 @@ public class GameServer{
         kryo.register(YourMoveMessage.class);
         kryo.register(BuyCardMessage.class);
         kryo.register(Color.class);
+        kryo.register(TransferMessage.class);
 
         server.start();
 
@@ -99,9 +100,36 @@ public class GameServer{
                 }
                 else if(object instanceof BuyCardMessage){
                     BuyCardMessage message = (BuyCardMessage) object;
+                    int money = (int)message.getAmount();
+
                     for(int i=0; i<playersList.size(); ++i){
                         ClientHandler clientHandler = playersList.get(i);
                         clientHandler.getConnection().sendTCP(message);
+
+                        //update status on server
+                        Player temp = clientHandler.getPlayerFromServer();
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayer()){
+                            temp.subtractPlayerMoney(money);
+                        }
+                    }
+                }
+                else if(object instanceof TransferMessage){
+                    TransferMessage message = (TransferMessage) object;
+                    int money = (int)message.getAmount();
+
+                    for(int i=0; i<playersList.size(); ++i){
+                        //send info to all players
+                        ClientHandler clientHandler = playersList.get(i);
+                        clientHandler.getConnection().sendTCP(message);
+                        //update status on server
+                        Player temp = clientHandler.getPlayerFromServer();
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayerFrom()){
+                            temp.subtractPlayerMoney(money);
+                        }else if(id == message.getIdPlayerTo()){
+                            temp.addPlayerMoney(money);
+                        }
                     }
                 }
             }
