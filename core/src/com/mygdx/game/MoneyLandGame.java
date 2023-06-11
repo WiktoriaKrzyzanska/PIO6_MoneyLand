@@ -5,12 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import model.views.LoadingScreen;
-import model.views.LobbyIntroduction;
-import model.views.GameScreen;
-import model.views.MenuScreen;
-import model.views.RulesScreen;
-import model.views.Lobby;
+import model.views.*;
 import server.GameServer;
 
 import java.util.ArrayList;
@@ -26,8 +21,8 @@ public class MoneyLandGame extends Game {
 	LoadingScreen loadingScreen;
 	public SpriteBatch batch;
 	public ShapeRenderer shapeRenderer;
-	public ArrayList<String> listPlayers = new ArrayList<String>();
-	private String playerNick;
+	public ArrayList<Player> listOtherPlayers = new ArrayList<>();
+	private Player player;
 
 	public static final int WIDTH = 3200; //world width
 	public static final int HEIGHT = 1600; //world height
@@ -37,9 +32,9 @@ public class MoneyLandGame extends Game {
 	public static final int LOBBY_INTRODUCTION_SCREEN = 2;
 	public static final int LOBBY = 3;
 	public static final int LOADING = 4;
+	public static final int GAME_SCREEN = 5;
 	public AssetManager manager;
 	private AssetManager progress;
-	public static final int GAME_SCREEN = 5;
 
 	public GameServer gameServer;
 	public static final String serverIP = "127.0.0.1";
@@ -47,6 +42,9 @@ public class MoneyLandGame extends Game {
 	public static final int portUDP = 54777;
 
 	public ServerHandler serverHandler;
+
+	private boolean iAmMove = false;
+	private int idPlayerMove;
 
 	@Override
 	public void create () {
@@ -116,14 +114,24 @@ public class MoneyLandGame extends Game {
 		}
 	}
 
-	public void addPlayer(String name){
-		listPlayers.add(name);
+	public void addPlayer(Player player){
+		listOtherPlayers.add(player);
 	}
-	public String getPlayer(int index){
-		return listPlayers.get(index);
+	public Player getOtherPlayer(int index){
+		return listOtherPlayers.get(index);
+	}
+
+	public Player getOtherPlayerById(int playerId){
+		for(int i=0; i<listOtherPlayers.size(); ++i){
+			Player temp = listOtherPlayers.get(i);
+			if(temp.getPlayerId() == playerId){
+				return temp;
+			}
+		}
+		return null;
 	}
 	public int sizePlayer(){
-		return listPlayers.size();
+		return listOtherPlayers.size();
 	}
 
 	public void setServer(){
@@ -137,11 +145,27 @@ public class MoneyLandGame extends Game {
 		return gameServer.serverIsReady();
 	}
 
-	public String getPlayerNick() {
-		return playerNick;
+	public Player getPlayer() {
+		return player;
 	}
 
-	public void setPlayerNick(String playerNick) {
-		this.playerNick = playerNick;
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public boolean isiAmMoveGameScreen() {
+		return iAmMove;
+	}
+
+	public void setiAmMoveGameScreen(boolean iAmMove) {
+		this.iAmMove = iAmMove;
+	}
+
+	public int getIdPlayerMoveGameScreen() {
+		return idPlayerMove;
+	}
+
+	public void setIdPlayerMoveGameScreen(int idPlayerMove) {
+		this.idPlayerMove = idPlayerMove;
 	}
 }

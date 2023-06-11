@@ -3,27 +3,34 @@ package model.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.Rectangle;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
+
+
 
 public class LobbyIntroduction extends Shortcut  {
     MoneyLandGame parent;
@@ -33,6 +40,11 @@ public class LobbyIntroduction extends Shortcut  {
     ImageButton backButton, nextButton;
     TextField textField;
     Label nameLabel;
+   Texture backgroundTexture;
+   Texture texture;
+    Sprite backgroundSprite;
+    Camera camera;
+
 
     public LobbyIntroduction(final MoneyLandGame game) {
         super(game);
@@ -41,6 +53,22 @@ public class LobbyIntroduction extends Shortcut  {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3f);
+        camera = new OrthographicCamera();
+        camera.viewportHeight = MoneyLandGame.HEIGHT;
+        camera.viewportWidth = MoneyLandGame.WIDTH;
+
+        camera.position.set(camera.viewportWidth * .5f, camera.viewportHeight * .5f, 0f);
+        camera.update();
+        backgroundTexture = new Texture("nickname.png");
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT);
+
+        int width =MoneyLandGame.WIDTH ;
+        int height = (int) (MoneyLandGame.HEIGHT * 0.75f);
+        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
+        pixmap.setColor(244/255f, 255/255f, 175/255f,1);
+        pixmap.fill();
+        texture = new Texture(pixmap);
 
         NinePatchDrawable textFieldBackground = new NinePatchDrawable(new NinePatch(new Texture(Gdx.files.internal("back.9.png")), 10, 10, 10, 10));
         textFieldBackground.setMinWidth(200f);
@@ -49,14 +77,17 @@ public class LobbyIntroduction extends Shortcut  {
         textFieldStyle.font = font;
         textFieldStyle.fontColor = Color.BLACK;
 
+
         textField = new TextField("", textFieldStyle);
         textField.setPosition((Gdx.graphics.getWidth() - textField.getWidth()) / 2f, (Gdx.graphics.getHeight() - textField.getHeight()) / 2f);
-        textField.setSize(400,80);
+        textField.setSize(700,80);
 
         nameLabel = new Label("Podaj nick", new Label.LabelStyle(font, Color.BLACK));
         nameLabel.setFontScale(3f);
-        nameLabel.setPosition(textField.getX(), textField.getY() + textField.getHeight() + 10);
+//        nameLabel.setPosition(textField.getX() + 100, textField.getY() + textField.getHeight() + 10);
         nameLabel.setSize(400,200);
+        nameLabel.setAlignment(Align.center);
+        nameLabel.setBounds(textField.getX(), textField.getY(), textField.getY() + textField.getHeight() + 10, 70);
 
         Texture buttonBack = new Texture("BackButton.png");
         Texture buttonHoverBack = new Texture("BackButtonClicked.png");
@@ -70,7 +101,6 @@ public class LobbyIntroduction extends Shortcut  {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.setPlayerNick(textField.getText());
                 parent.changeScreen(MoneyLandGame.MENU_SCREEN);
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
@@ -84,6 +114,17 @@ public class LobbyIntroduction extends Shortcut  {
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
         });
+        TextField.TextFieldListener enterClicked = new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped (TextField text, char input) {
+                if (input == '\n') {
+                    parent.setPlayer(new Player(textField.getText()));
+                    parent.changeScreen(MoneyLandGame.LOBBY);
+                    Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
+                }
+            }
+        };
+        textField.setTextFieldListener (enterClicked);
         Texture buttonNext = new Texture("NextButton.png");
         Texture buttonHoverNext = new Texture("NextButtonClicked.png");
 
@@ -96,7 +137,7 @@ public class LobbyIntroduction extends Shortcut  {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                parent.setPlayerNick(textField.getText());
+                parent.setPlayer(new Player(textField.getText()));
                 parent.changeScreen(MoneyLandGame.LOBBY);
                 Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
             }
@@ -113,6 +154,7 @@ public class LobbyIntroduction extends Shortcut  {
 
 
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
+
         stage.addActor(textField);
         stage.addActor(nameLabel);
         stage.addActor(backButton);
@@ -128,15 +170,20 @@ public class LobbyIntroduction extends Shortcut  {
         inputMultiplexer.addProcessor((InputProcessor) this);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
-
     @Override
     public void render(float delta) {
         ScreenUtils.clear(255 / 255f, 242 / 255f, 130 / 255f, 1);
 
+        float screenWidth = Gdx.graphics.getWidth();
+        float screenHeight = Gdx.graphics.getHeight();
+        float textureWidth = screenWidth ;
+        float textureHeight = screenHeight  ;
+        float textureX = ( textureWidth -1250) ;
+        float textureY = (textureHeight - 1055) ;
         parent.camera.update();
-        parent.batch.setProjectionMatrix(parent.camera.combined);
-
         parent.batch.begin();
+        backgroundSprite.draw(parent.batch);
+        parent.batch.draw(texture, textureX, textureY, textureWidth, MoneyLandGame.HEIGHT);
         parent.batch.draw(title, MoneyLandGame.WIDTH/2 - 400, MoneyLandGame.HEIGHT - 400, 800, 200);
         parent.batch.end();
 
