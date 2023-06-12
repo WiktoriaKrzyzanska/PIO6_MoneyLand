@@ -146,7 +146,7 @@ public class MenuScreen extends Shortcut {
         // Rules Button config end
 
         Texture buttonExitTexture = new Texture("exit.png");
-        Texture buttonHoverExitTexture = new Texture("exit.png");
+        Texture buttonHoverExitTexture = new Texture("exitClicked.png");
 
         ImageButton.ImageButtonStyle buttonStyleExit = new ImageButton.ImageButtonStyle();
         buttonStyleExit.up = new TextureRegionDrawable(new TextureRegion(buttonExitTexture));
