@@ -85,8 +85,16 @@ public class GameScreen extends Shortcut {
         stage2 = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         shapeRenderer = new ShapeRenderer ();
 
+        String pawnName=null;
+        switch (parent.getPlayer().getPlayerId()){
+            case 0:pawnName="STRONG";break;
+            case 1:pawnName="TYSKIE";break;
+            case 2:pawnName="TATRA";break;
+            case 3:pawnName="WARKA";break;
+            case 4:pawnName="LECH";break;
+        }
         //set popups when game start
-        String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "!  Oto Twoj pionek";
+        String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "! Twój pionek to "+pawnName;
         String Rules = "Zasady";
         String Cebulion = "Na poczatek gry dostajesz 500 cebulionow." +
                 "Wydawaj je madrze";
