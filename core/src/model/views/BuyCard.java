@@ -59,7 +59,7 @@ public class BuyCard implements Disposable {
         buyButtonHoverTexture = new Texture("KupujeButtonClicked.png"); //to change
         buyButtonStyle = new ImageButton.ImageButtonStyle();
         buyButtonStyle.up = new TextureRegionDrawable(new TextureRegion(buyButtonTexture));
-        buyButtonStyle.down = new TextureRegionDrawable(new TextureRegion(buyButtonHoverTexture));
+        buyButtonStyle.over = new TextureRegionDrawable(new TextureRegion(buyButtonHoverTexture));
 
         buyButton = new ImageButton(buyButtonStyle);
         buyButton.setSize(width*2/3, height/11);

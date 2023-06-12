@@ -125,8 +125,8 @@ public class LobbyIntroduction extends Shortcut  {
             }
         };
         textField.setTextFieldListener (enterClicked);
-        Texture buttonNext = new Texture("NextButton.png");
-        Texture buttonHoverNext = new Texture("NextButtonClicked.png");
+        Texture buttonNext = new Texture("OkButton.png");
+        Texture buttonHoverNext = new Texture("OkButtonClicked.png");
 
         ImageButton.ImageButtonStyle buttonStyleNext = new ImageButton.ImageButtonStyle();
         buttonStyleNext.up = new TextureRegionDrawable(new TextureRegion(buttonNext));

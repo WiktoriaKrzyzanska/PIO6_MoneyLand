@@ -38,8 +38,8 @@ public class PopUpInformation extends Table {
         spriteBatch = new SpriteBatch();
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT), spriteBatch);
         setVisible(defaultVisible);
-        Texture buttonTexture = new Texture("NextButton.png");
-        Texture buttonHoverTexture = new Texture("NextButtonClicked.png");
+        Texture buttonTexture = new Texture("OkButton.png");
+        Texture buttonHoverTexture = new Texture("OkButtonClicked.png");
         int width = (int) getWidth();
         int height = (int) getHeight();
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
