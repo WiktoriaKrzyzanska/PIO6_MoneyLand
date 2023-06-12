@@ -365,7 +365,7 @@ public class GameScreen extends Shortcut {
             if(card == null) return;
             Player cardOwner = card.getOwner();
             //when card has got owner -> you have to pay
-            if(cardOwner != null){
+            if(cardOwner != null&&cardOwner.getPlayerId()!=parent.getPlayer().getPlayerId()){
                 int myId = parent.getPlayer().getPlayerId();
                 int ownerId = cardOwner.getPlayerId();
                 float fee = card.getCity().getRentAmount();
@@ -377,8 +377,15 @@ public class GameScreen extends Shortcut {
                 parent.serverHandler.sendMessage(transferMessage);
             }else{
                 //when card hasn't got owner -> you can buy this card
-                buyCard.change(card);
-                setVisibleBuyCard();
+                if(cardOwner==null){
+                    buyCard.change(card);
+                    setVisibleBuyCard();
+                }else{
+                    if(cardOwner.getPlayerId()!=parent.getPlayer().getPlayerId()){
+                        buyCard.change(card);
+                        setVisibleBuyCard();
+                    }
+                }
             }
         }
     }
@@ -413,6 +420,7 @@ public class GameScreen extends Shortcut {
         City city = card.getCity();
         BuyCardMessage buyCardMessage = new BuyCardMessage(card.getIdCard(),city.getPrice(), parent.getPlayer().getPlayerId());
         parent.serverHandler.sendMessage(buyCardMessage);
+        parent.getPlayer().buyCity(city);
         buyCard.reset();
         resetVisibleBuyCard();
     }

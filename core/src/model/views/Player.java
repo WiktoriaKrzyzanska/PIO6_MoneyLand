@@ -96,4 +96,7 @@ public class Player {
     public void setColor(Color color) {
         this.color = color;
     }
+    public void buyCity(City city){
+        this.ownedCities.add(city);
+    }
 }

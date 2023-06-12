@@ -108,11 +108,11 @@ public class GameServer{
                         clientHandler.getConnection().sendTCP(message);
 
                         //update status on server
-                        Player temp = clientHandler.getPlayerFromServer();
-                        int id = temp.getPlayerId();
-                        if(id == message.getIdPlayer()){
-                            temp.subtractPlayerMoney(money);
-                        }
+//                        Player temp = clientHandler.getPlayerFromServer();
+//                        int id = temp.getPlayerId();
+//                        if(id == message.getIdPlayer()){
+//                            temp.subtractPlayerMoney(money);
+//                        }
                     }
                 }
                 else if(object instanceof TransferMessage){
