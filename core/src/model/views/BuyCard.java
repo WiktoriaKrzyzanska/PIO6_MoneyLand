@@ -55,8 +55,8 @@ public class BuyCard implements Disposable {
         this.stage.addActor(description);
 
         //config button
-        buyButtonTexture = new Texture("NextButton.png"); //to change
-        buyButtonHoverTexture = new Texture("NextButton.png"); //to change
+        buyButtonTexture = new Texture("KupujeButton.png"); //to change
+        buyButtonHoverTexture = new Texture("KupujeButtonClicked.png"); //to change
         buyButtonStyle = new ImageButton.ImageButtonStyle();
         buyButtonStyle.up = new TextureRegionDrawable(new TextureRegion(buyButtonTexture));
         buyButtonStyle.down = new TextureRegionDrawable(new TextureRegion(buyButtonHoverTexture));
