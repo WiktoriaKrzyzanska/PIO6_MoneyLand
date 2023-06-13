@@ -379,9 +379,8 @@ public class GameScreen extends Shortcut {
             if(cardOwner!=null&&cardOwner.getPlayerId()==parent.getPlayer().getPlayerId()&& !card.getCity().isTenementPlaced){
                 buyTenementCard.change(card);
                 card.getCity().placeTenement();
-                card.getCity().setRentAmount((float)(card.getCity().getRentAmount()*1.1));
                 setVisibleBuyTenementCard();
-            }else if(cardOwner != null){
+            }else if(cardOwner != null&&cardOwner.getPlayerId()!=parent.getPlayer().getPlayerId()){
                 int myId = parent.getPlayer().getPlayerId();
                 int ownerId = cardOwner.getPlayerId();
                 float amount=card.getCity().rentAmount;
@@ -395,7 +394,7 @@ public class GameScreen extends Shortcut {
                 popUpInformationFee.showPopUp();
                 //send info to server
                 parent.serverHandler.sendMessage(transferMessage);
-            }else{
+            }else if(cardOwner==null){
                 //when card hasn't got owner -> you can buy this card
                 buyCard.change(card);
                 setVisibleBuyCard();
