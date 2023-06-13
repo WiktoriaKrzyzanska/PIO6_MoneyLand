@@ -27,6 +27,7 @@ public class CardsManager {
     private float padding;
     private float paddingBetweenCards;
 
+
     City Cyprianka=new City(10,"Cyprianka", new Texture("cards/cyprianka.png"),15,300,1);
     City Badkowo=new City(300,"Badkowo", new Texture("cards/badkowo.png"),15,300,2);
     City Brzeziny=new City(300,"Brzeziny", new Texture("cards/brzeziny.png"),15,300,3);
