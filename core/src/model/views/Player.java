@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Player {
     private int id;
     private String name;
@@ -12,6 +13,7 @@ public class Player {
     private int money;
     private List<City> ownedCities; //soon to be changed to List<City>
     Color color;
+
 
     public Player(){
         id = 0;
@@ -43,6 +45,7 @@ public class Player {
     public void setPlayerId(int id){
         this.id=id;
     }
+
     public String getPlayerName() {
         return name;
     }
@@ -72,6 +75,16 @@ public class Player {
     public void subtractPlayerMoney(int toSub){
         this.money-=toSub;
     }
+    public boolean isPlayerBankrupt(){
+        if(this.money <= 0){
+
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
     public List<City> getPlayerOwnedCities() {
         return ownedCities;

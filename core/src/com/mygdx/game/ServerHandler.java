@@ -20,6 +20,7 @@ public class ServerHandler {
     private Lobby lobby;
     private GameScreen gameScreen;
 
+
     public ServerHandler(MoneyLandGame parent){
         game = parent;
     }
@@ -106,7 +107,9 @@ public class ServerHandler {
                 else if(object instanceof PlayerMoveMessage){
                     PlayerMoveMessage message = (PlayerMoveMessage) object;
                     Player player = game.getOtherPlayerById(message.getIdPlayer());
-                    gameScreen.moveOtherPlayer(player, message.getDelta());
+                    if(!player.isPlayerBankrupt()) {
+                        gameScreen.moveOtherPlayer(player, message.getDelta());
+                    }
                 }
 
                 //listener for my turn
@@ -123,6 +126,11 @@ public class ServerHandler {
                     if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
                         owner = game.getPlayer();
                         owner.subtractPlayerMoney((int)message.getAmount()); //update money status
+                        if(owner.isPlayerBankrupt()){
+                            System.out.println("Bankrupt");
+
+                        }
+                        
                         color = owner.getColor();
                     }
                     //update money status if other player bought card
@@ -131,6 +139,9 @@ public class ServerHandler {
                             owner = game.getOtherPlayer(i);
                             if(owner.getPlayerId() == message.getIdPlayer()){
                                 owner.subtractPlayerMoney((int)message.getAmount());
+                                if(owner.isPlayerBankrupt()){
+                                    System.out.println("Bankrupt");
+                                }
                                 color = owner.getColor();
                                 break;
                             }
@@ -139,8 +150,10 @@ public class ServerHandler {
 
                     //update owner and card color
                     Card card = gameScreen.getCardsManager().getCard(message.getCardNumber());
-                    card.setOwner(owner);
-                    card.setRectTitleBackground(color);
+
+                        card.setOwner(owner);
+                        card.setRectTitleBackground(color);
+
                 }
                 else if (object instanceof BuyTenementMessage){
                     BuyTenementMessage message = (BuyTenementMessage) object;
@@ -174,6 +187,9 @@ public class ServerHandler {
                     Player me = game.getPlayer();
                     if(me.getPlayerId() == message.getIdPlayerFrom()){
                         me.subtractPlayerMoney(money);
+                        if(me.isPlayerBankrupt()){
+                            System.out.println("Bankrupt");
+                        }
                     }else if(me.getPlayerId() == message.getIdPlayerTo()){
                         me.addPlayerMoney(money);
                     }
@@ -184,6 +200,9 @@ public class ServerHandler {
                         int id = temp.getPlayerId();
                         if(id == message.getIdPlayerFrom()){
                             temp.subtractPlayerMoney(money);
+                            if(temp.isPlayerBankrupt()){
+                                System.out.println("Bankrupt");
+                            }
                         }else if(id == message.getIdPlayerTo()){
                             temp.addPlayerMoney(money);
                         }

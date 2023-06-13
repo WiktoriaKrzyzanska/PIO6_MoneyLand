@@ -73,6 +73,7 @@ public class GameScreen extends Shortcut {
     private boolean visibleBuyTenementCard;
     private PopUpInformation popUpInformationFee;
     private PopUpInformation popUpInformationCrossedStart;
+    private PopUpInformation popUpLoser;
     private boolean isVisiblePopUpFee = false;
     private final int PRIZE_START_FIELD = 500;
 
@@ -123,7 +124,7 @@ public class GameScreen extends Shortcut {
         popUpPlayer = new PopUpPawn( Welcome, true, parent.getPlayer().getPlayerId());
         popUpTrapCard=new PopUpInformation("Jedno pole dziala inaczej niz pozostale ;)",true);
         popUpZgierz=new PopUpInformation("Ups! Kupiles Zgierz :( przygotuj sie na straty",false);
-
+        popUpLoser = new PopUpInformation("Przegrałeś biedaku", false);
         popUpFirstPlayer.setVisible(true);
         popUpPlayer.setVisible(true);
         popUpRules.setVisible(true);
@@ -173,8 +174,10 @@ public class GameScreen extends Shortcut {
         popUpTrapCard.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         popUpZgierz.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
         popUpZgierz.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpLoser.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpLoser.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         stage2.addActor(popUpZgierz);
-
+        stage2.addActor(popUpLoser);
         stage2.addActor(popUpFirstPlayer);
         stage2.addActor(popUpTrapCard);
         stage2.addActor(popUpMoney);
@@ -319,8 +322,15 @@ public class GameScreen extends Shortcut {
         if(visibleBuyCard){
             buyCard.draw(parent.shapeRenderer);
         }
+
+        if(parent.getPlayer().isPlayerBankrupt()){
+
+            popUpLoser.setVisible(true);
+        }
+
         if(visibleBuyTenementCard){
             buyTenementCard.draw(parent.shapeRenderer);
+
         }
 
         parent.shapeRenderer.end();
