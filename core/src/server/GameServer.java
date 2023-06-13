@@ -38,9 +38,11 @@ public class GameServer{
         kryo.register(EndMoveMessage.class);
         kryo.register(YourMoveMessage.class);
         kryo.register(BuyCardMessage.class);
+        kryo.register(BuyTenementMessage.class);
         kryo.register(Color.class);
         kryo.register(TransferMessage.class);
         kryo.register(CrossedStartMessage.class);
+
 
         server.start();
 
@@ -112,6 +114,28 @@ public class GameServer{
                         int id = temp.getPlayerId();
                         if(id == message.getIdPlayer()){
                             temp.subtractPlayerMoney(money);
+                            if(temp.isPlayerBankrupt()){
+
+                                System.out.println("Bankrupt");
+
+
+                            }
+                        }
+                    }
+                }
+                else if(object instanceof BuyTenementMessage){
+                    BuyTenementMessage message = (BuyTenementMessage) object;
+                    int money = (int)message.getAmount();
+
+                    for(int i=0; i<playersList.size(); ++i){
+                        ClientHandler clientHandler = playersList.get(i);
+                        clientHandler.getConnection().sendTCP(message);
+
+                        //update status on server
+                        Player temp = clientHandler.getPlayerFromServer();
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayer()){
+                            temp.subtractPlayerMoney(money);
                         }
                     }
                 }
@@ -128,6 +152,9 @@ public class GameServer{
                         int id = temp.getPlayerId();
                         if(id == message.getIdPlayerFrom()){
                             temp.subtractPlayerMoney(money);
+                            if(temp.isPlayerBankrupt()){
+                                System.out.println("Bankrupt");
+                            }
                         }else if(id == message.getIdPlayerTo()){
                             temp.addPlayerMoney(money);
                         }
@@ -171,9 +198,21 @@ public class GameServer{
         for(int i=0; i<playersList.size(); i++){
             ClientHandler temp = playersList.get(i);
             if(temp.getPlayerFromServer().getPlayerId() == idPlayerMove){
-                temp.getConnection().sendTCP(new YourMoveMessage());
+                if(!temp.getPlayerFromServer().isPlayerBankrupt()) {
+                    temp.getConnection().sendTCP(new YourMoveMessage());
+                }else{
+                    if(i == playersList.size()){
+                        i = 0;
+                        temp.getConnection().sendTCP(new YourMoveMessage());
+                    }else {
+                        temp = playersList.get(i + 1);
+                        temp.getConnection().sendTCP(new YourMoveMessage());
+                    }
+
+                }
             }
         }
+
     }
 
     protected void readyForGame(Connection connection){
@@ -246,8 +285,8 @@ public class GameServer{
     public void setColors(){
         colors = new ArrayList<>();
         colors.add(new Color(Color.BLUE));
-        colors.add(new Color(Color.OLIVE));
-        colors.add(new Color(Color.CORAL));
+        colors.add(new Color(Color.ORANGE));
+        colors.add(new Color(Color.RED));
         colors.add(new Color(Color.GOLD));
     }
 }

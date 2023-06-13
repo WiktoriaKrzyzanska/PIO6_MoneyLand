@@ -78,9 +78,9 @@ public class PlayerCard implements Disposable {
 
         this.board = board;
 
-        endMoveButtonAvailable = new Texture("NextButton.png"); //to change
-        endMoveButtonAvailableHover = new Texture("NextButtonClicked.png"); //to change
-        endMoveButtonNoAvailable = new Texture("NextButton.png"); //to change
+        endMoveButtonAvailable = new Texture("KoniecButton.png"); //to change
+        endMoveButtonAvailableHover = new Texture("KoniecButtonClicked.png"); //to change
+        endMoveButtonNoAvailable = new Texture("KoniecButton.png"); //to change
 
         //create start button style when it will be available
         endMoveButtonStyleAvailable = new ImageButton.ImageButtonStyle();
@@ -90,7 +90,7 @@ public class PlayerCard implements Disposable {
         //create start button style when it's not available
         endMoveButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
         endMoveButtonStyleNoAvailable.up = new TextureRegionDrawable(new TextureRegion(endMoveButtonNoAvailable));
-
+        endMoveButtonStyleNoAvailable.over = new TextureRegionDrawable(new TextureRegion(endMoveButtonAvailableHover));
         endMoveButton = new ImageButton(endMoveButtonStyleNoAvailable);
 
         endMoveButton.setSize(200,100);

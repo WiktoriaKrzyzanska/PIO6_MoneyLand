@@ -46,9 +46,10 @@ public class MenuScreen extends Shortcut {
         rightSideWidth = stage.getViewport().getWorldWidth() - stage.getViewport().getWorldWidth()/3;
 
         //music config
-        music = Gdx.audio.newMusic(Gdx.files.internal("Pim Stones -  Neon Lights.mp3"));
-        music.setLooping(true);
-
+        //music = Gdx.audio.newMusic(Gdx.files.internal("Pim Stones -  Neon Lights.mp3"));
+        //music.setLooping(true);
+        GameAudioManager.initialize();
+        GameAudioManager.playBackgroundMusic();
         //set graphics
         rightImage = new Texture(Gdx.files.internal("szefy_1.png"));
         title = new Texture(Gdx.files.internal("title.png"));
@@ -95,12 +96,12 @@ public class MenuScreen extends Shortcut {
         volume.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (music.isPlaying()) {
-                    music.pause();
+                if (GameAudioManager.backgroundMusicIsPlaying()) {
+                    GameAudioManager.pauseBackgroundMusic();
                     volume.setStyle(volumeSilenceStyle);
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 } else {
-                    music.play();
+                    GameAudioManager.playBackgroundMusic();
                     volume.setStyle(volumeStyle);
                     Gdx.graphics.setSystemCursor(Cursor.SystemCursor.Arrow);
                 }
@@ -146,7 +147,7 @@ public class MenuScreen extends Shortcut {
         // Rules Button config end
 
         Texture buttonExitTexture = new Texture("exit.png");
-        Texture buttonHoverExitTexture = new Texture("exit.png");
+        Texture buttonHoverExitTexture = new Texture("exitClicked.png");
 
         ImageButton.ImageButtonStyle buttonStyleExit = new ImageButton.ImageButtonStyle();
         buttonStyleExit.up = new TextureRegionDrawable(new TextureRegion(buttonExitTexture));
@@ -190,7 +191,7 @@ public class MenuScreen extends Shortcut {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor((InputProcessor) this);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        music.play();
+        //music.play();
 
     }
 
@@ -245,7 +246,8 @@ public class MenuScreen extends Shortcut {
         rightImage.dispose();
         title.dispose();
         stage.dispose();
-        music.dispose();
+        GameAudioManager.dispose();
+        //music.dispose();
 
     }
 }
