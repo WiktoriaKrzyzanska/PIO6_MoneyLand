@@ -19,6 +19,7 @@ public class ServerHandler {
     private MoneyLandGame game;
     private Lobby lobby;
     private GameScreen gameScreen;
+    ArrayList otherPlayers;
 
     public ServerHandler(MoneyLandGame parent){
         game = parent;
@@ -79,7 +80,7 @@ public class ServerHandler {
                 //listener to get all other players nick from server
                 if (object instanceof ArrayList) {
                     //add nicks to players list who already joined
-                    ArrayList otherPlayers = (ArrayList) object;
+                    otherPlayers = (ArrayList) object;
                     for(int i=0; i<otherPlayers.size(); ++i){
                         Player otherPlayer = (Player)otherPlayers.get(i);
                         game.addPlayer(otherPlayer);
@@ -90,6 +91,8 @@ public class ServerHandler {
                     Player newPlayer = (Player)object;
                     game.addPlayer(newPlayer);
                 }
+                //listener for update when new player join to game
+
                 //listener for messages from server
                 else if (object instanceof StartGameMessage) {
                     StartGameMessage message = (StartGameMessage)object;
@@ -122,6 +125,12 @@ public class ServerHandler {
                     if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
                         owner = game.getPlayer();
                         owner.subtractPlayerMoney((int)message.getAmount()); //update money status
+                        if(owner.isPlayerBankrupt()){
+                            System.out.println("Bankrupt");
+                            otherPlayers.remove(owner);;
+                            game.removePlayer(owner);
+                        }
+                        
                         color = owner.getColor();
                     }
                     //update money status if other player bought card
@@ -130,6 +139,11 @@ public class ServerHandler {
                             owner = game.getOtherPlayer(i);
                             if(owner.getPlayerId() == message.getIdPlayer()){
                                 owner.subtractPlayerMoney((int)message.getAmount());
+                                if(owner.isPlayerBankrupt()){
+                                    System.out.println("Bankrupt");
+                                    otherPlayers.remove(owner);;
+                                    game.removePlayer(owner);
+                                }
                                 color = owner.getColor();
                                 break;
                             }
@@ -150,6 +164,11 @@ public class ServerHandler {
                     Player me = game.getPlayer();
                     if(me.getPlayerId() == message.getIdPlayerFrom()){
                         me.subtractPlayerMoney(money);
+                        if(me.isPlayerBankrupt()){
+                            System.out.println("Bankrupt");
+                            otherPlayers.remove(me);;
+                            game.removePlayer(me);
+                        }
                     }else if(me.getPlayerId() == message.getIdPlayerTo()){
                         me.addPlayerMoney(money);
                     }
@@ -160,6 +179,11 @@ public class ServerHandler {
                         int id = temp.getPlayerId();
                         if(id == message.getIdPlayerFrom()){
                             temp.subtractPlayerMoney(money);
+                            if(temp.isPlayerBankrupt()){
+                                System.out.println("Bankrupt");
+                                otherPlayers.remove(temp);;
+                                game.removePlayer(temp);
+                            }
                         }else if(id == message.getIdPlayerTo()){
                             temp.addPlayerMoney(money);
                         }

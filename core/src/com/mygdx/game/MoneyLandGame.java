@@ -33,6 +33,7 @@ public class MoneyLandGame extends Game {
 	public static final int LOBBY = 3;
 	public static final int LOADING = 4;
 	public static final int GAME_SCREEN = 5;
+
 	public AssetManager manager;
 	private AssetManager progress;
 
@@ -116,6 +117,9 @@ public class MoneyLandGame extends Game {
 
 	public void addPlayer(Player player){
 		listOtherPlayers.add(player);
+	}
+	public void removePlayer(Player player){
+		listOtherPlayers.remove(player);
 	}
 	public Player getOtherPlayer(int index){
 		return listOtherPlayers.get(index);
