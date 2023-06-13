@@ -57,6 +57,7 @@ public class GameScreen extends Shortcut {
     final String text = "We're loading your game!";
     PopUpInformation popUpPlayer;
     PopUpEnd popUpEndLose;
+    PopUpEnd popUpEndWin;
     PopUpInformation popUpRules;
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
@@ -308,7 +309,6 @@ public class GameScreen extends Shortcut {
             popUpEndLose.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
             popUpEndLose.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
             stage2.addActor(popUpEndLose);
-
         }
 
         int number = 0;
@@ -324,12 +324,11 @@ public class GameScreen extends Shortcut {
         }
 
         if(win){
-            popUpEndLose = new PopUpEnd( "Wygrales", true, parent);
-            popUpEndLose.setVisible(true);
-            popUpEndLose.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-            popUpEndLose.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-            stage2.addActor(popUpEndLose);
-
+            popUpEndWin = new PopUpEnd( "Wygrales", true, parent);
+            popUpEndWin.setVisible(true);
+            popUpEndWin.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+            popUpEndWin.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+            stage2.addActor(popUpEndWin);
         }
     }
 
