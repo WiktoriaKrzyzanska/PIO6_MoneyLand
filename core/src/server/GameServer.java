@@ -107,12 +107,12 @@ public class GameServer{
                         ClientHandler clientHandler = playersList.get(i);
                         clientHandler.getConnection().sendTCP(message);
 
-                        //update status on server
-//                        Player temp = clientHandler.getPlayerFromServer();
-//                        int id = temp.getPlayerId();
-//                        if(id == message.getIdPlayer()){
-//                            temp.subtractPlayerMoney(money);
-//                        }
+                       // update status on server
+                        Player temp = clientHandler.getPlayerFromServer();
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayer()){
+                            temp.setPlayerMoney(money);
+                        }
                     }
                 }
                 else if(object instanceof TransferMessage){

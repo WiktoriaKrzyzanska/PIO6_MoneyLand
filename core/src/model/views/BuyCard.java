@@ -102,6 +102,7 @@ public class BuyCard implements Disposable {
         cardName.setVisible(false);
         buyButton.setVisible(false);
         description.setVisible(false);
+
     }
 
     public void change(Card card){

@@ -16,6 +16,7 @@ public class Card implements Disposable {
     float cardPositionX;
     float cardPositionY;
     Texture cityPhoto;
+    Texture tenement=null;
     float photoWidth;
     float photoHeight;
     float photoPositionX;
@@ -153,7 +154,6 @@ public class Card implements Disposable {
 
         //draw text
         stage.addActor(cityName);
-
     }
 
     public Player getOwner() {

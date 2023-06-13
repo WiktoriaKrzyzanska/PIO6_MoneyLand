@@ -121,7 +121,7 @@ public class ServerHandler {
                     //update money status if i bought card
                     if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
                         owner = game.getPlayer();
-                        owner.subtractPlayerMoney((int)message.getAmount()); //update money status
+                        owner.setPlayerMoney((int)message.getAmount()); //update money status
                         color = owner.getColor();
                     }
                     //update money status if other player bought card
@@ -129,7 +129,7 @@ public class ServerHandler {
                         for(int i=0; i<game.sizePlayer(); ++i){
                             owner = game.getOtherPlayer(i);
                             if(owner.getPlayerId() == message.getIdPlayer()){
-                                owner.subtractPlayerMoney((int)message.getAmount());
+                                owner.setPlayerMoney((int)message.getAmount());
                                 color = owner.getColor();
                                 break;
                             }
