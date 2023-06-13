@@ -263,8 +263,8 @@ public class GameServer{
     public void setColors(){
         colors = new ArrayList<>();
         colors.add(new Color(Color.BLUE));
-        colors.add(new Color(Color.OLIVE));
-        colors.add(new Color(Color.CORAL));
+        colors.add(new Color(Color.ORANGE));
+        colors.add(new Color(Color.RED));
         colors.add(new Color(Color.GOLD));
     }
 }
