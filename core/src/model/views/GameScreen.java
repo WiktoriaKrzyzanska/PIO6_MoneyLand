@@ -56,6 +56,7 @@ public class GameScreen extends Shortcut {
     private ShapeRenderer shapeRenderer;
     final String text = "We're loading your game!";
     PopUpInformation popUpPlayer;
+    PopUpEnd popUpEndLose;
     PopUpInformation popUpRules;
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
@@ -91,6 +92,7 @@ public class GameScreen extends Shortcut {
         String Cebulion = "Na poczatek gry dostajesz 500 cebulionow." +
                 "Wydawaj je madrze";
         String InformationWhoStarts = new String();
+
         if(parent.isiAmMoveGameScreen()){
             InformationWhoStarts = "Zaczynasz gre :)";
         }else{
@@ -101,7 +103,6 @@ public class GameScreen extends Shortcut {
                 }
             }
         }
-
 
         popUpFirstPlayer = new PopUpInformation(InformationWhoStarts, true);
         popUpMoney = new PopUpInformation(Cebulion, true);
@@ -176,7 +177,8 @@ public class GameScreen extends Shortcut {
         //create players cards
         otherPlayerCards = new ArrayList<>();
         int padding = 20;
-        int startMoney = 5000;
+        int startMoney = 300;
+
         paddingBetweenPlayersInfo = 50;
         float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
 
@@ -300,8 +302,15 @@ public class GameScreen extends Shortcut {
         stage.draw();
         stage2.draw ();
 
-    }
+        if(parent.getPlayer().getPlayerMoney() <= 0){
+            popUpEndLose = new PopUpEnd( "Przegrałeś", true, parent);
+            popUpEndLose.setVisible(true);
+            popUpEndLose.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+            popUpEndLose.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+            stage2.addActor(popUpEndLose);
+        }
 
+    }
 
     @Override
     public void resize(int width, int height) {
