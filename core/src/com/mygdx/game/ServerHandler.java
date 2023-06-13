@@ -19,7 +19,7 @@ public class ServerHandler {
     private MoneyLandGame game;
     private Lobby lobby;
     private GameScreen gameScreen;
-    ArrayList otherPlayers;
+
 
     public ServerHandler(MoneyLandGame parent){
         game = parent;
@@ -80,7 +80,7 @@ public class ServerHandler {
                 //listener to get all other players nick from server
                 if (object instanceof ArrayList) {
                     //add nicks to players list who already joined
-                    otherPlayers = (ArrayList) object;
+                    ArrayList otherPlayers = (ArrayList) object;
                     for(int i=0; i<otherPlayers.size(); ++i){
                         Player otherPlayer = (Player)otherPlayers.get(i);
                         game.addPlayer(otherPlayer);
@@ -91,8 +91,6 @@ public class ServerHandler {
                     Player newPlayer = (Player)object;
                     game.addPlayer(newPlayer);
                 }
-                //listener for update when new player join to game
-
                 //listener for messages from server
                 else if (object instanceof StartGameMessage) {
                     StartGameMessage message = (StartGameMessage)object;
@@ -108,7 +106,9 @@ public class ServerHandler {
                 else if(object instanceof PlayerMoveMessage){
                     PlayerMoveMessage message = (PlayerMoveMessage) object;
                     Player player = game.getOtherPlayerById(message.getIdPlayer());
-                    gameScreen.moveOtherPlayer(player, message.getDelta());
+                    if(!player.isPlayerBankrupt()) {
+                        gameScreen.moveOtherPlayer(player, message.getDelta());
+                    }
                 }
 
                 //listener for my turn
@@ -127,8 +127,7 @@ public class ServerHandler {
                         owner.subtractPlayerMoney((int)message.getAmount()); //update money status
                         if(owner.isPlayerBankrupt()){
                             System.out.println("Bankrupt");
-                            otherPlayers.remove(owner);;
-                            game.removePlayer(owner);
+
                         }
                         
                         color = owner.getColor();
@@ -141,8 +140,6 @@ public class ServerHandler {
                                 owner.subtractPlayerMoney((int)message.getAmount());
                                 if(owner.isPlayerBankrupt()){
                                     System.out.println("Bankrupt");
-                                    otherPlayers.remove(owner);;
-                                    game.removePlayer(owner);
                                 }
                                 color = owner.getColor();
                                 break;
@@ -152,8 +149,10 @@ public class ServerHandler {
 
                     //update owner and card color
                     Card card = gameScreen.getCardsManager().getCard(message.getCardNumber());
-                    card.setOwner(owner);
-                    card.setRectTitleBackground(color);
+
+                        card.setOwner(owner);
+                        card.setRectTitleBackground(color);
+
                 }
                 //listener for money transfer
                 else if(object instanceof TransferMessage){
@@ -166,8 +165,6 @@ public class ServerHandler {
                         me.subtractPlayerMoney(money);
                         if(me.isPlayerBankrupt()){
                             System.out.println("Bankrupt");
-                            otherPlayers.remove(me);;
-                            game.removePlayer(me);
                         }
                     }else if(me.getPlayerId() == message.getIdPlayerTo()){
                         me.addPlayerMoney(money);
@@ -181,8 +178,6 @@ public class ServerHandler {
                             temp.subtractPlayerMoney(money);
                             if(temp.isPlayerBankrupt()){
                                 System.out.println("Bankrupt");
-                                otherPlayers.remove(temp);;
-                                game.removePlayer(temp);
                             }
                         }else if(id == message.getIdPlayerTo()){
                             temp.addPlayerMoney(money);

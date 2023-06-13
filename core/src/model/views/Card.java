@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Null;
 
 public class Card implements Disposable {
     float cardWidth;
@@ -163,6 +164,7 @@ public class Card implements Disposable {
     public void setOwner(Player owner) {
         this.owner = owner;
     }
+
 
     public City getCity() {
         return city;

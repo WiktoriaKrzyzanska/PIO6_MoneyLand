@@ -118,9 +118,7 @@ public class MoneyLandGame extends Game {
 	public void addPlayer(Player player){
 		listOtherPlayers.add(player);
 	}
-	public void removePlayer(Player player){
-		listOtherPlayers.remove(player);
-	}
+
 	public Player getOtherPlayer(int index){
 		return listOtherPlayers.get(index);
 	}

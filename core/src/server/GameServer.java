@@ -23,7 +23,6 @@ public class GameServer{
     private final int MAX_PLAYERS = 5;
     private final int MIN_PLAYERS = 2;
     private int idPlayerMove;
-    ArrayList<Player> otherPlayersList;
 
     private ArrayList<Color> colors;
 
@@ -64,7 +63,7 @@ public class GameServer{
             public void received (Connection connection, Object object) {
                 if (object instanceof Player && !startGame.get() && playersList.size() <= MAX_PLAYERS) {
                     //get list of all other players
-                    otherPlayersList = new ArrayList<>();
+                    ArrayList<Player> otherPlayersList = new ArrayList<>();
                     for(int i=0; i<playersList.size(); ++i){
                         otherPlayersList.add(playersList.get(i).getPlayerFromServer());
                     }
@@ -117,7 +116,7 @@ public class GameServer{
                             if(temp.isPlayerBankrupt()){
 
                                 System.out.println("Bankrupt");
-                                otherPlayersList.remove(temp);;
+
 
                             }
                         }
@@ -138,7 +137,6 @@ public class GameServer{
                             temp.subtractPlayerMoney(money);
                             if(temp.isPlayerBankrupt()){
                                 System.out.println("Bankrupt");
-                                otherPlayersList.remove(temp);
                             }
                         }else if(id == message.getIdPlayerTo()){
                             temp.addPlayerMoney(money);
@@ -183,9 +181,21 @@ public class GameServer{
         for(int i=0; i<playersList.size(); i++){
             ClientHandler temp = playersList.get(i);
             if(temp.getPlayerFromServer().getPlayerId() == idPlayerMove){
-                temp.getConnection().sendTCP(new YourMoveMessage());
+                if(!temp.getPlayerFromServer().isPlayerBankrupt()) {
+                    temp.getConnection().sendTCP(new YourMoveMessage());
+                }else{
+                    if(i == playersList.size()){
+                        i = 0;
+                        temp.getConnection().sendTCP(new YourMoveMessage());
+                    }else {
+                        temp = playersList.get(i + 1);
+                        temp.getConnection().sendTCP(new YourMoveMessage());
+                    }
+
+                }
             }
         }
+
     }
 
     protected void readyForGame(Connection connection){
