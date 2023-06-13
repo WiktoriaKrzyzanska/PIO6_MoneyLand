@@ -57,7 +57,7 @@ public class GameScreen extends Shortcut {
     private BitmapFont fontForMoneyOnPlayersCards;
     private ShapeRenderer shapeRenderer;
     final String text = "We're loading your game!";
-    PopUpInformation popUpPlayer;
+    PopUpPawn popUpPlayer;
     PopUpInformation popUpRules;
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
@@ -118,7 +118,7 @@ public class GameScreen extends Shortcut {
         popUpFirstPlayer = new PopUpInformation(InformationWhoStarts, true);
         popUpMoney = new PopUpInformation(Cebulion, true);
         popUpRules = new PopUpInformation( Rules, true);
-        popUpPlayer = new PopUpInformation( Welcome, true);
+        popUpPlayer = new PopUpPawn( Welcome, true, parent.getPlayer().getPlayerId());
         popUpTrapCard=new PopUpInformation("Jedno pole dziala inaczej niz pozostale ;)",true);
         popUpZgierz=new PopUpInformation("Ups! Kupiles Zgierz :( przygotuj sie na straty",false);
 
