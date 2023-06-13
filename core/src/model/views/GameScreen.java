@@ -303,13 +303,34 @@ public class GameScreen extends Shortcut {
         stage2.draw ();
 
         if(parent.getPlayer().getPlayerMoney() <= 0){
-            popUpEndLose = new PopUpEnd( "Przegrałeś", true, parent);
+            popUpEndLose = new PopUpEnd( "Przegrases", true, parent);
             popUpEndLose.setVisible(true);
             popUpEndLose.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
             popUpEndLose.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
             stage2.addActor(popUpEndLose);
+
         }
 
+        int number = 0;
+        for(int i=0; i<parent.sizePlayer(); ++i){
+            if(parent.getOtherPlayer(i).getPlayerMoney() <= 0){
+                number++;
+            }
+        }
+
+        boolean win = false;
+        if(number == parent.sizePlayer()){
+            win = true;
+        }
+
+        if(win){
+            popUpEndLose = new PopUpEnd( "Wygrales", true, parent);
+            popUpEndLose.setVisible(true);
+            popUpEndLose.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+            popUpEndLose.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+            stage2.addActor(popUpEndLose);
+
+        }
     }
 
     @Override
