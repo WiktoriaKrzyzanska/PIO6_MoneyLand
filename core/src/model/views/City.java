@@ -100,15 +100,10 @@ public class City {
         }
     }
 
-    public boolean placeTenement(){
+    public void placeTenement(){
         if(!this.isTenementPlaced){
             this.isTenementPlaced=true;
-            this.rentAmount*=1.1; //czynsz wzrasta o 10% w przypadku gdy zostanie postawiona kamienica
-            return true;
-            //oznacza ze udalo sie postawic kamienice
-        }else{
-            return false;
-            //oznacza ze nie ma mozliwosci postaiwenia kamienicy
+            this.setRentAmount((float)(getRentAmount()*1.1)); //czynsz wzrasta o 10% w przypadku gdy zostanie postawiona kamienica
         }
     }
 }
