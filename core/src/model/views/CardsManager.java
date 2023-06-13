@@ -41,7 +41,7 @@ public class CardsManager {
     City Pabianice=new City(300,"Pabianice", new Texture("cards/pabianice.png"),300,300,12);
     City Warszawa=new City(300,"Warszawa", new Texture("cards/warszawa.png"),300,300,13);
     City Wloclawek=new City(300,"Wloclawek", new Texture("cards/wloclawek.png"),300,300,14);
-    City Zgierz=new City(300,"Zgierz", new Texture("cards/zgierz.png"),300,300,15);
+    City Zgierz=new City(300,"Zgierz", new Texture("cards/zgierz.png"),300,-300,15);
 
     public CardsManager(float width, float height, float positionX, float positionY) {
         this.width = width;

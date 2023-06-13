@@ -3,6 +3,7 @@ package model.views;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -41,6 +42,7 @@ public class GameScreen extends Shortcut {
     private ImageButton menuButton;
     private Texture menuButtonTexture;
     private Texture menuButtonHoverTexture;
+    private Sound faliureSound;
 
     //attributes for show rectangle with other players info (left side screen)
     private float rectHeightOtherPlayerInfo;
@@ -59,6 +61,8 @@ public class GameScreen extends Shortcut {
     PopUpInformation popUpRules;
     PopUpInformation popUpMoney;
     PopUpInformation popUpFirstPlayer;
+    PopUpInformation popUpTrapCard;
+    PopUpInformation popUpZgierz;
     ImageButton startButton;
 
     private Pawn myPawn;
@@ -94,7 +98,7 @@ public class GameScreen extends Shortcut {
             case 4:pawnName="LECH";break;
         }
         //set popups when game start
-        String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "! Twój pionek to "+pawnName;
+        String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "! Twoj pionek to "+pawnName;
         String Rules = "Zasady";
         String Cebulion = "Na poczatek gry dostajesz 500 cebulionow." +
                 "Wydawaj je madrze";
@@ -115,12 +119,15 @@ public class GameScreen extends Shortcut {
         popUpMoney = new PopUpInformation(Cebulion, true);
         popUpRules = new PopUpInformation( Rules, true);
         popUpPlayer = new PopUpInformation( Welcome, true);
+        popUpTrapCard=new PopUpInformation("Jedno pole dziala inaczej niz pozostale ;)",true);
+        popUpZgierz=new PopUpInformation("Ups! Kupiles Zgierz :( przygotuj sie na straty",false);
 
         popUpFirstPlayer.setVisible(true);
         popUpPlayer.setVisible(true);
         popUpRules.setVisible(true);
-        popUpMoney.setVisible(true);
 
+        popUpMoney.setVisible(true);
+        popUpTrapCard.setVisible(true);
         //create part with cards
         cardsManager = new CardsManager(boardWidth,  boardHeight, leftSideWidth, MoneyLandGame.HEIGHT/6);
 
@@ -160,10 +167,17 @@ public class GameScreen extends Shortcut {
         popUpRules.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         popUpPlayer.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
         popUpPlayer.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpTrapCard.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpTrapCard.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpZgierz.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpZgierz.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        stage2.addActor(popUpZgierz);
 
         stage2.addActor(popUpFirstPlayer);
+        stage2.addActor(popUpTrapCard);
         stage2.addActor(popUpMoney);
         stage2.addActor(popUpRules);
+
         stage2.addActor (popUpPlayer);
 
         stage.addActor(menuButton);
@@ -420,6 +434,14 @@ public class GameScreen extends Shortcut {
         if(card==null) return;
         City city = card.getCity();
         BuyCardMessage buyCardMessage = new BuyCardMessage(card.getIdCard(),city.getPrice(), parent.getPlayer().getPlayerId());
+        if(city.CityName.equals("Zgierz"))
+        {
+            faliureSound=Gdx.audio.newSound(Gdx.files.internal("FailSound.mp3"));
+            faliureSound.play(1.0f);
+            //faliureSound.setLooping(s,false);
+            popUpZgierz.setVisible(true);
+            popUpZgierz.showPopUp();
+        }
         parent.serverHandler.sendMessage(buyCardMessage);
         buyCard.reset();
         resetVisibleBuyCard();
