@@ -5,7 +5,7 @@ public class GameAudioManager {
     private static Music backgroundMusic;
 
     public static void initialize() {
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Pim Stones -  Neon Lights.mp3"));
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("GameShowAudio.mp3"));
         backgroundMusic.setLooping(true);
     }
 
