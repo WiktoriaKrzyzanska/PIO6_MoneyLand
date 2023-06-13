@@ -1,6 +1,5 @@
 package model.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
-public class BuyTenement implements Disposable {
+public class BuyTenementCard implements Disposable {
     private float width;
     private float height;
     private float positionX;
@@ -29,7 +28,7 @@ public class BuyTenement implements Disposable {
     private Label cardName;
     private Label description;
 
-    public BuyTenement(float width, float height, float positionX, float positionY, BitmapFont font, Stage stage, final GameScreen gameScreen) {
+    public BuyTenementCard(float width, float height, float positionX, float positionY, BitmapFont font, Stage stage, final GameScreen gameScreen) {
         this.width = width;
         this.height = height;
         this.positionX = positionX;
@@ -69,9 +68,9 @@ public class BuyTenement implements Disposable {
         buyButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(gameScreen.isVisibleBuyCard()){
+                if(gameScreen.isVisibleBuyTenementCard()){
                     buyButton.setVisible(false); //security for only one click
-                    gameScreen.buyCard(card);
+                    gameScreen.buyTenement(card);
                 }
             }
         });
@@ -102,13 +101,12 @@ public class BuyTenement implements Disposable {
         cardName.setVisible(false);
         buyButton.setVisible(false);
         description.setVisible(false);
-
     }
 
     public void change(Card card){
         this.card = card;
         cardName.setText(card.cityName.getText());
-        description.setText("Cena: \n"+String.valueOf(card.getCity().tenementPrice)+" cebulionow");
+        description.setText("Cena kamienicy: \n"+String.valueOf(card.getCity().tenementPrice)+" cebulionow");
     }
 
     @Override
