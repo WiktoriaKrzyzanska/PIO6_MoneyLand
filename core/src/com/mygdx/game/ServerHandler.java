@@ -37,6 +37,7 @@ public class ServerHandler {
         kryo.register(EndMoveMessage.class);
         kryo.register(YourMoveMessage.class);
         kryo.register(BuyCardMessage.class);
+        kryo.register(BuyTenementMessage.class);
         kryo.register(Color.class);
         kryo.register(TransferMessage.class);
         kryo.register(CrossedStartMessage.class);
@@ -153,6 +154,29 @@ public class ServerHandler {
                         card.setOwner(owner);
                         card.setRectTitleBackground(color);
 
+                }
+                else if (object instanceof BuyTenementMessage){
+                    BuyTenementMessage message = (BuyTenementMessage) object;
+                                       Player owner = null;
+                    //update money status if i bought card
+                    if(message.getIdPlayer() == game.getPlayer().getPlayerId()){
+                        owner = game.getPlayer();
+                        owner.subtractPlayerMoney((int)message.getAmount()); //update money status
+                    }
+                    //update money status if other player bought card
+                    else{
+                        for(int i=0; i<game.sizePlayer(); ++i){
+                            owner = game.getOtherPlayer(i);
+                            if(owner.getPlayerId() == message.getIdPlayer()){
+                                owner.subtractPlayerMoney((int)message.getAmount());
+                                break;
+                            }
+                        }
+                    }
+
+                    //update owner and card color
+                    Card card = gameScreen.getCardsManager().getCard(message.getCardNumber());
+                    card.getCity().setTenementPlaced(true);
                 }
                 //listener for money transfer
                 else if(object instanceof TransferMessage){

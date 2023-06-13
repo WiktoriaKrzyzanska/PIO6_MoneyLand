@@ -68,7 +68,9 @@ public class GameScreen extends Shortcut {
     private Pawn myPawn;
     private ArrayList<Pawn> otherPlayersPawns;
     private BuyCard buyCard;
+    private BuyTenementCard buyTenementCard;
     private boolean visibleBuyCard;
+    private boolean visibleBuyTenementCard;
     private PopUpInformation popUpInformationFee;
     private PopUpInformation popUpInformationCrossedStart;
     private PopUpInformation popUpLoser;
@@ -259,6 +261,10 @@ public class GameScreen extends Shortcut {
         buyCard = new BuyCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
         visibleBuyCard = false;
 
+        buyTenementCard = new BuyTenementCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
+        visibleBuyTenementCard = false;
+
+
         //create pop up for fee
         popUpInformationFee = new PopUpInformation("", false);
         popUpInformationFee.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
@@ -316,9 +322,15 @@ public class GameScreen extends Shortcut {
         if(visibleBuyCard){
             buyCard.draw(parent.shapeRenderer);
         }
+
         if(parent.getPlayer().isPlayerBankrupt()){
 
             popUpLoser.setVisible(true);
+        }
+
+        if(visibleBuyTenementCard){
+            buyTenementCard.draw(parent.shapeRenderer);
+
         }
 
         parent.shapeRenderer.end();
@@ -394,17 +406,27 @@ public class GameScreen extends Shortcut {
             if(card == null) return;
             Player cardOwner = card.getOwner();
             //when card has got owner -> you have to pay
-            if(cardOwner != null){
+
+            //when card hasnt got tenement -> you can buy it
+            if(cardOwner!=null&&cardOwner.getPlayerId()==parent.getPlayer().getPlayerId()&& !card.getCity().isTenementPlaced){
+                buyTenementCard.change(card);
+                card.getCity().placeTenement();
+                setVisibleBuyTenementCard();
+            }else if(cardOwner != null&&cardOwner.getPlayerId()!=parent.getPlayer().getPlayerId()){
                 int myId = parent.getPlayer().getPlayerId();
                 int ownerId = cardOwner.getPlayerId();
-                float fee = card.getCity().getRentAmount();
-                TransferMessage transferMessage = new TransferMessage(myId, ownerId, fee);
+                float amount=card.getCity().rentAmount;
+                TransferMessage transferMessage = new TransferMessage(myId, ownerId, amount);
                 //popUp
-                popUpInformationFee.setText("Stoisz na polu "+card.cityName.getText()+".\n Oddajesz "+String.valueOf(card.getCity().rentAmount)+" cebulionow");
+                if(card.getCity().isTenementPlaced){
+                    amount*=1.1;
+                }
+
+                popUpInformationFee.setText("Stoisz na polu "+card.cityName.getText()+".\n Oddajesz "+String.valueOf(amount)+" cebulionow");
                 popUpInformationFee.showPopUp();
                 //send info to server
                 parent.serverHandler.sendMessage(transferMessage);
-            }else{
+            }else if(cardOwner==null){
                 //when card hasn't got owner -> you can buy this card
                 buyCard.change(card);
                 setVisibleBuyCard();
@@ -414,7 +436,9 @@ public class GameScreen extends Shortcut {
 
     public void endMyMove(){
         buyCard.reset(); //hide button, city name, description
+        buyTenementCard.reset();
         resetVisibleBuyCard(); //disable buy card
+        resetVisibleBuyTenementCard();
         cube.resetAvailable(); //disable cube
         parent.setiAmMoveGameScreen(false); //end my move
         playerOwner.hideEndMoveButton();
@@ -453,9 +477,20 @@ public class GameScreen extends Shortcut {
         buyCard.reset();
         resetVisibleBuyCard();
     }
+    public void buyTenement(Card card){
+        if(card==null) return;
+        City city = card.getCity();
+        BuyTenementMessage buyTenementMessage = new BuyTenementMessage(card.getIdCard(),city.getTenementPrice(), parent.getPlayer().getPlayerId());
+        parent.serverHandler.sendMessage(buyTenementMessage);
+        buyTenementCard.reset();
+        resetVisibleBuyTenementCard();
+    }
 
     public boolean isVisibleBuyCard() {
         return visibleBuyCard;
+    }
+    public boolean isVisibleBuyTenementCard() {
+        return visibleBuyTenementCard;
     }
 
     public void setVisibleBuyCard() {
@@ -465,6 +500,15 @@ public class GameScreen extends Shortcut {
     public void resetVisibleBuyCard() {
         this.visibleBuyCard = false;
     }
+
+    public void setVisibleBuyTenementCard() {
+        this.visibleBuyTenementCard = true;
+    }
+
+    public void resetVisibleBuyTenementCard() {
+        this.visibleBuyTenementCard = false;
+    }
+
 
     public CardsManager getCardsManager() {
         return cardsManager;

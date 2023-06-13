@@ -27,21 +27,22 @@ public class CardsManager {
     private float padding;
     private float paddingBetweenCards;
 
-    City Cyprianka=new City(1000,"Cyprianka", new Texture("cards/cyprianka.png"),300,300,1);
-    City Badkowo=new City(3000,"Badkowo", new Texture("cards/badkowo.png"),300,300,2);
-    City Brzeziny=new City(3000,"Brzeziny", new Texture("cards/brzeziny.png"),300,300,3);
-    City Bydgoszcz=new City(3000,"Bydgoszcz", new Texture("cards/bydgoszcz.png"),300,300,4);
+    City Cyprianka=new City(500,"Cyprianka", new Texture("cards/cyprianka.png"),300,200,1);
+    City Badkowo=new City(500,"Badkowo", new Texture("cards/badkowo.png"),300,200,2);
+    City Brzeziny=new City(1000,"Brzeziny", new Texture("cards/brzeziny.png"),300,300,3);
+    City Bydgoszcz=new City(4000,"Bydgoszcz", new Texture("cards/bydgoszcz.png"),300,300,4);
     City Bialystok=new City(4000,"Bialystok", new Texture("cards/bialystok.png"),300,300,5);
     City Czestochowa=new City(3000,"Czestochowa", new Texture("cards/czestochowa.png"),300,300,6);
-    City Kowal=new City(3000,"Kowal", new Texture("cards/kowal.png"),300,300,7);
-    City Krakow=new City(3000,"Krakow", new Texture("cards/krakow.png"),300,300,8);
-    City Leczyca=new City(3000,"Leczyca", new Texture("cards/leczyca.png"),300,300,9);
+    City Kowal=new City(1000,"Kowal", new Texture("cards/kowal.png"),300,300,7);
+    City Krakow=new City(4000,"Krakow", new Texture("cards/krakow.png"),300,300,8);
+    City Leczyca=new City(2000,"Leczyca", new Texture("cards/leczyca.png"),300,300,9);
     City Lodz=new City(3000,"Lodz", new Texture("cards/lodz.png"),300,300,10);
-    City Mielno=new City(3000,"Mielno", new Texture("cards/mielno.png"),300,300,11);
-    City Pabianice=new City(3000,"Pabianice", new Texture("cards/pabianice.png"),300,300,12);
-    City Warszawa=new City(3000,"Warszawa", new Texture("cards/warszawa.png"),300,300,13);
+    City Mielno=new City(1000,"Mielno", new Texture("cards/mielno.png"),300,300,11);
+    City Pabianice=new City(2000,"Pabianice", new Texture("cards/pabianice.png"),300,300,12);
+    City Warszawa=new City(5000,"Warszawa", new Texture("cards/warszawa.png"),300,400,13);
     City Wloclawek=new City(3000,"Wloclawek", new Texture("cards/wloclawek.png"),300,300,14);
     City Zgierz=new City(3000,"Zgierz", new Texture("cards/zgierz.png"),300,-300,15);
+
 
     public CardsManager(float width, float height, float positionX, float positionY) {
         this.width = width;

@@ -38,6 +38,7 @@ public class GameServer{
         kryo.register(EndMoveMessage.class);
         kryo.register(YourMoveMessage.class);
         kryo.register(BuyCardMessage.class);
+        kryo.register(BuyTenementMessage.class);
         kryo.register(Color.class);
         kryo.register(TransferMessage.class);
         kryo.register(CrossedStartMessage.class);
@@ -119,6 +120,22 @@ public class GameServer{
 
 
                             }
+                        }
+                    }
+                }
+                else if(object instanceof BuyTenementMessage){
+                    BuyTenementMessage message = (BuyTenementMessage) object;
+                    int money = (int)message.getAmount();
+
+                    for(int i=0; i<playersList.size(); ++i){
+                        ClientHandler clientHandler = playersList.get(i);
+                        clientHandler.getConnection().sendTCP(message);
+
+                        //update status on server
+                        Player temp = clientHandler.getPlayerFromServer();
+                        int id = temp.getPlayerId();
+                        if(id == message.getIdPlayer()){
+                            temp.subtractPlayerMoney(money);
                         }
                     }
                 }
