@@ -38,7 +38,7 @@ public class MoneyLandGame extends Game {
 	private AssetManager progress;
 
 	public GameServer gameServer;
-	public static final String serverIP = "192.168.245.19";
+	public static final String serverIP = "127.0.0.1";
 	public static final int portTCP = 54555;
 	public static final int portUDP = 54777;
 
