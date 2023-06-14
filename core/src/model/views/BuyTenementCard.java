@@ -14,27 +14,21 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
 public class BuyTenementCard implements Disposable {
-    private float width;
-    private float height;
-    private float positionX;
-    private float positionY;
+    private final float width;
+    private final float height;
+    private final float positionX;
+    private final float positionY;
     private Card card;
-    private ImageButton.ImageButtonStyle buyButtonStyle;
-    private Texture buyButtonTexture;
-    private Texture buyButtonHoverTexture;
-    private ImageButton buyButton;
-    private GameScreen gameScreen;
-    private Stage stage;
-    private Label cardName;
-    private Label description;
+    private final Texture buyButtonHoverTexture;
+    private final ImageButton buyButton;
+    private final Label cardName;
+    private final Label description;
 
     public BuyTenementCard(float width, float height, float positionX, float positionY, BitmapFont font, Stage stage, final GameScreen gameScreen) {
         this.width = width;
         this.height = height;
         this.positionX = positionX;
         this.positionY = positionY;
-        this.stage = stage;
-        this.gameScreen = gameScreen;
 
         //config font
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -44,19 +38,19 @@ public class BuyTenementCard implements Disposable {
         cardName.setPosition(positionX, positionY + height - height/5);
         cardName.setAlignment(Align.center);
         cardName.setVisible(false);
-        this.stage.addActor(cardName);
+        stage.addActor(cardName);
 
         description = new Label("", labelStyle);
         description.setSize(width,height - height/5 - height/11);
         description.setPosition(positionX, positionY + height/4);
         description.setAlignment(Align.center);
         description.setVisible(false);
-        this.stage.addActor(description);
+        stage.addActor(description);
 
         //config button
-        buyButtonTexture = new Texture("KupujeButton.png"); //to change
+        Texture buyButtonTexture = new Texture("KupujeButton.png"); //to change
         buyButtonHoverTexture = new Texture("KupujeButtonClicked.png"); //to change
-        buyButtonStyle = new ImageButton.ImageButtonStyle();
+        ImageButton.ImageButtonStyle buyButtonStyle = new ImageButton.ImageButtonStyle();
         buyButtonStyle.up = new TextureRegionDrawable(new TextureRegion(buyButtonTexture));
         buyButtonStyle.down = new TextureRegionDrawable(new TextureRegion(buyButtonHoverTexture));
 
@@ -106,7 +100,7 @@ public class BuyTenementCard implements Disposable {
     public void change(Card card){
         this.card = card;
         cardName.setText(card.cityName.getText());
-        description.setText("Cena kamienicy: \n"+String.valueOf(card.getCity().tenementPrice)+" cebulionow");
+        description.setText("Cena kamienicy: \n"+ card.getCity().tenementPrice +" cebulionow");
     }
 
     @Override

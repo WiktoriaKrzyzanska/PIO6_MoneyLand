@@ -13,19 +13,12 @@ import java.util.ArrayList;
 
 
 public class CardsManager {
-    private float width;
-    private float height;
-    private float positionX;
-    private float positionY;
-    private Color backgroundColor;
-    private ArrayList<Card> cards;
-
-    private BitmapFont font;
-
-    private float cardWidth;
-    private float cardHeight;
-    private float padding;
-    private float paddingBetweenCards;
+    private final float width;
+    private final float height;
+    private final float positionX;
+    private final float positionY;
+    private final Color backgroundColor;
+    private final ArrayList<Card> cards;
 
     City Cyprianka=new City(500,"Cyprianka", new Texture("cards/cyprianka.png"),300,200,1);
     City Badkowo=new City(500,"Badkowo", new Texture("cards/badkowo.png"),300,200,2);
@@ -50,17 +43,17 @@ public class CardsManager {
         this.positionX = positionX;
         this.positionY = positionY;
         this.cards = new ArrayList<>();
-        padding = 30;
-        paddingBetweenCards = 20;
-        this.cardWidth = (width - 2 * padding) / 5; // 5 cards in row
-        this.cardHeight = (height - 2 * padding) / 5; // 5 cards in column
+        float padding = 30;
+        float paddingBetweenCards = 20;
+        float cardWidth = (width - 2 * padding) / 5; // 5 cards in row
+        float cardHeight = (height - 2 * padding) / 5; // 5 cards in column
 
         //config font
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 35;
         parameter.color = Color.BLACK;
-        font = generator.generateFont(parameter);
+        BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
 
         //config color
@@ -71,20 +64,20 @@ public class CardsManager {
 
         //create cards
         cards.add(new Card(
-                cardWidth - paddingBetweenCards ,
-                cardHeight - paddingBetweenCards ,
+                cardWidth - paddingBetweenCards,
+                cardHeight - paddingBetweenCards,
                 this.positionX + padding,
                 this.positionY + padding,
-                this.font,
+                font,
                 0
         ));
         cards.add(new Card(
-                    cardWidth - paddingBetweenCards ,
-                    cardHeight - paddingBetweenCards ,
+                    cardWidth - paddingBetweenCards,
+                    cardHeight - paddingBetweenCards,
                     this.positionX + padding,
                     this.positionY + cardHeight + padding,
                     Kowal,
-                this.font,
+                font,
                 1
         ));
         cards.add(new Card(
@@ -93,7 +86,7 @@ public class CardsManager {
                 this.positionX + padding,
                 this.positionY + 2 * cardHeight + padding,
                Cyprianka,
-                this.font,
+                font,
                 2
         ));
         cards.add(new Card(
@@ -102,43 +95,43 @@ public class CardsManager {
                 this.positionX + padding,
                 this.positionY + 3 * cardHeight + padding,
                 Badkowo,
-                this.font,
+                font,
                 3
         ));
         cards.add(new Card(
-                cardWidth - paddingBetweenCards ,
+                cardWidth - paddingBetweenCards,
                 cardHeight,
                 this.positionX + padding,
                 this.positionY + 4 * cardHeight + padding,
                 Wloclawek,
-                this.font,
+                font,
                 4
         ));
         cards.add(new Card(
-                cardWidth - paddingBetweenCards ,
+                cardWidth - paddingBetweenCards,
                 cardHeight,
                 this.positionX + cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 Leczyca,
-                this.font,
+                font,
                 5
         ));
         cards.add(new Card(
-                cardWidth - paddingBetweenCards ,
+                cardWidth - paddingBetweenCards,
                 cardHeight,
                 this.positionX + 2 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 Mielno,
-                this.font,
+                font,
                 6
         ));
         cards.add(new Card(
-                cardWidth - paddingBetweenCards ,
+                cardWidth - paddingBetweenCards,
                 cardHeight,
                 this.positionX + 3 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 Bialystok,
-                this.font,
+                font,
                 7
         ));
         cards.add(new Card(
@@ -147,52 +140,52 @@ public class CardsManager {
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + 4 * cardHeight + padding,
                 Czestochowa,
-                this.font,
+                font,
                 8
         ));
         cards.add(new Card(
                 cardWidth,
-                cardHeight - paddingBetweenCards ,
+                cardHeight - paddingBetweenCards,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + 3 * cardHeight + padding,
                 Bydgoszcz,
-                this.font,
+                font,
                 9
         ));
         cards.add(new Card(
                 cardWidth,
-                cardHeight - paddingBetweenCards ,
+                cardHeight - paddingBetweenCards,
                 this.positionX  + 4 * cardWidth + padding,
                 this.positionY + 2 * cardHeight + padding,
                 Krakow,
-                this.font,
+                font,
                 10
         ));
         cards.add(new Card(
                 cardWidth,
-                cardHeight - paddingBetweenCards ,
+                cardHeight - paddingBetweenCards,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + cardHeight + padding,
                 Warszawa,
-                this.font,
+                font,
                 11
         ));
         cards.add(new Card(
                 cardWidth,
-                cardHeight - paddingBetweenCards ,
+                cardHeight - paddingBetweenCards,
                 this.positionX + 4 * cardWidth + padding,
                 this.positionY + padding,
                 Brzeziny,
-                this.font,
+                font,
                 12
         ));
         cards.add(new Card(
-                cardWidth - paddingBetweenCards ,
+                cardWidth - paddingBetweenCards,
                 cardHeight - paddingBetweenCards,
                 this.positionX + 3 * cardWidth + padding,
                 this.positionY + padding,
                 Pabianice,
-                this.font,
+                font,
                 13
         ));
         cards.add(new Card(
@@ -201,7 +194,7 @@ public class CardsManager {
                 this.positionX + 2 * cardWidth + padding,
                 this.positionY + padding,
                 Lodz,
-                this.font,
+                font,
                 14
         ));
         cards.add(new Card(
@@ -210,7 +203,7 @@ public class CardsManager {
                 this.positionX + cardWidth + padding,
                 this.positionY + padding,
                 Zgierz,
-                this.font,
+                font,
                 15
 
         ));
@@ -226,8 +219,8 @@ public class CardsManager {
         shapeRenderer.end();
 
         //draw all cards
-        for(int i=0; i<cards.size(); ++i){
-            cards.get(i).draw(shapeRenderer, batch, stage); //can't be between methods begin() and end()
+        for (Card card : cards) {
+            card.draw(shapeRenderer, batch, stage); //can't be between methods begin() and end()
         }
     }
 
