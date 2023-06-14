@@ -2,7 +2,6 @@ package model.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -21,7 +19,6 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.game.MoneyLandGame;
 import model.messages.*;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.addListener;
 
 import java.util.ArrayList;
 
@@ -32,24 +29,18 @@ public class GameScreen extends Shortcut {
     CardsManager cardsManager;
 
 
-    private float cubeRectPosX;
-    private float cubeRectPosY;
-    private float cubeRectWith;
-    private float cubeRectHeight;
-    private Cube cube;
-    private ImageButton menuButton;
-    private Texture menuButtonTexture;
-    private Texture menuButtonHoverTexture;
-    private Sound faliureSound;
+    private final float cubeRectPosX;
+    private final float cubeRectPosY;
+    private final float cubeRectWith;
+    private final float cubeRectHeight;
+    private final Cube cube;
+    private final ImageButton menuButton;
+    private final Texture menuButtonTexture;
+    private final Texture menuButtonHoverTexture;
 
-    private int paddingBetweenPlayersInfo;
+    private final ArrayList<PlayerCard> otherPlayerCards;
+    private final PlayerCard playerOwner;
 
-    private ArrayList<PlayerCard> otherPlayerCards;
-    private PlayerCard playerOwner;
-    private BitmapFont fontForPlayersNick;
-    private BitmapFont fontForMoneyOnPlayersCards;
-    private ShapeRenderer shapeRenderer;
-    final String text = "We're loading your game!";
     PopUpPawn popUpPlayer;
     PopUpInformation popUpRules;
     PopUpInformation popUpMoney;
@@ -58,17 +49,17 @@ public class GameScreen extends Shortcut {
     PopUpInformation popUpZgierz;
 
 
-    private Pawn myPawn;
-    private ArrayList<Pawn> otherPlayersPawns;
-    private BuyCard buyCard;
-    private BuyTenementCard buyTenementCard;
+    private final Pawn myPawn;
+    private final ArrayList<Pawn> otherPlayersPawns;
+    private final BuyCard buyCard;
+    private final BuyTenementCard buyTenementCard;
     private boolean visibleBuyCard;
     private boolean visibleBuyTenementCard;
-    private PopUpInformation popUpInformationFee;
-    private PopUpInformation popUpInformationCrossedStart;
-    private PopUpEnd popUpLoser;
-    private PopUpEnd popUpWin;
-    private boolean isVisiblePopUpFee = false;
+    private final PopUpInformation popUpInformationFee;
+    private final PopUpInformation popUpInformationCrossedStart;
+    private final PopUpEnd popUpLoser;
+    private final PopUpEnd popUpWin;
+    private final boolean isVisiblePopUpFee = false;
     private final int PRIZE_START_FIELD = 500;
 
 
@@ -84,7 +75,7 @@ public class GameScreen extends Shortcut {
 
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         stage2 = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
-        shapeRenderer = new ShapeRenderer ();
+        ShapeRenderer shapeRenderer = new ShapeRenderer();
 
         String pawnName=null;
         switch (parent.getPlayer().getPlayerId()){
@@ -99,7 +90,7 @@ public class GameScreen extends Shortcut {
         String Rules = "Zasady";
         String Cebulion = "Na poczatek gry dostajesz 5000 cebulionow." +
                 "Wydawaj je madrze";
-        String InformationWhoStarts = new String();
+        String InformationWhoStarts = "";
         if(parent.isiAmMoveGameScreen()){
             InformationWhoStarts = "Zaczynasz gre :)";
         }else{
@@ -191,18 +182,18 @@ public class GameScreen extends Shortcut {
             //for players nick
             parameter.size = 40;
             parameter.color = Color.BLACK;
-            fontForPlayersNick = generator.generateFont(parameter);
+        BitmapFont fontForPlayersNick = generator.generateFont(parameter);
             //for money on players cards
             parameter.size = 30;
             parameter.color = Color.BLACK;
-            fontForMoneyOnPlayersCards = generator.generateFont(parameter);
+        BitmapFont fontForMoneyOnPlayersCards = generator.generateFont(parameter);
         generator.dispose();
 
         //create players cards
         otherPlayerCards = new ArrayList<>();
         int padding = 20;
         int startMoney = 5000;
-        paddingBetweenPlayersInfo = 50;
+        int paddingBetweenPlayersInfo = 50;
         float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
 
         playerOwner = new PlayerCard(
@@ -270,7 +261,7 @@ public class GameScreen extends Shortcut {
         stage2.addActor(popUpInformationFee);
 
         //create pop up for prize when player cross start field
-        popUpInformationCrossedStart =  new PopUpInformation("Soltys placi Ci "+String.valueOf(PRIZE_START_FIELD)+" cebulionow", false);
+        popUpInformationCrossedStart =  new PopUpInformation("Soltys placi Ci "+ PRIZE_START_FIELD +" cebulionow", false);
         popUpInformationCrossedStart.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
         popUpInformationCrossedStart.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         stage2.addActor(popUpInformationCrossedStart);
@@ -287,7 +278,7 @@ public class GameScreen extends Shortcut {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(stage2);
-        inputMultiplexer.addProcessor((InputProcessor) this);
+        inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
@@ -311,8 +302,7 @@ public class GameScreen extends Shortcut {
         playerOwner.draw(parent.shapeRenderer); //it must be between begin() and end()
 
         //draw rectangles with other players info
-        for(int i=0; i<otherPlayerCards.size(); ++i){
-            PlayerCard temp = otherPlayerCards.get(i);
+        for (PlayerCard temp : otherPlayerCards) {
             temp.draw(parent.shapeRenderer);  //it must be between begin() and end()
         }
 
@@ -431,7 +421,7 @@ public class GameScreen extends Shortcut {
                     amount*=1.1;
                 }
 
-                popUpInformationFee.setText("Stoisz na polu "+card.cityName.getText()+".\n Oddajesz "+String.valueOf(amount)+" cebulionow");
+                popUpInformationFee.setText("Stoisz na polu "+card.cityName.getText()+".\n Oddajesz "+ amount +" cebulionow");
                 popUpInformationFee.showPopUp();
                 //send info to server
                 parent.serverHandler.sendMessage(transferMessage);
@@ -460,9 +450,8 @@ public class GameScreen extends Shortcut {
 
         //change position
         player.updatePlayerPosition(delta);
-        for(int i=0; i<otherPlayersPawns.size(); ++i){
-            Pawn pawn = otherPlayersPawns.get(i);
-            if(pawn.getNumberPlayer() == player.getPlayerId()){
+        for (Pawn pawn : otherPlayersPawns) {
+            if (pawn.getNumberPlayer() == player.getPlayerId()) {
                 pawn.changePosition(player.getPlayerPosition());
                 break;
             }
@@ -476,7 +465,7 @@ public class GameScreen extends Shortcut {
         BuyCardMessage buyCardMessage = new BuyCardMessage(card.getIdCard(),city.getPrice(), parent.getPlayer().getPlayerId());
         if(city.CityName.equals("Zgierz"))
         {
-            faliureSound=Gdx.audio.newSound(Gdx.files.internal("FailSound.mp3"));
+            Sound faliureSound = Gdx.audio.newSound(Gdx.files.internal("FailSound.mp3"));
             faliureSound.play(1.0f);
             //faliureSound.setLooping(s,false);
             popUpZgierz.setVisible(true);

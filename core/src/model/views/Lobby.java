@@ -2,10 +2,7 @@ package model.views;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.graphics.Color;
@@ -36,18 +33,17 @@ public class Lobby extends Shortcut {
     Texture texture;
     Texture backgroundTexture;
     ImageButton startButton;
-    private ImageButton.ImageButtonStyle startButtonStyleAvailable;
-    private ImageButton.ImageButtonStyle startButtonStyleNoAvailable;
-    private Texture buttonStart;
-    private Texture buttonHoverStart;
-    private Texture buttonStartNotAvailable;
+    private final ImageButton.ImageButtonStyle startButtonStyleAvailable;
+    private final Texture buttonStart;
+    private final Texture buttonHoverStart;
+    private final Texture buttonStartNotAvailable;
     BitmapFont font;
     Camera camera;
     Sprite backgroundSprite;
     Label numberPlayer;
-    private ArrayList<Label> playersNick;
+    private final ArrayList<Label> playersNick;
     private int currentNumberOfPlayers;
-    private AtomicBoolean changeScreenToLoading = new AtomicBoolean(false);
+    private final AtomicBoolean changeScreenToLoading = new AtomicBoolean(false);
     private final int MIN_PLAYERS = 2;
 
 
@@ -97,7 +93,7 @@ public class Lobby extends Shortcut {
         startButtonStyleAvailable.over = new TextureRegionDrawable(new TextureRegion(buttonHoverStart));
 
         //create start button style when it's not available
-        startButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
+        ImageButton.ImageButtonStyle startButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
         startButtonStyleNoAvailable.up = new TextureRegionDrawable(new TextureRegion(buttonStartNotAvailable));
 
         startButton = new ImageButton(startButtonStyleNoAvailable);
@@ -148,7 +144,7 @@ public class Lobby extends Shortcut {
     public void show() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
-        inputMultiplexer.addProcessor((InputProcessor) this);
+        inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 

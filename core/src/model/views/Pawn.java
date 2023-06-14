@@ -1,35 +1,26 @@
 package model.views;
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.MoneyLandGame;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 public class Pawn extends Actor implements Disposable {
-    private Image pawnImage;
-    private Texture pawnTexture;
+    private final Image pawnImage;
+    private final Texture pawnTexture;
     private String path;
     private float x;
     private float y;
-    private float width;
-    private float height;
-    private float padding;
-    private float paddingBetweenCards;
-    private float xWidth;
-    private float yHeight;
+    private final float width;
+    private final float height;
+    private final float padding;
+    private final float paddingBetweenCards;
+    private final float xWidth;
+    private final float yHeight;
 
-    private int numberPlayer;
-    private int positionOnBoard;
+    private final int numberPlayer;
 
     public Pawn (Stage stageCube, int numberPlayer, int positionCube) {
 
@@ -67,7 +58,7 @@ public class Pawn extends Actor implements Disposable {
         pawnTexture = new Texture(path);
         pawnImage = new Image(pawnTexture);
 
-        positionOnBoard = 0;
+        int positionOnBoard = 0;
         changePosition(positionOnBoard);
 
         //setPosition(x, y);
