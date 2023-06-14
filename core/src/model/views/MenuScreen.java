@@ -3,9 +3,6 @@ import com.badlogic.gdx.graphics.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -23,7 +20,6 @@ public class MenuScreen extends Shortcut {
 
     final MoneyLandGame parent;
     Stage stage;
-    Music music;
     Texture rightImage;
     Texture title;
     ImageButton startButton;
@@ -46,8 +42,6 @@ public class MenuScreen extends Shortcut {
         rightSideWidth = stage.getViewport().getWorldWidth() - stage.getViewport().getWorldWidth()/3;
 
         //music config
-        //music = Gdx.audio.newMusic(Gdx.files.internal("Pim Stones -  Neon Lights.mp3"));
-        //music.setLooping(true);
         GameAudioManager.initialize();
         GameAudioManager.playBackgroundMusic();
         //set graphics
@@ -189,9 +183,8 @@ public class MenuScreen extends Shortcut {
     public void show() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
-        inputMultiplexer.addProcessor((InputProcessor) this);
+        inputMultiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(inputMultiplexer);
-        //music.play();
 
     }
 
@@ -247,7 +240,6 @@ public class MenuScreen extends Shortcut {
         title.dispose();
         stage.dispose();
         GameAudioManager.dispose();
-        //music.dispose();
 
     }
 }

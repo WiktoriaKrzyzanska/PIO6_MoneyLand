@@ -1,6 +1,5 @@
 package model.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -16,15 +15,10 @@ public class PopUpInformation extends Table {
 
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
-    private ImageButton closeButton;
-    private ImageButton nextButton;
     String text;
     Stage stage;
     Texture texture;
     GlyphLayout centerText;
-   private int OFFSET = 100;
-    private int scaleX = 2;
-    private int scaleY = 2;
 
     /**
      * To add a new component PopUpInformation you need to create new PopUpInformation object and pass the string.
@@ -48,9 +42,9 @@ public class PopUpInformation extends Table {
         texture = new Texture(pixmap);
         ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
-        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));;
+        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));
 
-        nextButton = new ImageButton(buttonStyle);
+        ImageButton nextButton = new ImageButton(buttonStyle);
         nextButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -80,7 +74,10 @@ public class PopUpInformation extends Table {
             spriteBatch.begin();
             spriteBatch.draw(texture, getX(), getY(), getWidth(), getHeight());
             font.setColor(Color.WHITE);
+            int scaleX = 2;
+            int scaleY = 2;
             font.getData().setScale(scaleX, scaleY);
+            int OFFSET = 100;
             font.draw(spriteBatch, text, x , y + OFFSET);
             spriteBatch.end();
             stage.act();
@@ -94,10 +91,6 @@ public class PopUpInformation extends Table {
 
     public void showPopUp(){
         setVisible(true);
-    }
-
-    public void hidePopUp(){
-        setVisible(false);
     }
 
     public void dispose() {

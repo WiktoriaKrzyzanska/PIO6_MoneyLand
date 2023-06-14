@@ -1,8 +1,6 @@
 package model.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,30 +13,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-import com.mygdx.game.MoneyLandGame;
 
 public class PlayerCard implements Disposable {
     Player player;
-    private float rectHeight;
-    private float rectWidth;
-    private float rectPositionX;
-    private float rectPositionY;
-    private int paddingBetween;
-    private Label nick;
+    private final float rectHeight;
+    private final float rectWidth;
+    private final float rectPositionX;
+    private final float rectPositionY;
     private int money;
-    private Label moneyLabel;
-    private Color playerColor;
-    private Color backgroundColor;
-    private float colorRectDimension;
-    private Stage stage;
+    private final Label moneyLabel;
+    private final Color playerColor;
+    private final Color backgroundColor;
+    private final float colorRectDimension;
+    private final Stage stage;
 
     private ImageButton endMoveButton;
-    private ImageButton.ImageButtonStyle endMoveButtonStyleAvailable;
-    private ImageButton.ImageButtonStyle endMoveButtonStyleNoAvailable;
     private Texture  endMoveButtonAvailable;
     private Texture endMoveButtonNoAvailable;
     private Texture endMoveButtonAvailableHover;
-    private GameScreen board;
 
     public PlayerCard(Player player,float rectWidth, float rectHeight, float rectPositionX, float rectPositionY, int paddingBetween, String nick, int money, Color color, BitmapFont fontForNick, BitmapFont fontForMoney, Stage stage) {
         this.player = player;
@@ -46,7 +38,6 @@ public class PlayerCard implements Disposable {
         this.rectWidth = rectWidth;
         this.rectPositionX = rectPositionX;
         this.rectPositionY = rectPositionY;
-        this.paddingBetween = paddingBetween;
         this.money = money;
         this.playerColor = color;
         backgroundColor = new Color(252/255f,1f,231/255f,1f);
@@ -57,10 +48,10 @@ public class PlayerCard implements Disposable {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = fontForNick;
 
-        this.nick = new Label(nick, labelStyle);
-        this.nick.setSize(this.rectWidth - colorRectDimension, colorRectDimension);
-        this.nick.setPosition(this.rectPositionX + colorRectDimension, this.rectPositionY + this.rectHeight - colorRectDimension);
-        this.nick.setAlignment(Align.center);
+        Label nick1 = new Label(nick, labelStyle);
+        nick1.setSize(this.rectWidth - colorRectDimension, colorRectDimension);
+        nick1.setPosition(this.rectPositionX + colorRectDimension, this.rectPositionY + this.rectHeight - colorRectDimension);
+        nick1.setAlignment(Align.center);
 
         //setup money
         labelStyle.font = fontForMoney;
@@ -69,26 +60,24 @@ public class PlayerCard implements Disposable {
         this.moneyLabel.setPosition(this.rectPositionX + colorRectDimension, this.rectPositionY);
         this.moneyLabel.setAlignment(Align.center);
 
-        stage.addActor(this.nick);
+        stage.addActor(nick1);
         stage.addActor(this.moneyLabel);
 
     }
 
     public void setEndMoveButton(final GameScreen board){
 
-        this.board = board;
-
         endMoveButtonAvailable = new Texture("KoniecButton.png"); //to change
         endMoveButtonAvailableHover = new Texture("KoniecButtonClicked.png"); //to change
         endMoveButtonNoAvailable = new Texture("KoniecButton.png"); //to change
 
         //create start button style when it will be available
-        endMoveButtonStyleAvailable = new ImageButton.ImageButtonStyle();
+        ImageButton.ImageButtonStyle endMoveButtonStyleAvailable = new ImageButton.ImageButtonStyle();
         endMoveButtonStyleAvailable.up = new TextureRegionDrawable(new TextureRegion(endMoveButtonAvailable));
         endMoveButtonStyleAvailable.over = new TextureRegionDrawable(new TextureRegion(endMoveButtonAvailableHover));
 
         //create start button style when it's not available
-        endMoveButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
+        ImageButton.ImageButtonStyle endMoveButtonStyleNoAvailable = new ImageButton.ImageButtonStyle();
         endMoveButtonStyleNoAvailable.up = new TextureRegionDrawable(new TextureRegion(endMoveButtonNoAvailable));
         endMoveButtonStyleNoAvailable.over = new TextureRegionDrawable(new TextureRegion(endMoveButtonAvailableHover));
         endMoveButton = new ImageButton(endMoveButtonStyleNoAvailable);
@@ -149,4 +138,5 @@ public class PlayerCard implements Disposable {
         if(endMoveButtonNoAvailable != null) endMoveButtonNoAvailable.dispose();
         if(endMoveButtonAvailableHover != null) endMoveButtonAvailableHover.dispose();
     }
+
 }

@@ -31,8 +31,6 @@ public class GameScreen extends Shortcut {
     Stage stage2;
     CardsManager cardsManager;
 
-    private TextButton showPopUpButton;
-    private PopUpAction popUp;
 
     private float cubeRectPosX;
     private float cubeRectPosY;
@@ -44,11 +42,6 @@ public class GameScreen extends Shortcut {
     private Texture menuButtonHoverTexture;
     private Sound faliureSound;
 
-    //attributes for show rectangle with other players info (left side screen)
-    private float rectHeightOtherPlayerInfo;
-    private float rectWidthOtherPlayerInfo;
-    private float rectOtherPlayerInfoPositionX;
-    private float rectOtherPlayerInfoPositionY;
     private int paddingBetweenPlayersInfo;
 
     private ArrayList<PlayerCard> otherPlayerCards;
@@ -63,7 +56,7 @@ public class GameScreen extends Shortcut {
     PopUpInformation popUpFirstPlayer;
     PopUpInformation popUpTrapCard;
     PopUpInformation popUpZgierz;
-    ImageButton startButton;
+
 
     private Pawn myPawn;
     private ArrayList<Pawn> otherPlayersPawns;
