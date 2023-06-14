@@ -104,7 +104,7 @@ public class GameScreen extends Shortcut {
         //set popups when game start
         String Welcome = "Czesc " + parent.getPlayer().getPlayerName() + "! Twoj pionek to "+pawnName;
         String Rules = "Zasady";
-        String Cebulion = "Na poczatek gry dostajesz 500 cebulionow." +
+        String Cebulion = "Na poczatek gry dostajesz 5000 cebulionow." +
                 "Wydawaj je madrze";
         String InformationWhoStarts = new String();
         if(parent.isiAmMoveGameScreen()){
