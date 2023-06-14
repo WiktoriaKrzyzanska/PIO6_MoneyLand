@@ -73,7 +73,8 @@ public class GameScreen extends Shortcut {
     private boolean visibleBuyTenementCard;
     private PopUpInformation popUpInformationFee;
     private PopUpInformation popUpInformationCrossedStart;
-    private PopUpInformation popUpLoser;
+    private PopUpEnd popUpLoser;
+    private PopUpEnd popUpWin;
     private boolean isVisiblePopUpFee = false;
     private final int PRIZE_START_FIELD = 500;
 
@@ -124,7 +125,8 @@ public class GameScreen extends Shortcut {
         popUpPlayer = new PopUpPawn( Welcome, true, parent.getPlayer().getPlayerId());
         popUpTrapCard=new PopUpInformation("Jedno pole dziala inaczej niz pozostale ;)",true);
         popUpZgierz=new PopUpInformation("Ups! Kupiles Zgierz :( przygotuj sie na straty",false);
-        popUpLoser = new PopUpInformation("Przegrałeś biedaku", false);
+        popUpLoser = new PopUpEnd("Przegrales biedaku", false, parent);
+        popUpWin = new PopUpEnd("Wygrales", false, parent);
         popUpFirstPlayer.setVisible(true);
         popUpPlayer.setVisible(true);
         popUpRules.setVisible(true);
@@ -176,12 +178,15 @@ public class GameScreen extends Shortcut {
         popUpZgierz.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         popUpLoser.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
         popUpLoser.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpWin.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
+        popUpWin.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
         stage2.addActor(popUpZgierz);
         stage2.addActor(popUpLoser);
         stage2.addActor(popUpFirstPlayer);
         stage2.addActor(popUpTrapCard);
         stage2.addActor(popUpMoney);
         stage2.addActor(popUpRules);
+        stage2.addActor(popUpWin);
 
         stage2.addActor (popUpPlayer);
 
@@ -324,8 +329,19 @@ public class GameScreen extends Shortcut {
         }
 
         if(parent.getPlayer().isPlayerBankrupt()){
-
             popUpLoser.setVisible(true);
+        }
+
+        int number = 0;
+        for(int i=0; i<parent.sizePlayer(); ++i){
+            if(parent.getOtherPlayer(i).isPlayerBankrupt()){
+                number++;
+            }
+
+        }
+
+        if(number == parent.sizePlayer()){
+            popUpWin.setVisible(true);
         }
 
         if(visibleBuyTenementCard){
