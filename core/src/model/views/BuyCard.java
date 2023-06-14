@@ -1,6 +1,5 @@
 package model.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,27 +14,21 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
 public class BuyCard implements Disposable {
-    private float width;
-    private float height;
-    private float positionX;
-    private float positionY;
+    private final float width;
+    private final float height;
+    private final float positionX;
+    private final float positionY;
     private Card card;
-    private ImageButton.ImageButtonStyle buyButtonStyle;
-    private Texture buyButtonTexture;
-    private Texture buyButtonHoverTexture;
-    private ImageButton buyButton;
-    private GameScreen gameScreen;
-    private Stage stage;
-    private Label cardName;
-    private Label description;
+    private final Texture buyButtonHoverTexture;
+    private final ImageButton buyButton;
+    private final Label cardName;
+    private final Label description;
 
     public BuyCard(float width, float height, float positionX, float positionY, BitmapFont font, Stage stage, final GameScreen gameScreen) {
         this.width = width;
         this.height = height;
         this.positionX = positionX;
         this.positionY = positionY;
-        this.stage = stage;
-        this.gameScreen = gameScreen;
 
         //config font
         Label.LabelStyle labelStyle = new Label.LabelStyle();
@@ -45,19 +38,19 @@ public class BuyCard implements Disposable {
         cardName.setPosition(positionX, positionY + height - height/5);
         cardName.setAlignment(Align.center);
         cardName.setVisible(false);
-        this.stage.addActor(cardName);
+        stage.addActor(cardName);
 
         description = new Label("", labelStyle);
         description.setSize(width,height - height/5 - height/11);
         description.setPosition(positionX, positionY + height/4);
         description.setAlignment(Align.center);
         description.setVisible(false);
-        this.stage.addActor(description);
+        stage.addActor(description);
 
         //config button
-        buyButtonTexture = new Texture("KupujeButton.png"); //to change
-        buyButtonHoverTexture = new Texture("KupujeButtonClicked.png"); //to change
-        buyButtonStyle = new ImageButton.ImageButtonStyle();
+        Texture buyButtonTexture = new Texture("KupujeButton.png");
+        buyButtonHoverTexture = new Texture("KupujeButtonClicked.png");
+        ImageButton.ImageButtonStyle buyButtonStyle = new ImageButton.ImageButtonStyle();
         buyButtonStyle.up = new TextureRegionDrawable(new TextureRegion(buyButtonTexture));
         buyButtonStyle.over = new TextureRegionDrawable(new TextureRegion(buyButtonHoverTexture));
 
@@ -107,7 +100,7 @@ public class BuyCard implements Disposable {
     public void change(Card card){
         this.card = card;
         cardName.setText(card.cityName.getText());
-        description.setText("Cena: \n"+String.valueOf(card.getCity().price)+" cebulionow");
+        description.setText("Cena: \n"+ card.getCity().price +" cebulionow");
     }
 
     @Override

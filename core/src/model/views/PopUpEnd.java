@@ -1,6 +1,5 @@
 package model.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -15,14 +14,10 @@ public class PopUpEnd extends Table {
     final MoneyLandGame parent;
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
-    private ImageButton menuButton;
     String text;
     Stage stage;
     Texture texture;
     GlyphLayout centerText;
-    private int OFFSET = 100;
-    private int scaleX = 2;
-    private int scaleY = 2;
 
     public PopUpEnd(String text, boolean defaultVisible, final MoneyLandGame game) {
         parent = game;
@@ -41,9 +36,9 @@ public class PopUpEnd extends Table {
         texture = new Texture(pixmap);
         ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
-        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));;
+        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));
 
-        menuButton = new ImageButton(buttonStyle);
+        ImageButton menuButton = new ImageButton(buttonStyle);
         add(menuButton).width(150).height(100);
         menuButton.setPosition(500,500);
         menuButton.addListener(new ClickListener() {
@@ -73,7 +68,10 @@ public class PopUpEnd extends Table {
             spriteBatch.begin();
             spriteBatch.draw(texture, getX(), getY(), getWidth(), getHeight());
             font.setColor(Color.WHITE);
+            int scaleX = 2;
+            int scaleY = 2;
             font.getData().setScale(scaleX, scaleY);
+            int OFFSET = 100;
             font.draw(spriteBatch, text, x , y + OFFSET);
             spriteBatch.end();
             stage.act();
@@ -81,17 +79,6 @@ public class PopUpEnd extends Table {
         }
     }
 
-    public void setText(String text){
-        this.text = text;
-    }
-
-    public void showPopUp(){
-        setVisible(true);
-    }
-
-    public void hidePopUp(){
-        setVisible(false);
-    }
 
     public void dispose() {
         spriteBatch.dispose();

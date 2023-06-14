@@ -1,6 +1,5 @@
 package model.views;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -14,21 +13,14 @@ import com.mygdx.game.MoneyLandGame;
 
 public class PopUpPawn extends Table {
 
-    private Image pawnImage;
-    private Texture pawnTexture;
     private String path;
 
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
-    private ImageButton closeButton;
-    private ImageButton nextButton;
     String text;
     Stage stage;
     Texture texture;
     GlyphLayout centerText;
-    private int OFFSET = 100;
-    private int scaleX = 2;
-    private int scaleY = 2;
 
     public PopUpPawn(String text, boolean defaultVisible, int numberPlayer) {
         this.text = text;
@@ -36,8 +28,8 @@ public class PopUpPawn extends Table {
         spriteBatch = new SpriteBatch();
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT), spriteBatch);
         setVisible(defaultVisible);
-        Texture buttonTexture = new Texture("NextButton.png");
-        Texture buttonHoverTexture = new Texture("NextButtonClicked.png");
+        Texture buttonTexture = new Texture("OkButton.png");
+        Texture buttonHoverTexture = new Texture("OkButtonClicked.png");
         int width = (int) getWidth();
         int height = (int) getHeight();
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
@@ -46,7 +38,7 @@ public class PopUpPawn extends Table {
         texture = new Texture(pixmap);
         ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
-        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));;
+        buttonStyle.over = new TextureRegionDrawable(new TextureRegion(buttonHoverTexture));
 
         switch(numberPlayer) {
             case 0:
@@ -68,13 +60,13 @@ public class PopUpPawn extends Table {
                 break;
         }
 
-        pawnTexture = new Texture(path);
-        pawnImage = new Image(pawnTexture);
+        Texture pawnTexture = new Texture(path);
+        Image pawnImage = new Image(pawnTexture);
 
         pawnImage.setSize(MoneyLandGame.WIDTH/7, MoneyLandGame.WIDTH/7);
         pawnImage.setPosition((MoneyLandGame.WIDTH/20)*12, (MoneyLandGame.WIDTH/40)*7);
 
-        nextButton = new ImageButton(buttonStyle);
+        ImageButton nextButton = new ImageButton(buttonStyle);
         nextButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -105,7 +97,10 @@ public class PopUpPawn extends Table {
             spriteBatch.begin();
             spriteBatch.draw(texture, getX(), getY(), getWidth(), getHeight());
             font.setColor(Color.WHITE);
+            int scaleX = 2;
+            int scaleY = 2;
             font.getData().setScale(scaleX, scaleY);
+            int OFFSET = 100;
             font.draw(spriteBatch, text, x , y + OFFSET);
             spriteBatch.end();
             stage.act();
@@ -113,17 +108,7 @@ public class PopUpPawn extends Table {
         }
     }
 
-    public void setText(String text){
-        this.text = text;
-    }
 
-    public void showPopUp(){
-        setVisible(true);
-    }
-
-    public void hidePopUp(){
-        setVisible(false);
-    }
 
     public void dispose() {
         spriteBatch.dispose();

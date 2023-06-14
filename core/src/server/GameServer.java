@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import com.mygdx.game.MoneyLandGame;
 import model.messages.*;
+import model.views.Pawn;
 import model.views.Player;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class GameServer{
     private int idPlayerMove;
 
     private ArrayList<Color> colors;
+    private ArrayList<Object> otherPlayersColors;
 
     public void start(){
         server = new Server();
@@ -74,9 +76,7 @@ public class GameServer{
                     Player player = (Player)object;
                     player.setPlayerId(playersList.size()); //set player id
 
-                    Random random = new Random();
-                    int colorNumber = random.nextInt(colors.size());
-                    player.setColor(colors.get(colorNumber)); //set player color
+                    player.setColor(colors.get(player.getPlayerId())); //set player color
 
                     ClientHandler playerHandler = new ClientHandler(player,connection);
                     playersList.add(playerHandler);
@@ -285,8 +285,9 @@ public class GameServer{
     public void setColors(){
         colors = new ArrayList<>();
         colors.add(new Color(Color.BLUE));
-        colors.add(new Color(Color.ORANGE));
+        colors.add(new Color(Color.PINK));
         colors.add(new Color(Color.RED));
         colors.add(new Color(Color.GOLD));
+        colors.add(new Color(Color.PURPLE));
     }
 }
