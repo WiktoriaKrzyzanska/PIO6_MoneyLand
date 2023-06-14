@@ -183,6 +183,13 @@ public class Card implements Disposable {
         this.idCard = idCard;
     }
 
+    public void setDefaultRectTitleBackground(){
+        rectBackground = new Color();
+        rectBackground.r = 252/255f;
+        rectBackground.g = 255/255f;
+        rectBackground.b = 231/255f;
+        rectTitleBackground = new Color(rectBackground);
+    }
     @Override
     public void dispose() {
         cityPhoto.dispose();
