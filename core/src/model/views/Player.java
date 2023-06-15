@@ -13,6 +13,7 @@ public class Player {
     private int money;
     private List<City> ownedCities; //soon to be changed to List<City>
     Color color;
+    private boolean stillPlay = true;
 
 
     public Player(){
@@ -109,4 +110,6 @@ public class Player {
     public void setColor(Color color) {
         this.color = color;
     }
+
+
 }

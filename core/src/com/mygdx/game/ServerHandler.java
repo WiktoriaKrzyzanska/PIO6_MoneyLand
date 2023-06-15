@@ -41,6 +41,8 @@ public class ServerHandler {
         kryo.register(Color.class);
         kryo.register(TransferMessage.class);
         kryo.register(CrossedStartMessage.class);
+        kryo.register(YouAreBankruptMessage.class);
+        kryo.register(BankruptPlayerMesssage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -226,6 +228,15 @@ public class ServerHandler {
                     }
                 }
 
+                else if(object instanceof YouAreBankruptMessage){
+                    gameScreen.endMyMove();
+                }
+
+                else if(object instanceof BankruptPlayerMesssage){
+                    BankruptPlayerMesssage messsage = (BankruptPlayerMesssage) object;
+                    removeBankruptCards(messsage.getIdBankruptPlayer());
+                }
+
 
 
             }
@@ -237,5 +248,18 @@ public class ServerHandler {
 
     public void closeConnect(){
         if(client != null) client.close();
+    }
+
+    public void removeBankruptCards(int id){
+        for(int i=0; i<gameScreen.getCardsManager().getSizeCards(); ++i){
+            Card card = gameScreen.getCardsManager().getCard(i);
+            Player player = card.getOwner();
+            if(player!=null){
+                if(player.getPlayerId() == id){
+                    card.setOwner(null);
+                    card.setDefaultRectTitleBackground();
+                }
+            }
+        }
     }
 }

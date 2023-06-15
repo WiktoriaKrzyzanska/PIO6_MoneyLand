@@ -228,4 +228,8 @@ public class CardsManager {
         if(cardNumber<0 || cardNumber>=16) return null;
         return cards.get(cardNumber);
     }
+
+    public int getSizeCards(){
+        return cards.size();
+    }
 }
