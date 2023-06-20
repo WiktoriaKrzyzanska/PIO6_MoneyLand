@@ -19,6 +19,9 @@ public class CardsManager {
     private final float positionY;
     private final Color backgroundColor;
     private final ArrayList<Card> cards;
+    private final int HOW_MANY_CARDS_IN_ROW = 5;
+    private final int HOW_MANY_CARDS_IN_COLUMN = 5;
+    private final int HOW_MANY_CARDS = 16;
 
     City Cyprianka=new City(500,"Cyprianka", new Texture("cards/cyprianka.png"),300,200,1);
     City Badkowo=new City(500,"Badkowo", new Texture("cards/badkowo.png"),300,200,2);
@@ -45,8 +48,8 @@ public class CardsManager {
         this.cards = new ArrayList<>();
         float padding = 30;
         float paddingBetweenCards = 20;
-        float cardWidth = (width - 2 * padding) / 5; // 5 cards in row
-        float cardHeight = (height - 2 * padding) / 5; // 5 cards in column
+        float cardWidth = (width - 2 * padding) / HOW_MANY_CARDS_IN_ROW;
+        float cardHeight = (height - 2 * padding) / HOW_MANY_CARDS_IN_COLUMN;
 
         //config font
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto.ttf"));
@@ -225,7 +228,7 @@ public class CardsManager {
     }
 
     public Card getCard(int cardNumber){
-        if(cardNumber<0 || cardNumber>=16) return null;
+        if(cardNumber<0 || cardNumber>=HOW_MANY_CARDS) return null;
         return cards.get(cardNumber);
     }
 

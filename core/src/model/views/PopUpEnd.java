@@ -14,10 +14,10 @@ public class PopUpEnd extends Table {
     final MoneyLandGame parent;
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
-    String text;
-    Stage stage;
-    Texture texture;
-    GlyphLayout centerText;
+    private String text;
+    private Stage stage;
+    private Texture texture;
+    private GlyphLayout centerText;
 
     public PopUpEnd(String text, boolean defaultVisible, final MoneyLandGame game) {
         parent = game;

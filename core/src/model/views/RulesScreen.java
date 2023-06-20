@@ -17,10 +17,10 @@ import com.mygdx.game.MoneyLandGame;
 
 public class RulesScreen extends Shortcut  {
     final MoneyLandGame parent;
-    Stage stage;
-    Texture title;
-    Texture rules;
-    ImageButton backButton;
+    private Stage stage;
+    private Texture title;
+    private Texture rules;
+    private ImageButton backButton;
 
     public RulesScreen(final MoneyLandGame game){
         super(game);

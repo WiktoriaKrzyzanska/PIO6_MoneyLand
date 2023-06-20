@@ -23,17 +23,17 @@ public class LoadingScreen extends Shortcut {
 
     private final MoneyLandGame parent;
     private final AssetManager manager;
-    Texture title;
+    private Texture title;
     private final ShapeRenderer shapeRenderer;
 
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
     private final BitmapFont fontString;
-    final String text = "We're loading your game!";
-    final float offset =  160f;
+    private final String text = "We're loading your game!";
+    private final float offset =  160f;
 
 
-    float timer = 0f;
+    private float timer = 0f;
 
 
     /**

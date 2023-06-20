@@ -19,18 +19,18 @@ import com.mygdx.game.MoneyLandGame;
 public class MenuScreen extends Shortcut {
 
     final MoneyLandGame parent;
-    Stage stage;
-    Texture rightImage;
-    Texture title;
-    ImageButton startButton;
-    ImageButton rulesButton;
-    ImageButton buttonExit;
-    ImageButton volume;
-    ImageButton.ImageButtonStyle volumeStyle;
-    ImageButton.ImageButtonStyle volumeSilenceStyle;
+    private Stage stage;
+    private Texture rightImage;
+    private Texture title;
+    private ImageButton startButton;
+    private ImageButton rulesButton;
+    private ImageButton buttonExit;
+    private ImageButton volume;
+    private ImageButton.ImageButtonStyle volumeStyle;
+    private ImageButton.ImageButtonStyle volumeSilenceStyle;
 
-    float leftSideWidth;
-    float rightSideWidth;
+    private float leftSideWidth;
+    private float rightSideWidth;
 
     public MenuScreen(final MoneyLandGame game) {
         super(game);

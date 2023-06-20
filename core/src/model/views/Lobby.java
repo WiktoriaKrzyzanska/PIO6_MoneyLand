@@ -28,19 +28,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Lobby extends Shortcut {
     final MoneyLandGame parent;
-    Stage stage;
-    Texture title;
-    Texture texture;
-    Texture backgroundTexture;
-    ImageButton startButton;
+    private Stage stage;
+    private Texture title;
+    private Texture texture;
+    private Texture backgroundTexture;
+    private ImageButton startButton;
     private final ImageButton.ImageButtonStyle startButtonStyleAvailable;
     private final Texture buttonStart;
     private final Texture buttonHoverStart;
     private final Texture buttonStartNotAvailable;
-    BitmapFont font;
-    Camera camera;
-    Sprite backgroundSprite;
-    Label numberPlayer;
+    private BitmapFont font;
+    private Camera camera;
+    private Sprite backgroundSprite;
+    private Label numberPlayer;
     private final ArrayList<Label> playersNick;
     private int currentNumberOfPlayers;
     private final AtomicBoolean changeScreenToLoading = new AtomicBoolean(false);

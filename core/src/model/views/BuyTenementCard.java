@@ -1,5 +1,6 @@
 package model.views;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,6 +24,14 @@ public class BuyTenementCard implements Disposable {
     private final ImageButton buyButton;
     private final Label cardName;
     private final Label description;
+    private final Color MAIN_RECTANGLE_COLOR = new Color(252/255f, 1f, 231/255f,1);
+    private final Color RECTANGLE_CITY_NAME_COLOR = new Color(64/255f, 1f, 94/255f,1);
+    private final float RECT_WITH_CITY_NAME_HEIGHT;
+    private final float BUY_BUTTON_WIDTH;
+    private final float BUY_BUTTON_HEIGHT;
+    private final float DESCRIPTION_PADDING_BOTTOM;
+    private final float BUY_BUTTON_PADDING_LEFT;
+    private final float BUY_BUTTON_PADDING_BOTTOM;
 
     public BuyTenementCard(float width, float height, float positionX, float positionY, BitmapFont font, Stage stage, final GameScreen gameScreen) {
         this.width = width;
@@ -30,19 +39,26 @@ public class BuyTenementCard implements Disposable {
         this.positionX = positionX;
         this.positionY = positionY;
 
+        RECT_WITH_CITY_NAME_HEIGHT = height/5;
+        BUY_BUTTON_WIDTH = width*2/3;
+        BUY_BUTTON_HEIGHT = height/11;
+        DESCRIPTION_PADDING_BOTTOM = height/4;
+        BUY_BUTTON_PADDING_LEFT = width * 1/6;
+        BUY_BUTTON_PADDING_BOTTOM = height * 1/12;
+
         //config font
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font;
         cardName = new Label("",labelStyle);
-        cardName.setSize(width,height/5);
-        cardName.setPosition(positionX, positionY + height - height/5);
+        cardName.setSize(width,RECT_WITH_CITY_NAME_HEIGHT);
+        cardName.setPosition(positionX, positionY + height - RECT_WITH_CITY_NAME_HEIGHT);
         cardName.setAlignment(Align.center);
         cardName.setVisible(false);
         stage.addActor(cardName);
 
         description = new Label("", labelStyle);
-        description.setSize(width,height - height/5 - height/11);
-        description.setPosition(positionX, positionY + height/4);
+        description.setSize(width,height - RECT_WITH_CITY_NAME_HEIGHT - BUY_BUTTON_HEIGHT);
+        description.setPosition(positionX, positionY + DESCRIPTION_PADDING_BOTTOM);
         description.setAlignment(Align.center);
         description.setVisible(false);
         stage.addActor(description);
@@ -55,8 +71,8 @@ public class BuyTenementCard implements Disposable {
         buyButtonStyle.down = new TextureRegionDrawable(new TextureRegion(buyButtonHoverTexture));
 
         buyButton = new ImageButton(buyButtonStyle);
-        buyButton.setSize(width*2/3, height/11);
-        buyButton.setPosition(positionX + width * 1/6, positionY + height * 1/12);
+        buyButton.setSize(BUY_BUTTON_WIDTH, BUY_BUTTON_HEIGHT);
+        buyButton.setPosition(positionX + BUY_BUTTON_PADDING_LEFT, positionY + BUY_BUTTON_PADDING_BOTTOM);
         buyButton.setVisible(false);
 
         buyButton.addListener(new ClickListener(){
@@ -74,13 +90,12 @@ public class BuyTenementCard implements Disposable {
 
     public void draw(ShapeRenderer shapeRenderer){
         //draw main rectangle
-        shapeRenderer.setColor(252/255f, 1f, 231/255f,1);
+        shapeRenderer.setColor(MAIN_RECTANGLE_COLOR);
         shapeRenderer.rect(positionX,positionY,width,height);
 
         //draw rectangle with city name
-        shapeRenderer.setColor(64/255f, 1f, 94/255f,1);
-        float cityRectHeight = height/5;
-        shapeRenderer.rect(positionX,positionY + height - cityRectHeight ,width,cityRectHeight);
+        shapeRenderer.setColor(RECTANGLE_CITY_NAME_COLOR);
+        shapeRenderer.rect(positionX,positionY + height - RECT_WITH_CITY_NAME_HEIGHT,width,RECT_WITH_CITY_NAME_HEIGHT);
 
         //draw buy button, city name
         if(!buyButton.isVisible() || !cardName.isVisible() || !description.isVisible()){

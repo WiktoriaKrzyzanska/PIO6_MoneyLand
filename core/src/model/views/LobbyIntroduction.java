@@ -30,17 +30,17 @@ import com.mygdx.game.MoneyLandGame;
 
 
 public class LobbyIntroduction extends Shortcut  {
-    MoneyLandGame parent;
-    Stage stage;
-    Texture title;
-    BitmapFont font;
-    ImageButton backButton, nextButton;
-    TextField textField;
-    Label nameLabel;
-   Texture backgroundTexture;
-   Texture texture;
-    Sprite backgroundSprite;
-    Camera camera;
+    final MoneyLandGame parent;
+    private Stage stage;
+    private Texture title;
+    private BitmapFont font;
+    private ImageButton backButton, nextButton;
+    private TextField textField;
+    private Label nameLabel;
+    private Texture backgroundTexture;
+    private Texture texture;
+    private Sprite backgroundSprite;
+    private Camera camera;
 
 
     public LobbyIntroduction(final MoneyLandGame game) {
