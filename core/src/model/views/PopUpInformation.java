@@ -15,10 +15,10 @@ public class PopUpInformation extends Table {
 
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
-    String text;
-    Stage stage;
-    Texture texture;
-    GlyphLayout centerText;
+    private String text;
+    private Stage stage;
+    private Texture texture;
+    private GlyphLayout centerText;
 
     /**
      * To add a new component PopUpInformation you need to create new PopUpInformation object and pass the string.

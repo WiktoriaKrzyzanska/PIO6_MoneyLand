@@ -24,9 +24,9 @@ import java.util.ArrayList;
 
 public class GameScreen extends Shortcut {
     final MoneyLandGame parent;
-    Stage stage;
-    Stage stage2;
-    CardsManager cardsManager;
+    private Stage stage;
+    private Stage stage2;
+    private CardsManager cardsManager;
 
 
     private final float cubeRectPosX;
@@ -41,12 +41,12 @@ public class GameScreen extends Shortcut {
     private final ArrayList<PlayerCard> otherPlayerCards;
     private final PlayerCard playerOwner;
 
-    PopUpPawn popUpPlayer;
-    PopUpInformation popUpRules;
-    PopUpInformation popUpMoney;
-    PopUpInformation popUpFirstPlayer;
-    PopUpInformation popUpTrapCard;
-    PopUpInformation popUpZgierz;
+    private PopUpPawn popUpPlayer;
+    private PopUpInformation popUpRules;
+    private PopUpInformation popUpMoney;
+    private PopUpInformation popUpFirstPlayer;
+    private PopUpInformation popUpTrapCard;
+    private PopUpInformation popUpZgierz;
 
 
     private final Pawn myPawn;
@@ -61,17 +61,28 @@ public class GameScreen extends Shortcut {
     private final PopUpEnd popUpWin;
     private final boolean isVisiblePopUpFee = false;
     private final int PRIZE_START_FIELD = 500;
+    private final int HOW_MANY_PLAYERS = 5;
+    private final float LEFT_SIZE_WIDTH = MoneyLandGame.WIDTH/6;
+    private final float RIGHT_SIDE_WIDTH = MoneyLandGame.WIDTH/6;
+    private final float BOARD_PADDING_BOTTOM = MoneyLandGame.HEIGHT/6;
+    private final float BOARD_WIDTH = MoneyLandGame.WIDTH - LEFT_SIZE_WIDTH - RIGHT_SIDE_WIDTH;
+    private final float BOARD_HEIGHT = MoneyLandGame.HEIGHT - BOARD_PADDING_BOTTOM;
+
+    private final float MENU_BUTTON_PADDING_LEFT = 40;
+    private final float MENU_BUTTOM_WIDTH = LEFT_SIZE_WIDTH - 2 * MENU_BUTTON_PADDING_LEFT;
+    private final float MENU_BUTTOM_HEIGHT = BOARD_HEIGHT / (2 * HOW_MANY_PLAYERS);
+    private final float POPUP_WIDTH = MoneyLandGame.WIDTH/2;
+    private final float POPUP_HEIGHT = MoneyLandGame.HEIGHT/2;
+    private final float POPUP_MARGIN_LEFT = MoneyLandGame.WIDTH/4;
+    private final float POPUP_MARGIN_BOTTOM = MoneyLandGame.HEIGHT/4;
+
+
 
 
     public GameScreen(MoneyLandGame game){
         super(game);
         parent = game;
         parent.serverHandler.setupConnectWithGameScreen(this);
-
-        float leftSideWidth = MoneyLandGame.WIDTH/6;
-        float boardWidth = MoneyLandGame.WIDTH - MoneyLandGame.WIDTH/3;
-        float boardHeight = MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT/6;
-        float rightSideWidth = MoneyLandGame.WIDTH/6;
 
         stage = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
         stage2 = new Stage(new StretchViewport(MoneyLandGame.WIDTH,MoneyLandGame.HEIGHT));
@@ -117,14 +128,15 @@ public class GameScreen extends Shortcut {
 
         popUpMoney.setVisible(true);
         popUpTrapCard.setVisible(true);
+
         //create part with cards
-        cardsManager = new CardsManager(boardWidth,  boardHeight, leftSideWidth, MoneyLandGame.HEIGHT/6);
+        cardsManager = new CardsManager(BOARD_WIDTH,  BOARD_HEIGHT, LEFT_SIZE_WIDTH, BOARD_PADDING_BOTTOM);
 
         //config rectangle for cube and create cube
-        cubeRectWith =  rightSideWidth;
+        cubeRectWith =  RIGHT_SIDE_WIDTH;
         cubeRectHeight = MoneyLandGame.HEIGHT/4;
         cubeRectPosX = MoneyLandGame.WIDTH - cubeRectWith;
-        cubeRectPosY = MoneyLandGame.HEIGHT/6;
+        cubeRectPosY = BOARD_PADDING_BOTTOM;
         cube = new Cube(cubeRectPosX + cubeRectWith/3,cubeRectPosY + cubeRectHeight/4 ,(int)cubeRectWith/3,(int)cubeRectWith/3,stage,4, this);
 
         //config menu button
@@ -135,11 +147,11 @@ public class GameScreen extends Shortcut {
         buttonStyleMenu.up = new TextureRegionDrawable(new TextureRegion(menuButtonTexture));
         buttonStyleMenu.over = new TextureRegionDrawable(new TextureRegion(menuButtonHoverTexture));
 
+        int paddingBetweenMenuButtonAndCard = 15;
         menuButton = new ImageButton(buttonStyleMenu);
-        int menuButtonPadding = 40;
-        menuButton.setWidth(leftSideWidth - 2 * menuButtonPadding);
-        menuButton.setHeight(MoneyLandGame.HEIGHT - MoneyLandGame.HEIGHT * 19/20);
-        menuButton.setPosition(leftSideWidth / 2 - (menuButton.getWidth()/3), MoneyLandGame.HEIGHT - menuButton.getHeight()*0.6f -100);
+        menuButton.setWidth(MENU_BUTTOM_WIDTH);
+        menuButton.setHeight(MENU_BUTTOM_HEIGHT - paddingBetweenMenuButtonAndCard);
+        menuButton.setPosition(LEFT_SIZE_WIDTH / 2 - (menuButton.getWidth()/3), MoneyLandGame.HEIGHT - menuButton.getHeight()*0.6f -100 + paddingBetweenMenuButtonAndCard );
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -148,22 +160,23 @@ public class GameScreen extends Shortcut {
         });
 
 
-        popUpFirstPlayer.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpFirstPlayer.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpMoney.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpMoney.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpRules.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpRules.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpPlayer.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpPlayer.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpTrapCard.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpTrapCard.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpZgierz.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpZgierz.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpLoser.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpLoser.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
-        popUpWin.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpWin.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpFirstPlayer.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpFirstPlayer.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpMoney.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpMoney.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpRules.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpRules.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpPlayer.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpPlayer.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpTrapCard.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpTrapCard.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpZgierz.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpZgierz.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpLoser.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpLoser.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+        popUpWin.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpWin.setSize(POPUP_WIDTH, POPUP_HEIGHT);
+
         stage2.addActor(popUpZgierz);
         stage2.addActor(popUpLoser);
         stage2.addActor(popUpFirstPlayer);
@@ -194,12 +207,12 @@ public class GameScreen extends Shortcut {
         int padding = 20;
         int startMoney = 5000;
         int paddingBetweenPlayersInfo = 50;
-        float rectHeightOtherPlayerInfo = (MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - (MoneyLandGame.HEIGHT - boardHeight)) * 1/6;
+        float rectHeightOtherPlayerInfo = (BOARD_HEIGHT - MENU_BUTTOM_HEIGHT) / HOW_MANY_PLAYERS;
 
         playerOwner = new PlayerCard(
                 parent.getPlayer(),
-                leftSideWidth * 3/2, //width
-                MoneyLandGame.HEIGHT - boardHeight, //height
+                LEFT_SIZE_WIDTH * 3/2, //width
+                MoneyLandGame.HEIGHT - BOARD_HEIGHT, //height
                 0, //positionX
                 0, //position y
                 paddingBetweenPlayersInfo, //padding
@@ -216,10 +229,10 @@ public class GameScreen extends Shortcut {
                 Player temp = parent.getOtherPlayer(i);
                 PlayerCard playerCard = new PlayerCard(
                         temp,
-                        leftSideWidth - 2 * padding, //width
+                        LEFT_SIZE_WIDTH - 2 * padding, //width
                         rectHeightOtherPlayerInfo, //height
                         padding, //positionX
-                        MoneyLandGame.HEIGHT - menuButton.getHeight() - 15 - rectHeightOtherPlayerInfo - (i * rectHeightOtherPlayerInfo) - ((i + 1) * paddingBetweenPlayersInfo), //position y
+                        MoneyLandGame.HEIGHT - menuButton.getHeight() - rectHeightOtherPlayerInfo - (i * rectHeightOtherPlayerInfo) - ((i + 1) * paddingBetweenPlayersInfo), //position y
                         paddingBetweenPlayersInfo, //padding
                         parent.getOtherPlayer(i).getPlayerName(),    //nick
                         startMoney, //money
@@ -247,23 +260,23 @@ public class GameScreen extends Shortcut {
         playerOwner.setEndMoveButton(this);
 
         //create buy button to use
-        buyCard = new BuyCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
+        buyCard = new BuyCard(RIGHT_SIDE_WIDTH,BOARD_HEIGHT/2, MoneyLandGame.WIDTH - RIGHT_SIDE_WIDTH, MoneyLandGame.HEIGHT - BOARD_HEIGHT/2, fontForPlayersNick, this.stage, this);
         visibleBuyCard = false;
 
-        buyTenementCard = new BuyTenementCard(rightSideWidth,boardHeight/2, MoneyLandGame.WIDTH - rightSideWidth, MoneyLandGame.HEIGHT - boardHeight/2, fontForPlayersNick, this.stage, this);
+        buyTenementCard = new BuyTenementCard(RIGHT_SIDE_WIDTH,BOARD_HEIGHT/2, MoneyLandGame.WIDTH - RIGHT_SIDE_WIDTH, MoneyLandGame.HEIGHT - BOARD_HEIGHT/2, fontForPlayersNick, this.stage, this);
         visibleBuyTenementCard = false;
 
 
         //create pop up for fee
         popUpInformationFee = new PopUpInformation("", false);
-        popUpInformationFee.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpInformationFee.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpInformationFee.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpInformationFee.setSize(POPUP_WIDTH, POPUP_HEIGHT);
         stage2.addActor(popUpInformationFee);
 
         //create pop up for prize when player cross start field
         popUpInformationCrossedStart =  new PopUpInformation("Soltys placi Ci "+ PRIZE_START_FIELD +" cebulionow", false);
-        popUpInformationCrossedStart.setPosition(MoneyLandGame.WIDTH/4, MoneyLandGame.HEIGHT/4);
-        popUpInformationCrossedStart.setSize(MoneyLandGame.WIDTH/2, MoneyLandGame.HEIGHT/2);
+        popUpInformationCrossedStart.setPosition(POPUP_MARGIN_LEFT, POPUP_MARGIN_BOTTOM);
+        popUpInformationCrossedStart.setSize(POPUP_WIDTH, POPUP_HEIGHT);
         stage2.addActor(popUpInformationCrossedStart);
 
         //enable cube when i start game

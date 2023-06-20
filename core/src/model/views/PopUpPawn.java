@@ -17,10 +17,10 @@ public class PopUpPawn extends Table {
 
     private final SpriteBatch spriteBatch;
     private final BitmapFont font;
-    String text;
-    Stage stage;
-    Texture texture;
-    GlyphLayout centerText;
+    private String text;
+    private Stage stage;
+    private Texture texture;
+    private GlyphLayout centerText;
 
     public PopUpPawn(String text, boolean defaultVisible, int numberPlayer) {
         this.text = text;

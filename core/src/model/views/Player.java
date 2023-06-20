@@ -12,7 +12,7 @@ public class Player {
     private int cardNumber;
     private int money;
     private List<City> ownedCities; //soon to be changed to List<City>
-    Color color;
+    private Color color;
     private boolean stillPlay = true;
 
 

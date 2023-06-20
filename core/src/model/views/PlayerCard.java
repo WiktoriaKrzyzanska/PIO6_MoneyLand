@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
 public class PlayerCard implements Disposable {
-    Player player;
+    private Player player;
     private final float rectHeight;
     private final float rectWidth;
     private final float rectPositionX;

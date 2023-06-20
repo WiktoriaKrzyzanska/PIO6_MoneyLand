@@ -109,148 +109,19 @@ public class GameServer{
                 }
                 else if(object instanceof BuyCardMessage){
                     BuyCardMessage message = (BuyCardMessage) object;
-                    int money = (int)message.getAmount();
-
-                    int idPlayerBankrupt = -1;
-
-                    //update info
-                    for(int i=0; i<playersList.size(); ++i){
-                        ClientHandler clientHandler = playersList.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-
-                        //update status on server
-                        Player temp = clientHandler.getPlayerFromServer();
-                        int id = temp.getPlayerId();
-                        if(id == message.getIdPlayer()){
-                            temp.subtractPlayerMoney(money);
-                            if(temp.isPlayerBankrupt()){
-                                //when player is bankrupt - transfer to bankrupt list
-                                playersListBankrupts.add(clientHandler);
-                                playersList.remove(clientHandler);
-                                clientHandler.getConnection().sendTCP(new YouAreBankruptMessage());
-                                idPlayerBankrupt = id;
-
-                                //update iterator - it's protection to not missed next player after change playerList
-                                --i;
-                            }
-                        }
-                    }
-
-                    //update info for player who is bankrupt
-                    for(int i=0;i<playersListBankrupts.size(); ++i){
-                        //send info to all players
-                        ClientHandler clientHandler = playersListBankrupts.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-                    }
-
-                    //send info if we have bankrupt
-                    if(idPlayerBankrupt!=-1){
-                        sendInfoAboutBankrupt(idPlayerBankrupt);
-                    }
-
+                    buyCard(message);
                 }
                 else if(object instanceof BuyTenementMessage){
                     BuyTenementMessage message = (BuyTenementMessage) object;
-                    int money = (int)message.getAmount();
-
-                    int idPlayerBankrupt = -1;
-                    for(int i=0; i<playersList.size(); ++i){
-                        ClientHandler clientHandler = playersList.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-
-                        //update status on server
-                        Player temp = clientHandler.getPlayerFromServer();
-                        int id = temp.getPlayerId();
-                        if(id == message.getIdPlayer()){
-                            temp.subtractPlayerMoney(money);
-                            if(temp.isPlayerBankrupt()){
-                                //when player is bankrupt - transfer to bankrupt list
-                                playersListBankrupts.add(clientHandler);
-                                playersList.remove(clientHandler);
-                                clientHandler.getConnection().sendTCP(new YouAreBankruptMessage());
-                                idPlayerBankrupt = id;
-
-                                //update iterator - it's protection to not missed next player after change playerList
-                                --i;
-                            }
-                        }
-                    }
-
-                    //update info for player who is bankrupt
-                    for(int i=0;i<playersListBankrupts.size(); ++i){
-                        //send info to all players
-                        ClientHandler clientHandler = playersListBankrupts.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-                    }
-
-                    //send info if we have bankrupt
-                    if(idPlayerBankrupt!=-1){
-                        sendInfoAboutBankrupt(idPlayerBankrupt);
-                    }
+                    buyTenement(message);
                 }
                 else if(object instanceof TransferMessage){
                     TransferMessage message = (TransferMessage) object;
-                    int money = (int)message.getAmount();
-
-                    int idPlayerBankrupt = -1;
-
-                    for(int i=0; i<playersList.size(); ++i){
-                        //send info to all players
-                        ClientHandler clientHandler = playersList.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-                        //update status on server
-                        Player temp = clientHandler.getPlayerFromServer();
-                        int id = temp.getPlayerId();
-                        if(id == message.getIdPlayerFrom()){
-                            temp.subtractPlayerMoney(money);
-                            if(temp.isPlayerBankrupt()){
-
-                                //when player is bankrupt - transfer to bankrupt list
-                                playersListBankrupts.add(clientHandler);
-                                playersList.remove(clientHandler);
-                                clientHandler.getConnection().sendTCP(new YouAreBankruptMessage());
-                                idPlayerBankrupt = id;
-
-                                //update iterator - it's protection to not missed next player after change playerList
-                                --i;
-
-                            }
-                        }else if(id == message.getIdPlayerTo()){
-                            temp.addPlayerMoney(money);
-                        }
-                    }
-
-                    //update info for player who is bankrupt
-                    for(int i=0;i<playersListBankrupts.size(); ++i){
-                        //send info to all players
-                        ClientHandler clientHandler = playersListBankrupts.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-                    }
-
-                    //send info if we have bankrupt
-                    if(idPlayerBankrupt!=-1){
-                        sendInfoAboutBankrupt(idPlayerBankrupt);
-                    }
-
+                    transferMoney(message);
                 }
                 else if(object instanceof CrossedStartMessage){
                     CrossedStartMessage message = (CrossedStartMessage) object;
-                    //update status and send info to all players
-                    for(int i=0; i<playersList.size(); ++i){
-                        ClientHandler handler = playersList.get(i);
-                        Player player = handler.getPlayerFromServer();
-                        if(player.getPlayerId() == message.getIdPlayer()){
-                            player.addPlayerMoney(message.getAmount());
-                        }
-                        handler.getConnection().sendTCP(message);
-                    }
-
-                    //update info for player who is bankrupt
-                    for(int i=0;i<playersListBankrupts.size(); ++i){
-                        //send info to all players
-                        ClientHandler clientHandler = playersListBankrupts.get(i);
-                        clientHandler.getConnection().sendTCP(message);
-                    }
+                    crossStartField(message);
                 }
             }
         });
@@ -372,5 +243,148 @@ public class GameServer{
         colors.add(new Color(Color.RED));
         colors.add(new Color(Color.GOLD));
         colors.add(new Color(Color.PURPLE));
+    }
+
+    protected void transferMoney(TransferMessage message){
+        int money = (int)message.getAmount();
+
+        int idPlayerBankrupt = -1;
+
+        for(int i=0; i<playersList.size(); ++i){
+            //send info to all players
+            ClientHandler clientHandler = playersList.get(i);
+            clientHandler.getConnection().sendTCP(message);
+            //update status on server
+            Player temp = clientHandler.getPlayerFromServer();
+            int id = temp.getPlayerId();
+            if(id == message.getIdPlayerFrom()){
+                temp.subtractPlayerMoney(money);
+                if(temp.isPlayerBankrupt()){
+
+                    //when player is bankrupt - transfer to bankrupt list
+                    playersListBankrupts.add(clientHandler);
+                    playersList.remove(clientHandler);
+                    clientHandler.getConnection().sendTCP(new YouAreBankruptMessage());
+                    idPlayerBankrupt = id;
+
+                    //update iterator and id - it's protection to not missed next player after change playerList
+                    --i;
+                    --idPlayerMove;
+
+                }
+            }else if(id == message.getIdPlayerTo()){
+                temp.addPlayerMoney(money);
+            }
+        }
+
+        //update info for player who is bankrupt
+        for(int i=0;i<playersListBankrupts.size(); ++i){
+            //send info to all players
+            ClientHandler clientHandler = playersListBankrupts.get(i);
+            clientHandler.getConnection().sendTCP(message);
+        }
+
+        //send info if we have bankrupt
+        if(idPlayerBankrupt!=-1){
+            sendInfoAboutBankrupt(idPlayerBankrupt);
+        }
+    }
+    protected void buyTenement(BuyTenementMessage message){
+        int money = (int)message.getAmount();
+
+        int idPlayerBankrupt = -1;
+        for(int i=0; i<playersList.size(); ++i){
+            ClientHandler clientHandler = playersList.get(i);
+            clientHandler.getConnection().sendTCP(message);
+
+            //update status on server
+            Player temp = clientHandler.getPlayerFromServer();
+            int id = temp.getPlayerId();
+            if(id == message.getIdPlayer()){
+                temp.subtractPlayerMoney(money);
+                if(temp.isPlayerBankrupt()){
+                    //when player is bankrupt - transfer to bankrupt list
+                    playersListBankrupts.add(clientHandler);
+                    playersList.remove(clientHandler);
+                    clientHandler.getConnection().sendTCP(new YouAreBankruptMessage());
+                    idPlayerBankrupt = id;
+
+                    //update iterator and id - it's protection to not missed next player after change playerList
+                    --i;
+                    --idPlayerMove;
+                }
+            }
+        }
+
+        //update info for player who is bankrupt
+        for(int i=0;i<playersListBankrupts.size(); ++i){
+            //send info to all players
+            ClientHandler clientHandler = playersListBankrupts.get(i);
+            clientHandler.getConnection().sendTCP(message);
+        }
+
+        //send info if we have bankrupt
+        if(idPlayerBankrupt!=-1){
+            sendInfoAboutBankrupt(idPlayerBankrupt);
+        }
+    }
+    protected void buyCard(BuyCardMessage message){
+        int money = (int)message.getAmount();
+
+        int idPlayerBankrupt = -1;
+
+        //update info
+        for(int i=0; i<playersList.size(); ++i){
+            ClientHandler clientHandler = playersList.get(i);
+            clientHandler.getConnection().sendTCP(message);
+
+            //update status on server
+            Player temp = clientHandler.getPlayerFromServer();
+            int id = temp.getPlayerId();
+            if(id == message.getIdPlayer()){
+                temp.subtractPlayerMoney(money);
+                if(temp.isPlayerBankrupt()){
+                    //when player is bankrupt - transfer to bankrupt list
+                    playersListBankrupts.add(clientHandler);
+                    playersList.remove(clientHandler);
+                    clientHandler.getConnection().sendTCP(new YouAreBankruptMessage());
+                    idPlayerBankrupt = id;
+
+                    //update iterator and id - it's protection to not missed next player after change playerList
+                    --i;
+                    --idPlayerMove;
+                }
+            }
+        }
+
+        //update info for player who is bankrupt
+        for(int i=0;i<playersListBankrupts.size(); ++i){
+            //send info to all players
+            ClientHandler clientHandler = playersListBankrupts.get(i);
+            clientHandler.getConnection().sendTCP(message);
+        }
+
+        //send info if we have bankrupt
+        if(idPlayerBankrupt!=-1){
+            sendInfoAboutBankrupt(idPlayerBankrupt);
+        }
+    }
+    protected void crossStartField(CrossedStartMessage message){
+        //update status and send info to all players
+        for(int i=0; i<playersList.size(); ++i){
+            ClientHandler handler = playersList.get(i);
+            Player player = handler.getPlayerFromServer();
+            if(player.getPlayerId() == message.getIdPlayer()){
+                player.addPlayerMoney(message.getAmount());
+            }
+            handler.getConnection().sendTCP(message);
+        }
+
+        //update info for player who is bankrupt
+        for(int i=0;i<playersListBankrupts.size(); ++i){
+            //send info to all players
+            ClientHandler clientHandler = playersListBankrupts.get(i);
+            clientHandler.getConnection().sendTCP(message);
+        }
     }
 }
