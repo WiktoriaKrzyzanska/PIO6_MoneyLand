@@ -7,3 +7,5 @@ To do this follow those steps:
 3. Open this folder and open Git Bash terminal.
 4. Write git clone [link]
 5. Go to Desktop/src and run DesktopLauncher
+
+Link to Canva where we have our slide show https://www.canva.com/design/DAFlcss12NM/hUfAuBWD3Ke7MWddSZq7Ow/edit?utm_content=DAFlcss12NM&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
