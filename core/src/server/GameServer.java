@@ -47,6 +47,7 @@ public class GameServer{
         kryo.register(CrossedStartMessage.class);
         kryo.register(YouAreBankruptMessage.class);
         kryo.register(BankruptPlayerMesssage.class);
+        kryo.register(TrapCardMessage.class);
 
 
         server.start();
@@ -99,6 +100,12 @@ public class GameServer{
                     String message = (String)object;
                     if(message.equals("Ready for game")){
                         readyForGame(connection);
+                        //losowanie karty która działa inaczej
+                        int idTrapCard;
+                        Random random = new Random();
+                        idTrapCard = random.nextInt(16);
+                        TrapCardMessage trapCardMessage = new TrapCardMessage(idTrapCard);
+                        sendTrapCardToAll(trapCardMessage);
                     }
                 }
                 else if(object instanceof PlayerMoveMessage){
@@ -385,6 +392,13 @@ public class GameServer{
             //send info to all players
             ClientHandler clientHandler = playersListBankrupts.get(i);
             clientHandler.getConnection().sendTCP(message);
+        }
+    }
+
+    protected void sendTrapCardToAll(TrapCardMessage message){
+        for(int i=0; i<playersList.size(); ++i){
+            ClientHandler temp = playersList.get(i);
+            temp.getConnection().sendTCP(message);
         }
     }
 }

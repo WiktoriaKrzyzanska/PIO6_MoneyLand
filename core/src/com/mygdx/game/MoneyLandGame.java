@@ -38,7 +38,7 @@ public class MoneyLandGame extends Game {
 	private AssetManager progress;
 
 	public GameServer gameServer;
-	public static final String serverIP = "127.0.0.1";
+	public static final String serverIP = "192.168.245.103";
 	public static final int portTCP = 54555;
 	public static final int portUDP = 54777;
 
@@ -46,6 +46,7 @@ public class MoneyLandGame extends Game {
 
 	private boolean iAmMove = false;
 	private int idPlayerMove;
+	private int idTrapCard;
 
 	@Override
 	public void create () {
@@ -169,5 +170,13 @@ public class MoneyLandGame extends Game {
 
 	public void setIdPlayerMoveGameScreen(int idPlayerMove) {
 		this.idPlayerMove = idPlayerMove;
+	}
+
+	public int getIdTrapCard() {
+		return idTrapCard;
+	}
+
+	public void setIdTrapCard(int idTrapCard) {
+		this.idTrapCard = idTrapCard;
 	}
 }

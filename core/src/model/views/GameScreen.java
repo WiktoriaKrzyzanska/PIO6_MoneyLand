@@ -75,6 +75,7 @@ public class GameScreen extends Shortcut {
     private final float POPUP_HEIGHT = MoneyLandGame.HEIGHT/2;
     private final float POPUP_MARGIN_LEFT = MoneyLandGame.WIDTH/4;
     private final float POPUP_MARGIN_BOTTOM = MoneyLandGame.HEIGHT/4;
+    private String cityNameTrap;
 
 
 
@@ -131,6 +132,12 @@ public class GameScreen extends Shortcut {
 
         //create part with cards
         cardsManager = new CardsManager(BOARD_WIDTH,  BOARD_HEIGHT, LEFT_SIZE_WIDTH, BOARD_PADDING_BOTTOM);
+
+        //ustawianie karty
+        cityNameTrap = cardsManager.getCard(parent.getIdTrapCard()).getCity().CityName;
+        Gdx.app.log("Dziwne miasto",cityNameTrap);
+        cardsManager.getCard(parent.getIdTrapCard()).getCity().setRentAmount(-300);
+
 
         //config rectangle for cube and create cube
         cubeRectWith =  RIGHT_SIDE_WIDTH;
@@ -476,7 +483,7 @@ public class GameScreen extends Shortcut {
         if(card==null) return;
         City city = card.getCity();
         BuyCardMessage buyCardMessage = new BuyCardMessage(card.getIdCard(),city.getPrice(), parent.getPlayer().getPlayerId());
-        if(city.CityName.equals("Zgierz"))
+        if(city.CityName.equals(cityNameTrap))
         {
             Sound faliureSound = Gdx.audio.newSound(Gdx.files.internal("FailSound.mp3"));
             faliureSound.play(1.0f);

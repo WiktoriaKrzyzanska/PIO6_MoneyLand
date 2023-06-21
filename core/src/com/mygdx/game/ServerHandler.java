@@ -44,6 +44,7 @@ public class ServerHandler {
         kryo.register(CrossedStartMessage.class);
         kryo.register(YouAreBankruptMessage.class);
         kryo.register(BankruptPlayerMesssage.class);
+        kryo.register(TrapCardMessage.class);
 
         client.start();
         boolean thisIsServer = false;
@@ -143,6 +144,11 @@ public class ServerHandler {
                 else if(object instanceof BankruptPlayerMesssage){
                     BankruptPlayerMesssage messsage = (BankruptPlayerMesssage) object;
                     removeBankruptCards(messsage.getIdBankruptPlayer());
+                }
+                else if(object instanceof TrapCardMessage){
+                    TrapCardMessage message = (TrapCardMessage) object;
+                    int idTrapCard = message.getIdCard();
+                    game.setIdTrapCard(idTrapCard);
                 }
 
 
